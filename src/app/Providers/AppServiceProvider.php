@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Policies\ActivityPolicy;
 use Filament\Actions\MountableAction;
+use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
 use Filament\Notifications\Livewire\Notifications;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
@@ -16,17 +17,18 @@ use Spatie\Activitylog\Models\Activity;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
-        //
+        $this->app->bind(LogoutResponseContract::class, function () {
+            return new class implements LogoutResponseContract {
+                public function toResponse($request)
+                {
+                    return redirect('/login');
+                }
+            };
+        });
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         Gate::policy(Activity::class, ActivityPolicy::class);

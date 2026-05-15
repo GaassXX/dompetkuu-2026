@@ -50,6 +50,10 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             ->widgets([
                 \Awcodes\Overlook\Widgets\OverlookWidget::class,
+                \App\Filament\Admin\Widgets\StatsOverview::class,
+                \App\Filament\Admin\Widgets\IncomeExpenseChart::class,
+
+
             ])
             ->navigationGroups([
                 NavigationGroup::make()
