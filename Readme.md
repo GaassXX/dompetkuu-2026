@@ -131,6 +131,9 @@ Symlink storage
 
 6. Buka Aplikasi
 PanelURLWarna TemaAdminhttps://dompetkuu.test/admin🔵 BiruParenthttps://dompetkuu.test/parent🟢 HijauChildhttps://dompetkuu.test/child🟠 Oranye
+admin: admin@admin.com password
+orangtua: orangtua@admin.com password
+anak: anak1@admin.com password
 
 📦 Plugin Filament V3 yang Digunakan
 PackageFungsibezhansalleh/filament-shieldRBAC & manajemen permissionz3d0x/filament-loggerActivity log / audit trailhasnayeen/themesTema warna dinamis per panelawcodes/light-switchToggle dark/light modeawcodes/overlookWidget statistik overviewjoaopaulolndev/filament-edit-profileEdit profil dalam paneljoshembling/image-optimizerOptimasi avatar ke format WebPnjxqlus/filament-progressbarProgress bar loading animasidiogogpinto/filament-auth-ui-enhancerPeningkatan tampilan halaman login
