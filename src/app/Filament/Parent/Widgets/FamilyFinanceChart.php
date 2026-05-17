@@ -9,38 +9,47 @@ use Filament\Widgets\ChartWidget;
 
 class FamilyFinanceChart extends ChartWidget
 {
-    protected static ?string $heading = 'Arus Keuangan Keluarga (6 Bulan Terakhir)';
-    protected static ?int $sort = 2;
-    protected static ?string $maxHeight = '300px';
+    protected static string $view = 'filament.parent.widgets.family-finance-chart';
+    protected static ?string $heading         = ' '; // ✅ Kosongkan heading default
+    protected static ?int    $sort            = 2;
+    protected static ?string $maxHeight       = '300px';
     protected static ?string $pollingInterval = null;
 
-    public ?string $filter = 'family';
+    public ?string $filter         = 'family'; // anggota
+    public string  $durationFilter = '6';      // durasi
 
+    // ✅ Tidak pakai getFilters() bawaan — kita handle sendiri di heading
     protected function getFilters(): ?array
     {
-        $filters = [
-            'family' => 'Seluruh Keluarga',
-            'me'     => 'Saya Sendiri',
-        ];
-
-        $children = User::where('parent_id', auth()->id())->get();
-        foreach ($children as $child) {
-            $filters['child_' . $child->id] = $child->name;
-        }
-
-        return $filters;
+        return null;
     }
+
+    // ✅ Heading custom dengan 2 select terpisah
+    public function getHeading(): string
+    {
+        return 'Arus Keuangan Keluarga';
+    }
+
+    protected function getExtraAttributes(): array
+    {
+        return ['wire:key' => 'family-finance-chart-' . $this->filter . '-' . $this->durationFilter];
+    }
+
+    public function updatedFilter(): void {}
+    public function updatedDurationFilter(): void {}
 
     protected function getData(): array
     {
-        $months  = collect(range(5, 0))->map(fn($i) => now()->subMonths($i));
-        $labels  = $months->map(fn($m) => $m->format('M Y'))->toArray();
-        $userIds = $this->getUserIds();
+        $duration = (int) $this->durationFilter;
+        $months   = collect(range($duration - 1, 0))->map(fn($i) => now()->subMonths($i));
+        $labels   = $months->map(fn($m) => $m->translatedFormat('M Y'))->toArray();
+        $userIds  = $this->getUserIds();
 
         $incomes = $months->map(fn($m) =>
             (float) Income::whereIn('user_id', $userIds)
                 ->whereMonth('date', $m->month)
                 ->whereYear('date', $m->year)
+                ->where('status', 'approved')
                 ->sum('amount')
         )->toArray();
 
@@ -48,6 +57,7 @@ class FamilyFinanceChart extends ChartWidget
             (float) Expense::whereIn('user_id', $userIds)
                 ->whereMonth('date', $m->month)
                 ->whereYear('date', $m->year)
+                ->where('status', 'approved')
                 ->sum('amount')
         )->toArray();
 
@@ -77,16 +87,8 @@ class FamilyFinanceChart extends ChartWidget
     protected function getOptions(): array
     {
         return [
-            'plugins' => [
-                'legend' => [
-                    'display' => true,
-                ],
-            ],
-            'scales' => [
-                'y' => [
-                    'beginAtZero' => true,
-                ],
-            ],
+            'plugins' => ['legend' => ['display' => true]],
+            'scales'  => ['y' => ['beginAtZero' => true]],
         ];
     }
 

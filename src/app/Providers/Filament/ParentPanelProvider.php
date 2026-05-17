@@ -41,6 +41,11 @@ class ParentPanelProvider extends PanelProvider
             ->widgets([
                 \App\Filament\Parent\Widgets\ParentStatsOverview::class,
                 \App\Filament\Parent\Widgets\FamilyFinanceChart::class,
+                \App\Filament\Parent\Widgets\FamilyBudgetAlertWidget::class,
+                \App\Filament\Parent\Widgets\PendingApprovalWidget::class,
+                \App\Filament\Parent\Widgets\ParentLatestTransactions::class,
+                \App\Filament\Parent\Widgets\ChildSummaryWidget::class,
+
             ])
             ->middleware([
                 EncryptCookies::class,

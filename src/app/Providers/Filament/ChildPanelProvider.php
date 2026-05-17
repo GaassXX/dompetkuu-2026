@@ -39,6 +39,7 @@ class ChildPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             ->widgets([
+                \App\Filament\Child\Widgets\BudgetAlertWidget::class, // 
                 \App\Filament\Child\Widgets\ChildStatsOverview::class,
                 \App\Filament\Child\Widgets\ChildFinanceChart::class,
                 \App\Filament\Child\Widgets\LatestTransactions::class,

@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Filament\Child\Widgets;
+namespace App\Filament\Parent\Widgets;
 
 use App\Models\Expense;
 use App\Models\Income;
 use Filament\Widgets\Widget;
 
-class LatestTransactions extends Widget
+class ParentLatestTransactions extends Widget
 {
-    protected static ?int $sort = 3;
-    protected static string $view = 'filament.child.widgets.latest-transactions';
+    protected static ?int $sort   = 4;
+    protected static string $view = 'filament.parent.widgets.parent-latest-transactions';
 
-    // ✅ Expose sebagai property publik, bukan method Collection
     public array $transactions = [];
 
     public function mount(): void
@@ -28,6 +27,7 @@ class LatestTransactions extends Widget
                 'category' => $item->category->name ?? '-',
                 'amount'   => (float) $item->amount,
                 'date'     => $item->date?->format('Y-m-d') ?? '',
+                'date_fmt' => $item->date?->format('d M Y') ?? '-',
                 'status'   => $item->status,
             ])->toArray();
 
@@ -41,14 +41,12 @@ class LatestTransactions extends Widget
                 'category' => $item->category->name ?? '-',
                 'amount'   => (float) $item->amount,
                 'date'     => $item->date?->format('Y-m-d') ?? '',
+                'date_fmt' => $item->date?->format('d M Y') ?? '-',
                 'status'   => $item->status,
             ])->toArray();
 
         $merged = array_merge($incomes, $expenses);
-
-        // Sort by date desc
         usort($merged, fn($a, $b) => strcmp($b['date'], $a['date']));
-
         $this->transactions = array_slice($merged, 0, 5);
     }
 }

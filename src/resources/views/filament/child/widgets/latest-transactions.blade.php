@@ -3,7 +3,7 @@
         <x-slot name="heading">Transaksi Terbaru</x-slot>
 
         <div class="space-y-3">
-            @forelse($this->getTransactions() as $transaction)
+            @forelse($transactions as $transaction)
             <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800">
                 <div class="flex items-center gap-3">
                     <div @class([
@@ -35,7 +35,7 @@
                         'text-red-600'   => $transaction['type'] === 'Pengeluaran',
                     ])>
                         {{ $transaction['type'] === 'Pemasukan' ? '+' : '-' }}
-                        Rp {{ number_format((float) $transaction['amount'], 0, ',', '.') }}
+                        Rp {{ number_format($transaction['amount'], 0, ',', '.') }}
                     </p>
                     <span @class([
                         'text-xs px-2 py-0.5 rounded-full',
