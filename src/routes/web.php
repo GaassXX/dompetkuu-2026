@@ -22,7 +22,18 @@ Livewire::setScriptRoute(function ($handle) {
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // Kalau sudah login → redirect ke panel sesuai role
+    if (Auth::check()) {
+        $user = Auth::user();
+        return match(true) {
+            $user->hasRole('super_admin'), $user->hasRole('admin') => redirect('/admin'),
+            $user->hasRole('parent') => redirect('/parent'),
+            $user->hasRole('child')  => redirect('/child'),
+            default                  => redirect('/login'),
+        };
+    }
+    // Belum login → ke login page
+    return redirect('/login');
 });
 
 // ===== Auth =====

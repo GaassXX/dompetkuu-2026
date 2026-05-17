@@ -1,53 +1,37 @@
 <?php
 
-namespace App\Filament\Parent\Widgets;
+namespace App\Filament\Child\Widgets;
 
 use App\Models\Expense;
 use App\Models\Income;
-use App\Models\User;
 use Filament\Widgets\ChartWidget;
 
-class FamilyFinanceChart extends ChartWidget
+class ChildFinanceChart extends ChartWidget
 {
-    protected static ?string $heading = 'Arus Keuangan Keluarga (6 Bulan Terakhir)';
+    protected static ?string $heading = 'Pemasukan vs Pengeluaran (6 Bulan Terakhir)';
     protected static ?int $sort = 2;
     protected static ?string $maxHeight = '300px';
     protected static ?string $pollingInterval = null;
 
-    public ?string $filter = 'family';
-
-    protected function getFilters(): ?array
-    {
-        $filters = [
-            'family' => 'Seluruh Keluarga',
-            'me'     => 'Saya Sendiri',
-        ];
-
-        $children = User::where('parent_id', auth()->id())->get();
-        foreach ($children as $child) {
-            $filters['child_' . $child->id] = $child->name;
-        }
-
-        return $filters;
-    }
-
     protected function getData(): array
     {
+        $userId  = auth()->id();
         $months  = collect(range(5, 0))->map(fn($i) => now()->subMonths($i));
         $labels  = $months->map(fn($m) => $m->format('M Y'))->toArray();
-        $userIds = $this->getUserIds();
 
         $incomes = $months->map(fn($m) =>
-            (float) Income::whereIn('user_id', $userIds)
+            (float) Income::where('user_id', $userId)
                 ->whereMonth('date', $m->month)
                 ->whereYear('date', $m->year)
+                ->where('status', 'approved')
                 ->sum('amount')
         )->toArray();
 
         $expenses = $months->map(fn($m) =>
-            (float) Expense::whereIn('user_id', $userIds)
+            (float) Expense::where('user_id', $userId)
                 ->whereMonth('date', $m->month)
                 ->whereYear('date', $m->year)
+                ->where('status', 'approved')
                 ->sum('amount')
         )->toArray();
 
@@ -78,29 +62,12 @@ class FamilyFinanceChart extends ChartWidget
     {
         return [
             'plugins' => [
-                'legend' => [
-                    'display' => true,
-                ],
+                'legend' => ['display' => true],
             ],
             'scales' => [
-                'y' => [
-                    'beginAtZero' => true,
-                ],
+                'y' => ['beginAtZero' => true],
             ],
         ];
-    }
-
-    private function getUserIds(): array
-    {
-        $parentId = auth()->id();
-        $childIds = User::where('parent_id', $parentId)->pluck('id')->toArray();
-
-        return match(true) {
-            $this->filter === 'family'                => array_merge([$parentId], $childIds),
-            $this->filter === 'me'                    => [$parentId],
-            str_starts_with($this->filter, 'child_') => [(int) str_replace('child_', '', $this->filter)],
-            default                                   => array_merge([$parentId], $childIds),
-        };
     }
 
     protected function getType(): string
