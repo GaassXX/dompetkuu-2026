@@ -2,7 +2,7 @@
 
 namespace App\Filament\Parent\Pages;
 
-use App\Models\Income;
+use App\Models\Transaction;
 use App\Models\User;
 use Filament\Forms\Components\Placeholder;
 use Filament\Pages\Page;
@@ -28,7 +28,62 @@ class TransactionView extends Page implements HasTable
 
     public function getTableRecordKey(Model $record): string
     {
-        return (string) md5($record->type . $record->original_id . $record->date);
+        return (string) $record->id;
+    }
+
+    public function resolveTableRecord(string $key): ?Model
+    {
+        $prefix     = substr($key, 0, 1);
+        $originalId = substr($key, 2);
+        $type       = $prefix === 'I' ? 'Pemasukan' : 'Pengeluaran';
+
+        $parentId = auth()->id();
+        $childIds = User::where('parent_id', $parentId)->pluck('id')->toArray();
+        $allIds   = array_merge([$parentId], $childIds);
+
+        $incomes = DB::table('incomes')
+            ->join('users', 'incomes.user_id', '=', 'users.id')
+            ->join('categories', 'incomes.category_id', '=', 'categories.id')
+            ->leftJoin('users as approver', 'incomes.approved_by', '=', 'approver.id')
+            ->whereIn('incomes.user_id', $allIds)
+            ->select(
+                DB::raw("CONCAT('I-', incomes.id) as id"),
+                'incomes.id as original_id',
+                'users.name as user_name',
+                'categories.name as category_name',
+                'incomes.amount',
+                'incomes.date',
+                'incomes.status',
+                'incomes.description',
+                'incomes.created_at',
+                DB::raw("approver.name as approved_by_name"),
+                DB::raw("'Pemasukan' as type")
+            );
+
+        $expenses = DB::table('expenses')
+            ->join('users', 'expenses.user_id', '=', 'users.id')
+            ->join('categories', 'expenses.category_id', '=', 'categories.id')
+            ->leftJoin('users as approver', 'expenses.approved_by', '=', 'approver.id')
+            ->whereIn('expenses.user_id', $allIds)
+            ->select(
+                DB::raw("CONCAT('E-', expenses.id) as id"),
+                'expenses.id as original_id',
+                'users.name as user_name',
+                'categories.name as category_name',
+                'expenses.amount',
+                'expenses.date',
+                'expenses.status',
+                'expenses.description',
+                'expenses.created_at',
+                DB::raw("approver.name as approved_by_name"),
+                DB::raw("'Pengeluaran' as type")
+            );
+
+        return Transaction::fromSub($incomes->unionAll($expenses), 'transactions')
+            ->select('id', 'original_id', 'user_name', 'category_name', 'amount', 'date', 'status', 'description', 'type', 'created_at', 'approved_by_name')
+            ->where('type', $type)
+            ->where('original_id', $originalId)
+            ->first();
     }
 
     public function table(Table $table): Table
@@ -84,7 +139,8 @@ class TransactionView extends Page implements HasTable
                     ->options([
                         'Pemasukan'   => 'Pemasukan',
                         'Pengeluaran' => 'Pengeluaran',
-                    ]),
+                    ])
+                    ->placeholder('Semua Tipe'),
 
                 SelectFilter::make('status')
                     ->label('Status')
@@ -92,7 +148,8 @@ class TransactionView extends Page implements HasTable
                         'pending'  => 'Pending',
                         'approved' => 'Disetujui',
                         'rejected' => 'Ditolak',
-                    ]),
+                    ])
+                    ->placeholder('Semua Status'),
 
                 SelectFilter::make('user_name')
                     ->label('Anggota')
@@ -124,49 +181,15 @@ class TransactionView extends Page implements HasTable
                         'description'      => $record->description,
                     ])
                     ->form([
-                        Placeholder::make('type')
-                            ->label('Tipe')
-                            ->content(fn($state) => $state),
-
-                        Placeholder::make('user_name')
-                            ->label('Nama Anggota')
-                            ->content(fn($state) => $state),
-
-                        Placeholder::make('category_name')
-                            ->label('Kategori')
-                            ->content(fn($state) => $state),
-
-                        Placeholder::make('amount')
-                            ->label('Jumlah')
-                            ->content(fn($state) => 'Rp ' . number_format((float) $state, 0, ',', '.')),
-
-                        Placeholder::make('date')
-                            ->label('Tanggal Transaksi')
-                            ->content(fn($state) => \Carbon\Carbon::parse($state)->translatedFormat('d F Y')),
-
-                        Placeholder::make('created_at')
-                            ->label('Dibuat Pada')
-                            ->content(fn($state) => $state
-                                ? \Carbon\Carbon::parse($state)->translatedFormat('d F Y, H:i') . ' WIB'
-                                : '-'
-                            ),
-
-                        Placeholder::make('status')
-                            ->label('Status')
-                            ->content(fn($state) => match ($state) {
-                                'pending'  => '🟡 Pending',
-                                'approved' => '✅ Disetujui',
-                                'rejected' => '❌ Ditolak',
-                                default    => $state,
-                            }),
-
-                        Placeholder::make('approved_by_name')
-                            ->label('Disetujui Oleh')
-                            ->content(fn($state) => $state ?? '-'),
-
-                        Placeholder::make('description')
-                            ->label('Keterangan')
-                            ->content(fn($state) => $state ?? '-'),
+                        Placeholder::make('type')->label('Tipe')->content(fn($state) => $state),
+                        Placeholder::make('user_name')->label('Nama Anggota')->content(fn($state) => $state),
+                        Placeholder::make('category_name')->label('Kategori')->content(fn($state) => $state),
+                        Placeholder::make('amount')->label('Jumlah')->content(fn($state) => 'Rp ' . number_format((float) $state, 0, ',', '.')),
+                        Placeholder::make('date')->label('Tanggal Transaksi')->content(fn($state) => \Carbon\Carbon::parse($state)->translatedFormat('d F Y')),
+                        Placeholder::make('created_at')->label('Dibuat Pada')->content(fn($state) => $state ? \Carbon\Carbon::parse($state)->translatedFormat('d F Y, H:i') . ' WIB' : '-'),
+                        Placeholder::make('status')->label('Status')->content(fn($state) => match ($state) { 'pending' => '🟡 Pending', 'approved' => '✅ Disetujui', 'rejected' => '❌ Ditolak', default => $state }),
+                        Placeholder::make('approved_by_name')->label('Disetujui Oleh')->content(fn($state) => $state ?? '-'),
+                        Placeholder::make('description')->label('Keterangan')->content(fn($state) => $state ?? '-'),
                     ])
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Tutup'),
@@ -180,58 +203,8 @@ class TransactionView extends Page implements HasTable
         $childIds = User::where('parent_id', $parentId)->pluck('id')->toArray();
         $allIds   = array_merge([$parentId], $childIds);
 
-        $incomes = DB::table('incomes')
-            ->join('users', 'incomes.user_id', '=', 'users.id')
-            ->join('categories', 'incomes.category_id', '=', 'categories.id')
-            ->leftJoin('users as approver', 'incomes.approved_by', '=', 'approver.id')
-            ->whereIn('incomes.user_id', $allIds)
-            ->select(
-                'incomes.id as original_id',
-                'users.name as user_name',
-                'categories.name as category_name',
-                'incomes.amount',
-                'incomes.date',
-                'incomes.status',
-                'incomes.description',
-                'incomes.created_at',
-                DB::raw("approver.name as approved_by_name"),
-                DB::raw("'Pemasukan' as type")
-            );
-
-        $expenses = DB::table('expenses')
-            ->join('users', 'expenses.user_id', '=', 'users.id')
-            ->join('categories', 'expenses.category_id', '=', 'categories.id')
-            ->leftJoin('users as approver', 'expenses.approved_by', '=', 'approver.id')
-            ->whereIn('expenses.user_id', $allIds)
-            ->select(
-                'expenses.id as original_id',
-                'users.name as user_name',
-                'categories.name as category_name',
-                'expenses.amount',
-                'expenses.date',
-                'expenses.status',
-                'expenses.description',
-                'expenses.created_at',
-                DB::raw("approver.name as approved_by_name"),
-                DB::raw("'Pengeluaran' as type")
-            );
-
-        $union = $incomes->unionAll($expenses);
-
-        return Income::query()
-            ->fromSub($union, 'transactions')
-            ->select(
-                'original_id',
-                'user_name',
-                'category_name',
-                'amount',
-                'date',
-                'status',
-                'description',
-                'type',
-                'created_at',
-                'approved_by_name',
-                DB::raw("CONCAT(type, '-', original_id) as id")
-            );
+        return Transaction::query()
+            ->whereIn('user_id', $allIds)
+            ->select('id', 'original_id', 'user_name', 'category_name', 'amount', 'date', 'status', 'description', 'type', 'created_at', 'approved_by_name');
     }
 }

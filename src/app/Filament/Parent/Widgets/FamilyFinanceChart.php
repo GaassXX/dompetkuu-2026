@@ -9,34 +9,35 @@ use Filament\Widgets\ChartWidget;
 
 class FamilyFinanceChart extends ChartWidget
 {
-    protected static string $view = 'filament.parent.widgets.family-finance-chart';
-    protected static ?string $heading         = ' '; // ✅ Kosongkan heading default
+    protected static string  $view            = 'filament.parent.widgets.family-finance-chart';
+    protected static ?string $heading         = 'Arus Keuangan Keluarga';
     protected static ?int    $sort            = 2;
     protected static ?string $maxHeight       = '300px';
     protected static ?string $pollingInterval = null;
 
-    public ?string $filter         = 'family'; // anggota
-    public string  $durationFilter = '6';      // durasi
+    public ?string $filter         = 'family';
+    public string  $durationFilter = '6';
 
-    // ✅ Tidak pakai getFilters() bawaan — kita handle sendiri di heading
     protected function getFilters(): ?array
     {
         return null;
     }
 
-    // ✅ Heading custom dengan 2 select terpisah
-    public function getHeading(): string
+    protected function getFilterSelectHtml(): string
     {
-        return 'Arus Keuangan Keluarga';
+        return '';
     }
 
-    protected function getExtraAttributes(): array
+    // ✅ Dispatch event dengan data terbaru
+    public function updatedFilter(): void
     {
-        return ['wire:key' => 'family-finance-chart-' . $this->filter . '-' . $this->durationFilter];
+        $this->dispatch('familyChartUpdate', $this->getData());
     }
 
-    public function updatedFilter(): void {}
-    public function updatedDurationFilter(): void {}
+    public function updatedDurationFilter(): void
+    {
+        $this->dispatch('familyChartUpdate', $this->getData());
+    }
 
     protected function getData(): array
     {

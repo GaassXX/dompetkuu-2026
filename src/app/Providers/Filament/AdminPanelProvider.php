@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Support\Assets\Css;
+use Filament\Support\Facades\FilamentAsset;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -32,6 +34,13 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->spa()
             ->login()
+            ->profile()
+            ->userMenuItems([
+                \Filament\Navigation\MenuItem::make()
+                    ->label(fn() => auth()->user()?->name . ' · Admin')
+                    ->icon('heroicon-o-user-circle')
+                    ->url('#'),
+            ])
             ->passwordReset()
             ->profile(\App\Filament\Pages\Auth\EditProfile::class, isSimple: false)
             ->defaultThemeMode(ThemeMode::Light)
@@ -52,6 +61,7 @@ class AdminPanelProvider extends PanelProvider
                 \Awcodes\Overlook\Widgets\OverlookWidget::class,
                 \App\Filament\Admin\Widgets\StatsOverview::class,
                 \App\Filament\Admin\Widgets\IncomeExpenseChart::class,
+                
 
 
             ])

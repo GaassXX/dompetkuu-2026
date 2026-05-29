@@ -11,19 +11,20 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class ParentStatsOverview extends BaseWidget
 {
     protected static ?int $sort = 1;
+    protected static ?string $pollingInterval = null;
 
     protected function getStats(): array
     {
         $parentId = auth()->id();
 
-        // ===== Keuangan Orangtua Sendiri =====
-        $myIncome = Income::where('user_id', $parentId)
+        // ===== Keuangan Saya =====
+        $myIncome = (float) Income::where('user_id', $parentId)
             ->whereMonth('date', now()->month)
             ->whereYear('date', now()->year)
             ->where('status', 'approved')
             ->sum('amount');
 
-        $myExpense = Expense::where('user_id', $parentId)
+        $myExpense = (float) Expense::where('user_id', $parentId)
             ->whereMonth('date', now()->month)
             ->whereYear('date', now()->year)
             ->where('status', 'approved')
@@ -31,20 +32,17 @@ class ParentStatsOverview extends BaseWidget
 
         $mySaldo = $myIncome - $myExpense;
 
-        // ===== Keuangan Seluruh Keluarga =====
-        $childIds = User::where('parent_id', $parentId)
-            ->pluck('id')
-            ->toArray();
+        // ===== Keuangan Keluarga =====
+        $childIds = User::where('parent_id', $parentId)->pluck('id')->toArray();
+        $allIds   = array_merge([$parentId], $childIds);
 
-        $allIds = array_merge([$parentId], $childIds);
-
-        $familyIncome = Income::whereIn('user_id', $allIds)
+        $familyIncome = (float) Income::whereIn('user_id', $allIds)
             ->whereMonth('date', now()->month)
             ->whereYear('date', now()->year)
             ->where('status', 'approved')
             ->sum('amount');
 
-        $familyExpense = Expense::whereIn('user_id', $allIds)
+        $familyExpense = (float) Expense::whereIn('user_id', $allIds)
             ->whereMonth('date', now()->month)
             ->whereYear('date', now()->year)
             ->where('status', 'approved')
@@ -52,28 +50,47 @@ class ParentStatsOverview extends BaseWidget
 
         $familySaldo = $familyIncome - $familyExpense;
 
+        // ===== Sparkline 6 bulan =====
+        $myIncomeChart = $this->getMonthlyData(Income::class, [$parentId]);
+        $myExpenseChart = $this->getMonthlyData(Expense::class, [$parentId]);
+        $familyChart   = $this->getMonthlyData(Income::class, $allIds);
+
         return [
-            // Keuangan Saya
             Stat::make('Pemasukan Saya', 'Rp ' . number_format($myIncome, 0, ',', '.'))
                 ->description('Bulan ' . now()->translatedFormat('F Y'))
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success'),
+                ->color('success')
+                ->chart($myIncomeChart),
 
             Stat::make('Pengeluaran Saya', 'Rp ' . number_format($myExpense, 0, ',', '.'))
                 ->description('Bulan ' . now()->translatedFormat('F Y'))
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
-                ->color('danger'),
+                ->color('danger')
+                ->chart($myExpenseChart),
 
             Stat::make('Saldo Saya', 'Rp ' . number_format($mySaldo, 0, ',', '.'))
                 ->description('Pemasukan - Pengeluaran')
                 ->descriptionIcon('heroicon-m-wallet')
-                ->color($mySaldo >= 0 ? 'success' : 'danger'),
+                ->color($mySaldo >= 0 ? 'success' : 'danger')
+                ->chart($myIncomeChart),
 
-            // Keuangan Keluarga
             Stat::make('Total Keluarga', 'Rp ' . number_format($familySaldo, 0, ',', '.'))
                 ->description('Saldo gabungan ' . now()->translatedFormat('F Y'))
                 ->descriptionIcon('heroicon-m-home')
-                ->color($familySaldo >= 0 ? 'info' : 'warning'),
+                ->color($familySaldo >= 0 ? 'info' : 'warning')
+                ->chart($familyChart),
         ];
+    }
+
+    // ✅ Ambil data 6 bulan terakhir untuk sparkline
+    private function getMonthlyData(string $model, array $userIds): array
+    {
+        return collect(range(5, 0))
+            ->map(fn($i) => (float) $model::whereIn('user_id', $userIds)
+                ->whereMonth('date', now()->subMonths($i)->month)
+                ->whereYear('date', now()->subMonths($i)->year)
+                ->where('status', 'approved')
+                ->sum('amount')
+            )->toArray();
     }
 }

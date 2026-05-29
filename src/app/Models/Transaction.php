@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\DB;
 class Transaction extends Model
 {
     protected $table = 'transactions_view';
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     public static function getUnionQuery()
     {

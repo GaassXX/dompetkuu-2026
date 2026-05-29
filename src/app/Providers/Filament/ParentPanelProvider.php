@@ -26,8 +26,15 @@ class ParentPanelProvider extends PanelProvider
             ->id('parent')
             ->path('parent')
             ->login()
+            ->profile()
+            ->userMenuItems([
+                    \Filament\Navigation\MenuItem::make()
+                        ->label(fn() => auth()->user()?->name . ' · Orang Tua')
+                        ->icon('heroicon-o-user-circle')
+                        ->url('#'),
+                ])
             ->colors([
-                'primary' => Color::Green,
+                'primary' => Color::Amber,
             ])
             ->font('Montserrat')
             ->maxContentWidth(MaxWidth::SevenExtraLarge)
@@ -36,7 +43,7 @@ class ParentPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Parent/Pages'), for: 'App\\Filament\\Parent\\Pages')
             ->discoverWidgets(in: app_path('Filament/Parent/Widgets'), for: 'App\\Filament\\Parent\\Widgets')
             ->pages([
-                Pages\Dashboard::class,
+                \App\Filament\Parent\Pages\Dashboard::class,
             ])
             ->widgets([
                 \App\Filament\Parent\Widgets\ParentStatsOverview::class,

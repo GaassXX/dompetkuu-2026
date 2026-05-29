@@ -10,18 +10,19 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class ChildStatsOverview extends BaseWidget
 {
     protected static ?int $sort = 1;
+    protected static ?string $pollingInterval = null;
 
     protected function getStats(): array
     {
         $userId = auth()->id();
 
-        $totalIncome = Income::where('user_id', $userId)
+        $totalIncome = (float) Income::where('user_id', $userId)
             ->whereMonth('date', now()->month)
             ->whereYear('date', now()->year)
             ->where('status', 'approved')
             ->sum('amount');
 
-        $totalExpense = Expense::where('user_id', $userId)
+        $totalExpense = (float) Expense::where('user_id', $userId)
             ->whereMonth('date', now()->month)
             ->whereYear('date', now()->year)
             ->where('status', 'approved')
@@ -29,34 +30,46 @@ class ChildStatsOverview extends BaseWidget
 
         $saldo = $totalIncome - $totalExpense;
 
-        $pendingCount = Income::where('user_id', $userId)
-            ->where('status', 'pending')
-            ->count()
-            +
-            Expense::where('user_id', $userId)
-            ->where('status', 'pending')
-            ->count();
+        $pendingCount = Income::where('user_id', $userId)->where('status', 'pending')->count()
+                      + Expense::where('user_id', $userId)->where('status', 'pending')->count();
+
+        $incomeChart  = $this->getMonthlyData(Income::class, $userId);
+        $expenseChart = $this->getMonthlyData(Expense::class, $userId);
 
         return [
             Stat::make('Pemasukan Bulan Ini', 'Rp ' . number_format($totalIncome, 0, ',', '.'))
-                ->description('Bulan ' . now()->format('F Y'))
+                ->description('Bulan ' . now()->translatedFormat('F Y'))
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color('success'),
+                ->color('success')
+                ->chart($incomeChart),
 
             Stat::make('Pengeluaran Bulan Ini', 'Rp ' . number_format($totalExpense, 0, ',', '.'))
-                ->description('Bulan ' . now()->format('F Y'))
+                ->description('Bulan ' . now()->translatedFormat('F Y'))
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
-                ->color('danger'),
+                ->color('danger')
+                ->chart($expenseChart),
 
             Stat::make('Saldo', 'Rp ' . number_format($saldo, 0, ',', '.'))
                 ->description('Pemasukan - Pengeluaran')
                 ->descriptionIcon('heroicon-m-wallet')
-                ->color($saldo >= 0 ? 'success' : 'danger'),
+                ->color($saldo >= 0 ? 'success' : 'danger')
+                ->chart($incomeChart),
 
             Stat::make('Menunggu Persetujuan', $pendingCount)
                 ->description('Transaksi pending')
                 ->descriptionIcon('heroicon-m-clock')
-                ->color('warning'),
+                ->color($pendingCount > 0 ? 'warning' : 'success'),
         ];
+    }
+
+    private function getMonthlyData(string $model, int $userId): array
+    {
+        return collect(range(5, 0))
+            ->map(fn($i) => (float) $model::where('user_id', $userId)
+                ->whereMonth('date', now()->subMonths($i)->month)
+                ->whereYear('date', now()->subMonths($i)->year)
+                ->where('status', 'approved')
+                ->sum('amount')
+            )->toArray();
     }
 }

@@ -1,42 +1,69 @@
 <x-filament-widgets::widget>
     <x-filament::section>
-        <x-slot name="heading">Transaksi Terbaru</x-slot>
 
-        <div style="display:flex;flex-direction:column;gap:6px;">
+        <x-slot name="heading">
+            <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+                <span>Transaksi Terbaru</span>
+                <a href="{{ route('filament.parent.pages.transaction-view') }}"
+                   style="font-size:12px;color:var(--color-primary-500);text-decoration:none;font-weight:400;">
+                    Lihat semua →
+                </a>
+            </div>
+        </x-slot>
+
+        <div style="display:flex;flex-direction:column;gap:8px;">
             @forelse($transactions as $tx)
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--color-background-secondary);border-radius:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;
+                        padding:10px 12px;
+                        background:var(--color-background-secondary);
+                        border-radius:12px;
+                        border:1px solid var(--color-border-tertiary);
+                        transition:background 0.2s;">
 
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <div style="width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
-                        background:{{ $tx['type'] === 'Pemasukan' ? '#EAF3DE' : '#FCEBEB' }}">
+                {{-- Kiri: Icon + Info --}}
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div style="width:36px;height:36px;border-radius:50%;flex-shrink:0;
+                                display:flex;align-items:center;justify-content:center;
+                                background:{{ $tx['type'] === 'Pemasukan' ? '#DCFCE7' : '#FEE2E2' }}">
                         @if($tx['type'] === 'Pemasukan')
-                            <x-heroicon-o-arrow-up style="width:14px;height:14px;color:#3B6D11;"/>
+                            <x-heroicon-o-arrow-trending-up style="width:16px;height:16px;color:#16A34A;"/>
                         @else
-                            <x-heroicon-o-arrow-down style="width:14px;height:14px;color:#A32D2D;"/>
+                            <x-heroicon-o-arrow-trending-down style="width:16px;height:16px;color:#DC2626;"/>
                         @endif
                     </div>
                     <div>
-                        <p style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin:0;">
+                        <p style="font-size:13px;font-weight:600;color:var(--color-text-primary);margin:0;line-height:1.4;">
                             {{ $tx['category'] }}
                         </p>
-                        <p style="font-size:11px;color:var(--color-text-secondary);margin:0;">
-                            {{ $tx['date_fmt'] }}
+                        <p style="font-size:11px;color:var(--color-text-secondary);margin:0;line-height:1.4;">
+                            {{ $tx['type'] }} · {{ $tx['date_fmt'] }}
                         </p>
                     </div>
                 </div>
 
-                <div style="text-align:right;">
-                    <p style="font-size:13px;font-weight:500;margin:0;
-                        color:{{ $tx['type'] === 'Pemasukan' ? '#3B6D11' : '#A32D2D' }}">
+                {{-- Kanan: Nominal + Badge --}}
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+                    <p style="font-size:13px;font-weight:700;margin:0;
+                               color:{{ $tx['type'] === 'Pemasukan' ? '#16A34A' : '#DC2626' }}">
                         {{ $tx['type'] === 'Pemasukan' ? '+' : '-' }}Rp {{ number_format($tx['amount'], 0, ',', '.') }}
                     </p>
-                    <span style="font-size:10px;padding:2px 8px;border-radius:99px;
-                        background:{{ match($tx['status']) { 'approved' => '#EAF3DE', 'pending' => '#FAEEDA', 'rejected' => '#FCEBEB', default => '#F1EFE8' } }};
-                        color:{{ match($tx['status']) { 'approved' => '#27500A', 'pending' => '#633806', 'rejected' => '#791F1F', default => '#5F5E5A' } }}">
+                    <span style="font-size:10px;padding:2px 10px;border-radius:99px;font-weight:500;
+                        background:{{ match($tx['status']) {
+                            'approved' => '#DCFCE7',
+                            'pending'  => '#FEF9C3',
+                            'rejected' => '#FEE2E2',
+                            default    => '#F3F4F6'
+                        } }};
+                        color:{{ match($tx['status']) {
+                            'approved' => '#15803D',
+                            'pending'  => '#A16207',
+                            'rejected' => '#B91C1C',
+                            default    => '#6B7280'
+                        } }}">
                         {{ match($tx['status']) {
-                            'approved' => 'Disetujui',
-                            'pending'  => 'Pending',
-                            'rejected' => 'Ditolak',
+                            'approved' => '✓ Disetujui',
+                            'pending'  => '⏳ Pending',
+                            'rejected' => '✕ Ditolak',
                             default    => $tx['status'],
                         } }}
                     </span>
@@ -44,9 +71,14 @@
 
             </div>
             @empty
-            <p style="font-size:13px;color:var(--color-text-secondary);text-align:center;padding:16px 0;">
-                Belum ada transaksi
-            </p>
+            <div style="display:flex;flex-direction:column;align-items:center;padding:32px 0;gap:8px;">
+                <x-heroicon-o-inbox style="width:40px;height:40px;color:var(--color-text-secondary);opacity:0.4;"/>
+                <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">Belum ada transaksi</p>
+                <a href="{{ route('filament.parent.resources.expenses.create') }}"
+                   style="font-size:12px;color:var(--color-primary-500);text-decoration:none;font-weight:500;">
+                    + Tambah Transaksi
+                </a>
+            </div>
             @endforelse
         </div>
 

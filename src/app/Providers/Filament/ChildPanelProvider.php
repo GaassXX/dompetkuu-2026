@@ -26,6 +26,13 @@ class ChildPanelProvider extends PanelProvider
             ->id('child')
             ->path('child')
             ->login()
+            ->profile()
+            ->userMenuItems([
+                \Filament\Navigation\MenuItem::make()
+                    ->label(fn() => auth()->user()?->name . ' · Anak')
+                    ->icon('heroicon-o-user-circle')
+                    ->url('#'),
+            ])
             ->colors([
                 'primary' => Color::Orange,
             ])
@@ -36,10 +43,10 @@ class ChildPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Child/Pages'), for: 'App\\Filament\\Child\\Pages')
             ->discoverWidgets(in: app_path('Filament/Child/Widgets'), for: 'App\\Filament\\Child\\Widgets')
             ->pages([
-                Pages\Dashboard::class,
+                \App\Filament\Child\Pages\Dashboard::class,
             ])
             ->widgets([
-                \App\Filament\Child\Widgets\BudgetAlertWidget::class, // 
+                \App\Filament\Child\Widgets\BudgetAlertWidget::class, //
                 \App\Filament\Child\Widgets\ChildStatsOverview::class,
                 \App\Filament\Child\Widgets\ChildFinanceChart::class,
                 \App\Filament\Child\Widgets\LatestTransactions::class,

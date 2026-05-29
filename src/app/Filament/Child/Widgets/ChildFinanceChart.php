@@ -8,16 +8,29 @@ use Filament\Widgets\ChartWidget;
 
 class ChildFinanceChart extends ChartWidget
 {
-    protected static ?string $heading = 'Pemasukan vs Pengeluaran (6 Bulan Terakhir)';
-    protected static ?int $sort = 2;
-    protected static ?string $maxHeight = '300px';
+    protected static ?int    $sort            = 2;
+    protected static ?string $maxHeight       = '300px';
     protected static ?string $pollingInterval = null;
+    protected static ?string $heading         = 'Arus Keuangan';
+
+    public ?string $filter = '3'; // ✅ pakai $filter bawaan Filament, default 3 bulan
+
+    protected function getFilters(): ?array
+    {
+        return [
+            '1'  => '1 Bulan',
+            '3'  => '3 Bulan',
+            '6'  => '6 Bulan',
+            '12' => '12 Bulan',
+        ];
+    }
 
     protected function getData(): array
     {
-        $userId  = auth()->id();
-        $months  = collect(range(5, 0))->map(fn($i) => now()->subMonths($i));
-        $labels  = $months->map(fn($m) => $m->format('M Y'))->toArray();
+        $userId   = auth()->id();
+        $duration = (int) ($this->filter ?? '3'); // ✅ baca $this->filter
+        $months   = collect(range($duration - 1, 0))->map(fn($i) => now()->subMonths($i));
+        $labels   = $months->map(fn($m) => $m->translatedFormat('M Y'))->toArray();
 
         $incomes = $months->map(fn($m) =>
             (float) Income::where('user_id', $userId)
@@ -61,12 +74,8 @@ class ChildFinanceChart extends ChartWidget
     protected function getOptions(): array
     {
         return [
-            'plugins' => [
-                'legend' => ['display' => true],
-            ],
-            'scales' => [
-                'y' => ['beginAtZero' => true],
-            ],
+            'plugins' => ['legend' => ['display' => true]],
+            'scales'  => ['y' => ['beginAtZero' => true]],
         ];
     }
 
