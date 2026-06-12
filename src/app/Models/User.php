@@ -24,6 +24,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'role',
         'parent_id',
         'is_active',
+        'is_independent',
     ];
 
     protected $hidden = [
@@ -37,6 +38,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'is_independent' => 'boolean',
         ];
     }
 
@@ -84,6 +86,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     public function budgets(): HasMany
     {
         return $this->hasMany(Budget::class);
+    }
+
+    public function savings(): HasMany
+    {
+        return $this->hasMany(Saving::class);
     }
 
 }

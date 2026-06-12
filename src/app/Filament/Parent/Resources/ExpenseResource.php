@@ -19,6 +19,7 @@ class ExpenseResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-arrow-trending-down';
     protected static ?string $navigationLabel = 'Pengeluaran';
     protected static ?string $modelLabel = 'Pengeluaran';
+    protected static ?string $pluralModelLabel = 'Pengeluaran';
     protected static ?int $navigationSort = 2;
     protected static bool $shouldCheckPolicyExistence = false;
 
@@ -126,8 +127,11 @@ class ExpenseResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->where('user_id', auth()->id());
+    return parent::getEloquentQuery()
+        ->where('user_id', auth()->id())
+        // Memaksa pengurutan di level database (Query Builder)
+        ->orderBy('date', 'desc')
+        ->orderBy('created_at', 'desc');
     }
 
     public static function canAccess(): bool

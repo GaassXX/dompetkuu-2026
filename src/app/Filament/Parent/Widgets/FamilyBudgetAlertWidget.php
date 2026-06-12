@@ -8,7 +8,8 @@ use Filament\Widgets\Widget;
 
 class FamilyBudgetAlertWidget extends Widget
 {
-    protected static ?int $sort   = 1;
+    protected static ?int $sort = 1;
+    protected static ?string $maxHeight = '300px';
     protected static string $view = 'filament.parent.widgets.family-budget-alert-widget';
 
     public static function canView(): bool

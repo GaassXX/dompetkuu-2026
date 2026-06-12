@@ -1,4 +1,5 @@
 <x-filament-widgets::widget>
+    <div style="min-height:280px;display:flex;flex-direction:column;justify-content:flex-start;overflow-y:auto;">
     <div style="display:flex;flex-direction:column;gap:8px;">
         @foreach($alerts as $alert)
         <div style="
@@ -38,5 +39,6 @@
             </span>
         </div>
         @endforeach
+    </div>
     </div>
 </x-filament-widgets::widget>

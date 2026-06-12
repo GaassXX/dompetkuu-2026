@@ -19,6 +19,7 @@ class IncomeResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-arrow-trending-up';
     protected static ?string $navigationLabel = 'Pemasukan';
     protected static ?string $modelLabel = 'Pemasukan';
+    protected static ?string $pluralModelLabel = 'Pemasukan';
     protected static ?int $navigationSort = 1;
     protected static bool $shouldCheckPolicyExistence = false;
 
@@ -127,8 +128,11 @@ class IncomeResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->where('user_id', auth()->id());
+    return parent::getEloquentQuery()
+        ->where('user_id', auth()->id())
+        // Memaksa pengurutan di level database (Query Builder)
+        ->orderBy('date', 'desc')
+        ->orderBy('created_at', 'desc');
     }
 
     public static function canAccess(): bool

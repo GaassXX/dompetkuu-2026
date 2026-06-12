@@ -45,3 +45,10 @@ Route::post('/logout', function () {
     request()->session()->regenerateToken();
     return redirect('/login');
 })->name('logout');
+
+use App\Http\Controllers\Auth\RegisterController;
+
+Route::get('/register', [RegisterController::class, 'show'])->name('auth.register');
+Route::post('/register', [RegisterController::class, 'register'])->name('auth.register.post');
+Route::get('/forgot-password', [ForgotPasswordController::class, 'show'])->name('password.request');
+Route::get('/privacy', [PrivacyController::class, 'show'])->name('privacy');

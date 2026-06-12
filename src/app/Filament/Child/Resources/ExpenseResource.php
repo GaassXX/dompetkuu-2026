@@ -17,11 +17,12 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ExpenseResource extends Resource
 {
-    protected static ?string $model                    = Expense::class;
-    protected static ?string $navigationIcon           = 'heroicon-o-arrow-trending-down';
-    protected static ?string $navigationLabel          = 'Pengeluaran';
-    protected static ?string $modelLabel               = 'Pengeluaran';
-    protected static ?int    $navigationSort           = 2;
+    protected static ?string $model                      = Expense::class;
+    protected static ?string $navigationIcon             = 'heroicon-o-arrow-trending-down';
+    protected static ?string $navigationLabel            = 'Pengeluaran';
+    protected static ?string $modelLabel                 = 'Pengeluaran';
+    protected static ?string $pluralModelLabel           = 'Pemasukan';
+    protected static ?int    $navigationSort             = 2;
     protected static bool    $shouldCheckPolicyExistence = false;
 
     public static function form(Form $form): Form
@@ -40,9 +41,8 @@ class ExpenseResource extends Resource
                     )
                     ->required()
                     ->preload()
-                    ->live() // ✅ trigger re-render saat berubah
+                    ->live()
                     ->afterStateUpdated(function (Get $get, Set $set) {
-                        // trigger validasi ulang saat kategori berubah
                         $set('_budget_check', now()->timestamp);
                     }),
 
@@ -51,12 +51,11 @@ class ExpenseResource extends Resource
                     ->numeric()
                     ->prefix('Rp')
                     ->required()
-                    ->live(debounce: 500) // ✅ trigger re-render saat amount berubah
+                    ->live(debounce: 500)
                     ->afterStateUpdated(function (Get $get, Set $set) {
                         $set('_budget_check', now()->timestamp);
                     }),
 
-                // ✅ Hidden field untuk trigger re-render
                 Forms\Components\Hidden::make('_budget_check'),
 
                 Forms\Components\DatePicker::make('date')
@@ -79,12 +78,12 @@ class ExpenseResource extends Resource
                     ->nullable()
                     ->columnSpanFull(),
 
-                // ✅ Budget warning — muncul kalau ada budget & amount diisi
                 Forms\Components\Placeholder::make('budget_warning')
                     ->label('')
                     ->content(function (Get $get) {
-                        $categoryId = $get('category_id');
-                        $amount     = (float) ($get('amount') ?? 0);
+                        $categoryId    = $get('category_id');
+                        $amount        = (float) ($get('amount') ?? 0);
+                        $isIndependent = auth()->user()->is_independent;
 
                         if (!$categoryId || $amount <= 0) {
                             return null;
@@ -99,7 +98,6 @@ class ExpenseResource extends Resource
                             return null;
                         }
 
-                        // Hitung total pengeluaran bulan/minggu ini
                         $query = Expense::where('user_id', $userId)
                             ->where('category_id', $categoryId)
                             ->where('status', 'approved');
@@ -122,6 +120,11 @@ class ExpenseResource extends Resource
 
                         if ($afterThis > $limit) {
                             $over = number_format($afterThis - $limit, 0, ',', '.');
+
+                            $overMsg = $isIndependent
+                                ? 'Pengeluaran ini melebihi batas anggaran sebesar Rp ' . $over . '. Pertimbangkan untuk menyesuaikan anggaran Anda.'
+                                : 'Melebihi Rp ' . $over . ' — kamu masih bisa submit, tapi perlu persetujuan orang tua.';
+
                             return new \Illuminate\Support\HtmlString("
                                 <div style='background:#FCEBEB;border:1px solid #F7C1C1;border-radius:8px;padding:10px 14px;'>
                                     <p style='color:#A32D2D;font-weight:500;font-size:13px;margin:0;'>
@@ -132,7 +135,7 @@ class ExpenseResource extends Resource
                                         dari limit Rp " . number_format($limit, 0, ',', '.') . " (" . number_format($pct, 1) . "%)
                                     </p>
                                     <p style='color:#791F1F;font-size:12px;margin:2px 0 0;'>
-                                        Melebihi Rp {$over} — kamu masih bisa submit, tapi perlu persetujuan orang tua.
+                                        {$overMsg}
                                     </p>
                                 </div>
                             ");
@@ -203,9 +206,9 @@ class ExpenseResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->visible(fn($record) => $record->status === 'pending'),
+                    ->visible(fn($record) => $record->status === 'pending' || is_null($record->parent_id)),
                 Tables\Actions\DeleteAction::make()
-                    ->visible(fn($record) => $record->status === 'pending'),
+                    ->visible(fn($record) => $record->status === 'pending' || is_null($record->parent_id)),
             ])
             ->bulkActions([]);
     }
@@ -213,7 +216,9 @@ class ExpenseResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->where('user_id', auth()->id());
+            ->where('user_id', auth()->id())
+            ->orderBy('date', 'desc')
+            ->orderBy('created_at', 'desc');
     }
 
     public static function canAccess(): bool
@@ -228,12 +233,14 @@ class ExpenseResource extends Resource
 
     public static function canEdit($record): bool
     {
-        return auth()->user()->hasRole('child') && $record->status === 'pending';
+        // Izinkan edit jika berstatus pending ATAU jika itu akun mandiri (parent_id kosong)
+        return auth()->user()->hasRole('child') && ($record->status === 'pending' || is_null($record->parent_id));
     }
 
     public static function canDelete($record): bool
     {
-        return auth()->user()->hasRole('child') && $record->status === 'pending';
+        // Izinkan hapus jika berstatus pending ATAU jika itu akun mandiri (parent_id kosong)
+        return auth()->user()->hasRole('child') && ($record->status === 'pending' || is_null($record->parent_id));
     }
 
     public static function getPages(): array
@@ -244,4 +251,5 @@ class ExpenseResource extends Resource
             'edit'   => Pages\EditExpense::route('/{record}/edit'),
         ];
     }
+    
 }

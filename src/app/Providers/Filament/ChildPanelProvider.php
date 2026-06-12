@@ -6,7 +6,6 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -26,19 +25,37 @@ class ChildPanelProvider extends PanelProvider
             ->id('child')
             ->path('child')
             ->login()
-            ->profile()
+            ->passwordReset()
+            ->profile(\App\Filament\Pages\Auth\EditProfile::class)
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('15s')
+
+            // ✅ Branding sidebar
+            ->brandName('Dompetkuu')
+            ->brandLogo(null)
+
+            // ✅ Info tipe akun di sidebar bawah
+            ->renderHook(
+                'panels::sidebar.footer',
+                fn() => view('filament.child.sidebar-footer')
+            )
+
+            // ✅ User menu lebih informatif
             ->userMenuItems([
-                \Filament\Navigation\MenuItem::make()
-                    ->label(fn() => auth()->user()?->name . ' · Anak')
+                \Filament\Navigation\MenuItem::make('profile')
+                    ->label('Edit Profil')
                     ->icon('heroicon-o-user-circle')
-                    ->url('#'),
+                    ->url(fn() => \App\Filament\Pages\Auth\EditProfile::getUrl()),
             ])
+
             ->colors([
                 'primary' => Color::Orange,
             ])
             ->font('Montserrat')
             ->maxContentWidth(MaxWidth::SevenExtraLarge)
             ->sidebarCollapsibleOnDesktop()
+            ->databaseNotifications()          // ← tambah ini
+            ->databaseNotificationsPolling('30s')
             ->discoverResources(in: app_path('Filament/Child/Resources'), for: 'App\\Filament\\Child\\Resources')
             ->discoverPages(in: app_path('Filament/Child/Pages'), for: 'App\\Filament\\Child\\Pages')
             ->discoverWidgets(in: app_path('Filament/Child/Widgets'), for: 'App\\Filament\\Child\\Widgets')
@@ -46,9 +63,10 @@ class ChildPanelProvider extends PanelProvider
                 \App\Filament\Child\Pages\Dashboard::class,
             ])
             ->widgets([
-                \App\Filament\Child\Widgets\BudgetAlertWidget::class, //
+                \App\Filament\Child\Widgets\BudgetAlertWidget::class,
                 \App\Filament\Child\Widgets\ChildStatsOverview::class,
                 \App\Filament\Child\Widgets\ChildFinanceChart::class,
+                \App\Filament\Child\Widgets\ExpenseByCategory::class,
                 \App\Filament\Child\Widgets\LatestTransactions::class,
                 \App\Filament\Child\Widgets\BudgetOverview::class,
             ])

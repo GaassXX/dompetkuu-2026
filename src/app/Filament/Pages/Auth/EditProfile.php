@@ -2,167 +2,136 @@
 
 namespace App\Filament\Pages\Auth;
 
-use Carbon\Carbon;
+
+use App\Models\Expense;
+use App\Models\Income;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Notifications\Notification;
 use Filament\Pages\Auth\EditProfile as BaseEditProfile;
 use Filament\Support\Enums\Alignment;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Jenssegers\Agent\Agent;
+use Filament\Support\Enums\MaxWidth;
 
 class EditProfile extends BaseEditProfile
 {
-    public static function getSessions(): array
-    {
-        if (config(key: 'session.driver') !== 'database') {
-            return [];
-        }
-
-        return collect(
-            value: DB::connection(config(key: 'session.connection'))->table(table: config(key: 'session.table', default: 'sessions'))
-                ->where(column: 'user_id', operator: Auth::user()->getAuthIdentifier())
-                ->latest(column: 'last_activity')
-                ->get()
-        )->map(callback: function ($session): object {
-            $agent = self::createAgent($session);
-
-            return (object) [
-                'device' => [
-                    'browser' => $agent->browser(),
-                    'desktop' => $agent->isDesktop(),
-                    'mobile' => $agent->isMobile(),
-                    'tablet' => $agent->isTablet(),
-                    'platform' => $agent->platform(),
-                ],
-                'ip_address' => $session->ip_address,
-                'is_current_device' => $session->id === request()->session()->getId(),
-                'last_active' => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
-            ];
-        })->toArray();
-    }
-
-    public static function logoutOtherBrowserSessions($password): void
-    {
-        if (! Hash::check($password, Auth::user()->password)) {
-            Notification::make()
-                ->danger()
-                ->title(__('filament-edit-profile::default.incorrect_password'))
-                ->send();
-
-            return;
-        }
-
-        Auth::guard()->logoutOtherDevices($password);
-
-        request()->session()->put([
-            'password_hash_' . Auth::getDefaultDriver() => Auth::user()->getAuthPassword(),
-        ]);
-
-        self::deleteOtherSessionRecords();
-
-        Notification::make()
-            ->success()
-            ->title(__('filament-edit-profile::default.browser_sessions_logout_success_notification'))
-            ->send();
-    }
-
-    protected static function createAgent(mixed $session)
-    {
-        return tap(
-            value: new Agent,
-            callback: fn ($agent) => $agent->setUserAgent(userAgent: $session->user_agent)
-        );
-    }
-
-    protected static function deleteOtherSessionRecords()
-    {
-        if (config('session.driver') !== 'database') {
-            return;
-        }
-
-        DB::connection(config('session.connection'))->table(config('session.table', 'sessions'))
-            ->where('user_id', Auth::user()->getAuthIdentifier())
-            ->where('id', '!=', request()->session()->getId())
-            ->delete();
-    }
-
     public function form(Form $form): Form
     {
+        $user        = auth()->user();
+        $accountType = match(true) {
+            $user->hasRole('parent')  => '👨‍👩‍👧 Orang Tua',
+            $user->is_independent     => '👤 Akun Pribadi',
+            $user->parent_id !== null => '🧒 Anggota Keluarga',
+            default                   => '👤 Child',
+        };
+
+        $totalTx = Income::where('user_id', $user->id)->whereMonth('date', now()->month)->count()
+                 + Expense::where('user_id', $user->id)->whereMonth('date', now()->month)->count();
+
+        $totalIncome = Income::where('user_id', $user->id)
+            ->whereMonth('date', now()->month)->whereYear('date', now()->year)
+            ->where('status', 'approved')->sum('amount');
+
         return $form
             ->schema([
-                Forms\Components\Grid::make('')
+
+                // ===== FOTO: 3 kolom =====
+                Forms\Components\Section::make('Foto Profil')
                     ->schema([
                         Forms\Components\FileUpload::make('avatar_url')
-                            ->label('Avatar')
+                            ->label('')
                             ->directory('avatars')
                             ->image()
-                            ->panelAspectRatio('5:4')
+                            ->panelAspectRatio('1:1')
                             ->panelLayout('integrated')
-                            ->inlineLabel(false)
-                            ->optimize('webp'),
+                            ->optimize('webp')
+                            ->helperText('JPG atau PNG. Maksimal 2MB.'),
                     ])
-                    ->columnSpan(2)
-                    ->columns(1),
-                Forms\Components\Fieldset::make('Details')
+                    ->columnSpan(3),
+
+                // ===== TENGAH: 6 kolom =====
+                Forms\Components\Group::make()
                     ->schema([
-                        $this->getNameFormComponent()
-                            ->inlineLabel(false)
-                            ->columnSpan(2),
-                        $this->getEmailFormComponent()
-                            ->inlineLabel(false)
-                            ->columnSpan(2),
-                        Forms\Components\TextInput::make('Current password')
-                            ->label('Current Password')
-                            ->password()
-                            ->required()
-                            ->currentPassword()
-                            ->revealable()
-                            ->inlineLabel(false)
-                            ->columnSpan(2),
-                        $this->getPasswordFormComponent()
-                            ->inlineLabel(false),
-                        $this->getPasswordConfirmationFormComponent()
-                            ->inlineLabel(false)
-                            ->visible(true),
+                        Forms\Components\Section::make('Informasi Dasar')
+                            ->schema([
+                                $this->getNameFormComponent()
+                                    ->label('Nama Lengkap')
+                                    ->inlineLabel(false),
+                                $this->getEmailFormComponent()
+                                    ->label('Email')
+                                    ->inlineLabel(false),
+                            ])
+                            ->columns(2),
+
+                        Forms\Components\Section::make('Ganti Password')
+                            ->description('Kosongkan jika tidak ingin mengubah password')
+                            ->schema([
+                                Forms\Components\TextInput::make('current_password')
+                                    ->label('Password Lama')
+                                    ->password()
+                                    ->revealable()
+                                    ->inlineLabel(false)
+                                    ->columnSpanFull()
+                                    ->required(false)
+                                    ->requiredWith('password')
+                                    ->rule('current_password')
+                                    ->dehydrated(false),
+
+                                $this->getPasswordFormComponent()
+                                    ->label('Password Baru')
+                                    ->inlineLabel(false)
+                                    ->required(false)
+                                    ->live(debounce: 500)
+                                    ->dehydrated(fn ($state) => filled($state)),
+
+                                $this->getPasswordConfirmationFormComponent()
+                                    ->label('Konfirmasi Password')
+                                    ->inlineLabel(false)
+                                    ->required(false)
+                                    ->requiredWith('password')
+                                    ->dehydrated(false),
+                            ])
+                            ->columns(2),
                     ])
-                    ->columnSpan(4)
-                    ->columns(2),
-                Forms\Components\Section::make(__('Browser Sessions '))
-                    ->description(__('Manage and log out your active sessions on other browsers and devices. '))
+                    ->columnSpan(6),
+
+                // ===== KANAN: 3 kolom =====
+                Forms\Components\Section::make('Detail Akun')
                     ->schema([
-                        Forms\Components\ViewField::make('browserSessions')
-                            ->hiddenLabel()
-                            ->view('filament-edit-profile::forms.components.browser-sessions')
-                            ->viewData(['data' => self::getSessions()])
-                            ->columnSpan(1),
-                        Forms\Components\Actions::make([
-                            Forms\Components\Actions\Action::make('deleteBrowserSessions')
-                                ->label(__('filament-edit-profile::default.browser_sessions_log_out'))
-                                ->requiresConfirmation()
-                                ->modalHeading(__('filament-edit-profile::default.browser_sessions_log_out'))
-                                ->modalDescription(__('filament-edit-profile::default.browser_sessions_confirm_pass'))
-                                ->modalSubmitActionLabel(__('filament-edit-profile::default.browser_sessions_log_out'))
-                                ->form([
-                                    Forms\Components\TextInput::make('password')
-                                        ->password()
-                                        ->revealable()
-                                        ->label(__('filament-edit-profile::default.password'))
-                                        ->required(),
-                                ])
-                                ->action(function (array $data) {
-                                    self::logoutOtherBrowserSessions($data['password']);
-                                })
-                                ->modalWidth('2xl'),
-                        ]),
-                    ]),
-            ])->columns(6);
+                        Forms\Components\Placeholder::make('account_type')
+                            ->label('Tipe Akun')
+                            ->content($accountType),
+
+                        Forms\Components\Placeholder::make('joined_at')
+                            ->label('Tanggal Bergabung')
+                            ->content(fn() => auth()->user()->created_at?->translatedFormat('d M Y')),
+
+                        Forms\Components\Placeholder::make('total_tx')
+                            ->label('Total Pendapatan Bulan Ini')
+                            ->content(new \Illuminate\Support\HtmlString("
+                                <div style='display:flex;align-items:center;gap:8px;margin-top:4px;'>
+                                    <div style='width:32px;height:32px;border-radius:50%;background:var(--color-primary-100);
+                                                display:flex;align-items:center;justify-content:center;flex-shrink:0;'>
+                                        <svg style='width:16px;height:16px;' fill='none' stroke='var(--color-primary-600)' viewBox='0 0 24 24'>
+                                            <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'/>
+                                        </svg>
+                                    </div>
+                                    <span style='font-size:18px;font-weight:700;color:var(--color-primary-600);'>
+                                        Rp " . number_format($totalIncome, 0, ',', '.') . "
+                                    </span>
+                                </div>
+                                <p style='font-size:12px;color:var(--color-text-secondary);margin-top:6px;'>{$totalTx} transaksi bulan ini</p>
+                            ")),
+                    ])
+                    ->columnSpan(3),
+
+            ])->columns(12);
     }
 
     public function getFormActionsAlignment(): string|Alignment
     {
         return Alignment::End;
+    }
+    public function getMaxWidth(): MaxWidth | string | null
+    {
+    return \Filament\Support\Enums\MaxWidth::FiveExtraLarge;
     }
 }

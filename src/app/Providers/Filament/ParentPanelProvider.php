@@ -26,7 +26,18 @@ class ParentPanelProvider extends PanelProvider
             ->id('parent')
             ->path('parent')
             ->login()
-            ->profile()
+            ->registration(\App\Filament\Parent\Auth\Register::class)
+            ->passwordReset()
+            ->profile(\App\Filament\Pages\Auth\EditProfile::class)
+
+            ->brandName('Dompetkuu')
+            ->brandLogo(null)
+
+            ->renderHook(
+                'panels::sidebar.footer',
+                fn() => view('filament.parent.sidebar-footer')
+            )
+
             ->userMenuItems([
                     \Filament\Navigation\MenuItem::make()
                         ->label(fn() => auth()->user()?->name . ' · Orang Tua')
@@ -39,7 +50,13 @@ class ParentPanelProvider extends PanelProvider
             ->font('Montserrat')
             ->maxContentWidth(MaxWidth::SevenExtraLarge)
             ->sidebarCollapsibleOnDesktop()
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('5s')
             ->discoverResources(in: app_path('Filament/Parent/Resources'), for: 'App\\Filament\\Parent\\Resources')
+            // ->resources([
+            //     \App\Filament\Parent\Resources\FamilyMemberResource::class, // ✅ tambah ini
+            //     \App\Filament\Parent\Resources\SavingResource::class, // ✅ tambah ini
+            // ])
             ->discoverPages(in: app_path('Filament/Parent/Pages'), for: 'App\\Filament\\Parent\\Pages')
             ->discoverWidgets(in: app_path('Filament/Parent/Widgets'), for: 'App\\Filament\\Parent\\Widgets')
             ->pages([
@@ -48,6 +65,7 @@ class ParentPanelProvider extends PanelProvider
             ->widgets([
                 \App\Filament\Parent\Widgets\ParentStatsOverview::class,
                 \App\Filament\Parent\Widgets\FamilyFinanceChart::class,
+                \App\Filament\Parent\Widgets\FamilyExpenseByCategory::class,
                 \App\Filament\Parent\Widgets\FamilyBudgetAlertWidget::class,
                 \App\Filament\Parent\Widgets\PendingApprovalWidget::class,
                 \App\Filament\Parent\Widgets\ParentLatestTransactions::class,

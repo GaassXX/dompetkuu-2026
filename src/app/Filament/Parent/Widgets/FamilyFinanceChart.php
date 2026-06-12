@@ -11,7 +11,12 @@ class FamilyFinanceChart extends ChartWidget
 {
     protected static string  $view            = 'filament.parent.widgets.family-finance-chart';
     protected static ?string $heading         = 'Arus Keuangan Keluarga';
-    protected static ?int    $sort            = 2;
+    protected static ?int $sort = 2; // Baris kedua, sebelah kiri
+
+    public function getColumnSpan(): int | string | array
+    {
+    return 7;
+    }
     protected static ?string $maxHeight       = '300px';
     protected static ?string $pollingInterval = null;
 
@@ -42,7 +47,7 @@ class FamilyFinanceChart extends ChartWidget
     protected function getData(): array
     {
         $duration = (int) $this->durationFilter;
-        $months   = collect(range($duration - 1, 0))->map(fn($i) => now()->subMonths($i));
+        $months   = collect(range($duration - 1, 0))->map(fn($i) => now()->startOfMonth()->subMonths($i));
         $labels   = $months->map(fn($m) => $m->translatedFormat('M Y'))->toArray();
         $userIds  = $this->getUserIds();
 
@@ -67,18 +72,24 @@ class FamilyFinanceChart extends ChartWidget
                 [
                     'label'           => 'Pemasukan',
                     'data'            => $incomes,
-                    'backgroundColor' => 'rgba(34, 197, 94, 0.8)',
                     'borderColor'     => 'rgb(34, 197, 94)',
-                    'borderWidth'     => 0,
-                    'borderRadius'    => 6,
+                    'backgroundColor' => 'rgba(34, 197, 94, 0.1)',
+                    'fill'            => true,
+                    'tension'         => 0.4,
+                    'pointRadius'     => 4,
+                    'pointBackgroundColor' => 'rgb(34, 197, 94)',
+                    'borderWidth'     => 2,
                 ],
                 [
                     'label'           => 'Pengeluaran',
                     'data'            => $expenses,
-                    'backgroundColor' => 'rgba(239, 68, 68, 0.8)',
                     'borderColor'     => 'rgb(239, 68, 68)',
-                    'borderWidth'     => 0,
-                    'borderRadius'    => 6,
+                    'backgroundColor' => 'rgba(239, 68, 68, 0.1)',
+                    'fill'            => true,
+                    'tension'         => 0.4,
+                    'pointRadius'     => 4,
+                    'pointBackgroundColor' => 'rgb(239, 68, 68)',
+                    'borderWidth'     => 2,
                 ],
             ],
             'labels' => $labels,
@@ -108,6 +119,6 @@ class FamilyFinanceChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'bar';
+        return 'line';
     }
 }

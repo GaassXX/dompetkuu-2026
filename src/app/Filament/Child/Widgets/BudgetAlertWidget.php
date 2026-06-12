@@ -8,6 +8,7 @@ use Filament\Widgets\Widget;
 class BudgetAlertWidget extends Widget
 {
     protected static ?int $sort = 0; // ✅ Tampil paling atas
+    protected static ?string $maxHeight = '300px';
     protected static string $view = 'filament.child.widgets.budget-alert-widget';
 
     // ✅ Sembunyikan widget jika tidak ada alert

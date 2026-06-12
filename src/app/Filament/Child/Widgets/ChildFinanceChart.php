@@ -29,7 +29,7 @@ class ChildFinanceChart extends ChartWidget
     {
         $userId   = auth()->id();
         $duration = (int) ($this->filter ?? '3'); // ✅ baca $this->filter
-        $months   = collect(range($duration - 1, 0))->map(fn($i) => now()->subMonths($i));
+        $months   = collect(range($duration - 1, 0))->map(fn($i) => now()->startOfMonth()->subMonths($i));
         $labels   = $months->map(fn($m) => $m->translatedFormat('M Y'))->toArray();
 
         $incomes = $months->map(fn($m) =>
@@ -53,18 +53,24 @@ class ChildFinanceChart extends ChartWidget
                 [
                     'label'           => 'Pemasukan',
                     'data'            => $incomes,
-                    'backgroundColor' => 'rgba(34, 197, 94, 0.8)',
                     'borderColor'     => 'rgb(34, 197, 94)',
-                    'borderWidth'     => 0,
-                    'borderRadius'    => 6,
+                    'backgroundColor' => 'rgba(34, 197, 94, 0.1)',
+                    'fill'            => true,
+                    'tension'         => 0.4,
+                    'pointRadius'     => 4,
+                    'pointBackgroundColor' => 'rgb(34, 197, 94)',
+                    'borderWidth'     => 2,
                 ],
                 [
                     'label'           => 'Pengeluaran',
                     'data'            => $expenses,
-                    'backgroundColor' => 'rgba(239, 68, 68, 0.8)',
                     'borderColor'     => 'rgb(239, 68, 68)',
-                    'borderWidth'     => 0,
-                    'borderRadius'    => 6,
+                    'backgroundColor' => 'rgba(239, 68, 68, 0.1)',
+                    'fill'            => true,
+                    'tension'         => 0.4,
+                    'pointRadius'     => 4,
+                    'pointBackgroundColor' => 'rgb(239, 68, 68)',
+                    'borderWidth'     => 2,
                 ],
             ],
             'labels' => $labels,
@@ -81,6 +87,6 @@ class ChildFinanceChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'bar';
+        return 'line';
     }
 }

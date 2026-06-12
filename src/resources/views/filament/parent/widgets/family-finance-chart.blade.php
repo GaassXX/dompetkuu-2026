@@ -1,10 +1,9 @@
-cat > resources/views/filament/parent/widgets/family-finance-chart.blade.php << 'BLADE'
 <x-filament-widgets::widget class="fi-wi-chart">
     <x-filament::section>
 
         <x-slot name="heading">
             <div style="display:flex;align-items:center;justify-content:space-between;width:100%;flex-wrap:wrap;gap:8px;">
-                <span style="font-size:14px;font-weight:500;">Arus Keuangan Keluarga</span>
+                <p style="font-size:14px;font-weight:600;margin:0;">Arus Keuangan Keluarga</p>
                 <div style="display:flex;gap:8px;align-items:center;">
                     <select wire:model.live="durationFilter"
                         style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid var(--color-border-tertiary);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer;">
@@ -45,7 +44,7 @@ cat > resources/views/filament/parent/widgets/family-finance-chart.blade.php << 
                         if (!canvas) return;
                         const existing = Chart.getChart(canvas);
                         if (existing) existing.destroy();
-                        this.chart = new Chart(canvas.getContext('2d'), { type: 'bar', data: raw, options: this.chartOptions });
+                        this.chart = new Chart(canvas.getContext('2d'), { type: 'line', data: raw, options: this.chartOptions });
                     };
                     window.addEventListener('familyChartUpdate', this.handler);
                 },
@@ -67,7 +66,7 @@ cat > resources/views/filament/parent/widgets/family-finance-chart.blade.php << 
                     if (!canvas) return;
                     const existing = Chart.getChart(canvas);
                     if (existing) existing.destroy();
-                    this.chart = new Chart(canvas.getContext('2d'), { type: 'bar', data: data, options: this.chartOptions });
+                    this.chart = new Chart(canvas.getContext('2d'), { type: 'line', data: data, options: this.chartOptions });
                 }
             }"
         >
@@ -78,4 +77,3 @@ cat > resources/views/filament/parent/widgets/family-finance-chart.blade.php << 
 
     </x-filament::section>
 </x-filament-widgets::widget>
-

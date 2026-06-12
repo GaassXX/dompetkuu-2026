@@ -3,7 +3,14 @@
 
         <x-slot name="heading">
             <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
-                <span>Transaksi Terbaru</span>
+                {{-- Container untuk Judul dan Sub-judul --}}
+                <div style="display:flex;flex-direction:column;">
+                    <span style="font-size:14px;font-weight:600;">Transaksi Terbaru</span>
+                    <span style="font-size:11px;color:var(--color-text-secondary);font-weight:400;margin-top:2px;">
+                        Aktivitas hari ini
+                    </span>
+                </div>
+
                 <a href="{{ route('filament.child.pages.transaction-view') }}"
                    style="font-size:12px;color:var(--color-primary-500);text-decoration:none;font-weight:400;">
                     Lihat semua →
@@ -11,6 +18,7 @@
             </div>
         </x-slot>
 
+        <div style="min-height:280px;display:flex;flex-direction:column;justify-content:flex-start;overflow-y:auto;">
         <div style="display:flex;flex-direction:column;gap:8px;">
             @forelse($transactions as $tx)
             <div style="display:flex;align-items:center;justify-content:space-between;
@@ -77,6 +85,7 @@
                 </a>
             </div>
             @endforelse
+        </div>
         </div>
 
     </x-filament::section>

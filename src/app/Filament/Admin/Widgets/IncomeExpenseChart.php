@@ -14,7 +14,7 @@ class IncomeExpenseChart extends ChartWidget
 
     protected function getData(): array
     {
-        $months = collect(range(5, 0))->map(fn($i) => now()->subMonths($i));
+        $months = collect(range(5, 0))->map(fn($i) => now()->startOfMonth()->subMonths($i));
 
         $labels = $months->map(fn($m) => $m->translatedFormat('M Y'))->toArray();
 

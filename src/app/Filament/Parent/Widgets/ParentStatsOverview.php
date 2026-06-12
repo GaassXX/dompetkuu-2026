@@ -56,19 +56,19 @@ class ParentStatsOverview extends BaseWidget
         $familyChart   = $this->getMonthlyData(Income::class, $allIds);
 
         return [
-            Stat::make('Pemasukan Saya', 'Rp ' . number_format($myIncome, 0, ',', '.'))
+            Stat::make('Pemasukan', 'Rp ' . number_format($myIncome, 0, ',', '.'))
                 ->description('Bulan ' . now()->translatedFormat('F Y'))
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
                 ->chart($myIncomeChart),
 
-            Stat::make('Pengeluaran Saya', 'Rp ' . number_format($myExpense, 0, ',', '.'))
+            Stat::make('Pengeluaran', 'Rp ' . number_format($myExpense, 0, ',', '.'))
                 ->description('Bulan ' . now()->translatedFormat('F Y'))
                 ->descriptionIcon('heroicon-m-arrow-trending-down')
                 ->color('danger')
                 ->chart($myExpenseChart),
 
-            Stat::make('Saldo Saya', 'Rp ' . number_format($mySaldo, 0, ',', '.'))
+            Stat::make('Saldo Bersih', 'Rp ' . number_format($mySaldo, 0, ',', '.'))
                 ->description('Pemasukan - Pengeluaran')
                 ->descriptionIcon('heroicon-m-wallet')
                 ->color($mySaldo >= 0 ? 'success' : 'danger')
@@ -87,8 +87,8 @@ class ParentStatsOverview extends BaseWidget
     {
         return collect(range(5, 0))
             ->map(fn($i) => (float) $model::whereIn('user_id', $userIds)
-                ->whereMonth('date', now()->subMonths($i)->month)
-                ->whereYear('date', now()->subMonths($i)->year)
+                ->whereMonth('date', now()->startOfMonth()->subMonths($i)->month)
+                ->whereYear('date', now()->startOfMonth()->subMonths($i)->year)
                 ->where('status', 'approved')
                 ->sum('amount')
             )->toArray();

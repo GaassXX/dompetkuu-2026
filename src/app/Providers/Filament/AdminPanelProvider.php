@@ -34,6 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->spa()
             ->login()
+            ->passwordReset()
             ->profile()
             ->userMenuItems([
                 \Filament\Navigation\MenuItem::make()
@@ -61,7 +62,7 @@ class AdminPanelProvider extends PanelProvider
                 \Awcodes\Overlook\Widgets\OverlookWidget::class,
                 \App\Filament\Admin\Widgets\StatsOverview::class,
                 \App\Filament\Admin\Widgets\IncomeExpenseChart::class,
-                
+
 
 
             ])

@@ -16,10 +16,12 @@ use Illuminate\Database\Eloquent\Builder;
 class BudgetResource extends Resource
 {
     protected static ?string $model = Budget::class;
-    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $navigationIcon = 'heroicon-o-wallet';
     protected static ?string $navigationLabel = 'Anggaran';
     protected static ?string $modelLabel = 'Anggaran';
-    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationGroup = 'Kelola';
+    protected static ?string $pluralModelLabel = 'Daftar Anggaran';
+    protected static ?int $navigationSort = 4;
     protected static bool $shouldCheckPolicyExistence = false;
 
     public static function form(Form $form): Form
@@ -27,8 +29,11 @@ class BudgetResource extends Resource
         return $form->schema([
             Forms\Components\Section::make()->schema([
                 Forms\Components\Select::make('user_id')
-                    ->label('Anak')
+                    // 1. MENGUBAH LABEL AGAR LEBIH UMUM
+                    ->label('Anggota Keluarga')
+                    // 2. LOGIKA BARU: Mengambil ID Anak DAN ID Orang Tua itu sendiri
                     ->options(fn() => User::where('parent_id', auth()->id())
+                        ->orWhere('id', auth()->id()) // <-- Menambahkan Akun Orang tua ke dalam pilihan
                         ->whereNotNull('name')
                         ->pluck('name', 'id')
                         ->toArray()
@@ -70,7 +75,7 @@ class BudgetResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('Anak')
+                    ->label('Nama') // <-- Mengubah label kolom dari "Anak" menjadi "Nama"
                     ->sortable()
                     ->searchable(),
 
@@ -113,12 +118,15 @@ class BudgetResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $childIds = User::where('parent_id', auth()->id())
+        // 3. LOGIKA BARU: Izinkan database menampilkan anggaran milik anak DAN milik orang tua itu sendiri
+        $allowedUserIds = User::where('parent_id', auth()->id())
             ->pluck('id')
             ->toArray();
 
+        $allowedUserIds[] = auth()->id(); // <-- Masukkan ID orang tua ke dalam daftar query index
+
         return parent::getEloquentQuery()
-            ->whereIn('user_id', $childIds);
+            ->whereIn('user_id', $allowedUserIds);
     }
 
     public static function canAccess(): bool
@@ -127,20 +135,19 @@ class BudgetResource extends Resource
     }
 
     public static function canCreate(): bool
-{
-    return auth()->user()->hasRole('parent');
-}
+    {
+        return auth()->user()->hasRole('parent');
+    }
 
-public static function canEdit($record): bool
-{
-    return auth()->user()->hasRole('parent');
-}
+    public static function canEdit($record): bool
+    {
+        return auth()->user()->hasRole('parent');
+    }
 
-public static function canDelete($record): bool
-{
-    return auth()->user()->hasRole('parent');
-}
-
+    public static function canDelete($record): bool
+    {
+        return auth()->user()->hasRole('parent');
+    }
 
     public static function getPages(): array
     {

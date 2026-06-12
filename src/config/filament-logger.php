@@ -16,6 +16,8 @@ return [
 
         'exclude' => [
             // App\Filament\Resources\UserResource::class,
+            \App\Filament\Parent\Resources\FamilyMemberResource::class,
+            \App\Filament\Parent\Resources\SavingResource::class,
         ],
         'cluster' => null,
         'navigation_group' => 'Administration',
