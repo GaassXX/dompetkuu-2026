@@ -3,126 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DompetKu — Daftar</title>
+    <title>dompettkuu — Daftar</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { font-family: 'Montserrat', sans-serif; }
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-        }
-        body {
-            background: linear-gradient(135deg, #e8f5f0 0%, #f0f7ff 50%, #e8f5f0 100%);
-        }
+        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #f7f9f8; }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+        .animate-float-slow { animation: float 5s ease-in-out infinite; animation-delay:.6s; }
+        .blob { position:absolute; border-radius:9999px; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+<body class="min-h-screen">
+    <div class="max-w-7xl mx-auto px-6 py-8 lg:py-10">
 
-    {{-- Background blobs --}}
-    <div class="fixed top-0 right-0 w-72 h-72 rounded-full pointer-events-none"
-         style="background:radial-gradient(circle, rgba(134,239,172,0.4), transparent 70%);transform:translate(20%,-20%);"></div>
-    <div class="fixed bottom-0 left-0 w-64 h-64 rounded-full pointer-events-none"
-         style="background:radial-gradient(circle, rgba(134,239,172,0.3), transparent 70%);transform:translate(-20%,20%);"></div>
-
-    {{-- Card --}}
-    <div class="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden flex relative z-10">
-
-        {{-- Left Panel --}}
-        <div class="hidden lg:flex lg:w-[42%] p-8 flex-col justify-between relative overflow-hidden"
-             style="background: linear-gradient(160deg, #052e16 0%, #064e3b 45%, #065f46 75%, #166534 100%);">
-
-            {{-- Decorative blobs --}}
-            <div class="absolute top-1/3 right-0 w-48 h-48 rounded-full pointer-events-none"
-                 style="background:radial-gradient(circle, rgba(52,211,153,0.15), transparent 70%);transform:translateX(30%);"></div>
-            <div class="absolute bottom-1/4 left-0 w-40 h-40 rounded-full pointer-events-none"
-                 style="background:radial-gradient(circle, rgba(16,185,129,0.1), transparent 70%);"></div>
-
-            <div class="relative z-10">
-                {{-- Logo --}}
-                <div class="flex items-center gap-3 mb-8">
-                    <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg">
-                        <svg class="w-5 h-5 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M21 18v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v1h-9a2 2 0 00-2 2v8a2 2 0 002 2h9zm-9-2h10V8H12v8zm4-2.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
-                        </svg>
-                    </div>
-                    <span class="text-white text-lg font-bold">DompetKu</span>
-                </div>
-
-                {{-- Badge --}}
-                <div class="inline-flex items-center gap-2 mb-5">
-                    <div class="w-5 h-5 rounded-full bg-emerald-500/30 flex items-center justify-center">
-                        <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
-                    </div>
-                    <span class="text-emerald-400 text-xs font-bold tracking-widest uppercase">Personal Finance</span>
-                </div>
-
-                {{-- Headline --}}
-                <h1 class="text-white text-3xl font-extrabold leading-tight mb-3">
-                    Mulai Kelola<br>Keuangan Anda<br>
-                    <span class="text-emerald-400">Lebih Cerdas</span>
-                </h1>
-                <p class="text-white/60 text-xs leading-relaxed mb-6">
-                    Buat akun gratis dan mulai pantau keuangan keluarga Anda hari ini.
-                </p>
-
-                {{-- Account Types Info --}}
-                <div class="space-y-2">
-                    <div class="bg-white/10 border border-white/10 rounded-xl p-3">
-                        <div class="flex items-center gap-2">
-                            <span class="text-lg">👨‍👩‍👧</span>
-                            <div>
-                                <p class="text-white font-bold text-xs">Orang Tua</p>
-                                <p class="text-white/50 text-xs mt-0.5">Kelola keuangan keluarga</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white/10 border border-white/10 rounded-xl p-3">
-                        <div class="flex items-center gap-2">
-                            <span class="text-lg">👤</span>
-                            <div>
-                                <p class="text-white font-bold text-xs">Pribadi</p>
-                                <p class="text-white/50 text-xs mt-0.5">Kelola keuangan pribadi</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-2 relative z-10">
-                <svg class="w-3 h-3 text-white/30" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
-                </svg>
-                <p class="text-white/30 text-xs">© {{ date('Y') }} DompetKu. All rights reserved.</p>
-            </div>
-        </div>
-
-        {{-- Right Panel --}}
-        <div class="w-full lg:w-[58%] p-6 lg:p-8 flex flex-col justify-center bg-white relative">
-
-            <div class="absolute top-0 right-0 w-32 h-32 rounded-full pointer-events-none"
-                 style="background:radial-gradient(circle, rgba(167,243,208,0.3), transparent 70%);transform:translate(30%,-30%);"></div>
-
-            <div class="max-w-sm mx-auto w-full">
-
-                {{-- Icon --}}
-                <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-3 animate-float shadow-sm">
-                    <svg class="w-7 h-7 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
+        {{-- Top bar --}}
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-2">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#059669,#10b981);">
+                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M21 18v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v1h-9a2 2 0 00-2 2v8a2 2 0 002 2h9zm-9-2h10V8H12v8zm4-2.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
                     </svg>
                 </div>
+                <span class="text-lg font-extrabold text-gray-800">dompet<span class="text-emerald-600">tkuu</span></span>
+            </div>
+            <a href="{{ Route::has('help') ? route('help') : '#' }}"
+               class="flex items-center gap-2 border border-gray-200 bg-white rounded-full px-4 py-2 text-xs font-semibold text-gray-600 shadow-sm hover:shadow transition">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 18v-6a9 9 0 0118 0v6"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3v5zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3v5z"/>
+                </svg>
+                Butuh bantuan?
+            </a>
+        </div>
 
-                <h2 class="text-lg font-bold text-gray-800 text-center mb-0.5">Buat Akun Baru</h2>
-                <p class="text-gray-400 text-xs text-center mb-4">Daftar gratis dan mulai sekarang</p>
+        <div class="grid lg:grid-cols-2 gap-10 items-start">
 
-                {{-- Error --}}
+            {{-- LEFT: form --}}
+            <div class="relative z-10 max-w-lg">
+
+                <h1 class="text-2xl lg:text-[1.85rem] font-extrabold text-gray-900 leading-snug mb-2">
+                    Buat akun baru di <span class="text-emerald-600">dompettkuu</span>
+                </h1>
+                <p class="text-gray-500 text-sm mb-6">
+                    Daftar sekarang dan nikmati berbagai kemudahan transaksi dalam satu aplikasi finansial yang cerdas.
+                </p>
+
                 @if($errors->any())
-                <div class="bg-red-50 border border-red-200 text-red-600 text-xs rounded-xl px-3 py-2 mb-3 flex items-center gap-2">
+                <div class="bg-red-50 border border-red-200 text-red-600 text-xs rounded-xl px-3.5 py-3 mb-5 flex items-center gap-2">
                     <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
                     </svg>
@@ -133,129 +62,184 @@
                 <form method="POST" action="{{ route('auth.register.post') }}">
                     @csrf
 
-                    {{-- Tipe Akun --}}
-                    <div class="mb-3">
-                        <label class="block text-xs font-semibold text-gray-700 mb-1.5">Daftar Sebagai</label>
-                        <div class="grid grid-cols-2 gap-2">
-                            <label class="cursor-pointer">
-                                <input type="radio" name="account_type" value="parent" class="sr-only peer"
-                                    {{ old('account_type') === 'parent' ? 'checked' : '' }}>
-                                <div class="peer-checked:border-emerald-500 peer-checked:bg-emerald-50 border-2 border-gray-200 rounded-xl p-2 text-center transition hover:border-emerald-300">
-                                    <p class="text-base mb-0.5">👨‍👩‍👧</p>
-                                    <p class="text-xs font-semibold text-gray-700">Orang Tua</p>
+                    {{-- Daftar sebagai --}}
+                    <label class="block text-sm font-semibold text-gray-700 mb-2.5">Daftar Sebagai</label>
+                    <div class="grid grid-cols-2 gap-3 mb-5">
+
+                        <label class="cursor-pointer block">
+                            <input type="radio" name="account_type" value="parent" class="sr-only peer"
+                                {{ old('account_type', 'parent') === 'parent' ? 'checked' : '' }}>
+                            <div class="relative flex items-center gap-3 border-2 border-gray-200 peer-checked:border-emerald-500 peer-checked:bg-emerald-50/60 rounded-2xl p-3 transition hover:border-emerald-300">
+                                <div class="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center absolute top-2 right-2 check-icon hidden">
+                                    <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
                                 </div>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input type="radio" name="account_type" value="independent" class="sr-only peer"
-                                    {{ old('account_type', 'independent') === 'independent' ? 'checked' : '' }}>
-                                <div class="peer-checked:border-emerald-500 peer-checked:bg-emerald-50 border-2 border-gray-200 rounded-xl p-2 text-center transition hover:border-emerald-300">
-                                    <p class="text-base mb-0.5">👤</p>
-                                    <p class="text-xs font-semibold text-gray-700">Pribadi</p>
+                                <div class="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#a7f3d0,#6ee7b7);">
+                                    <svg class="w-5.5 h-5.5 text-emerald-700" fill="currentColor" viewBox="0 0 24 24" style="width:22px;height:22px;">
+                                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                    </svg>
                                 </div>
-                            </label>
-                        </div>
-                        @error('account_type')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
+                                <div class="text-left">
+                                    <p class="text-sm font-bold text-gray-800 leading-tight">Orangtua</p>
+                                    <p class="text-[11px] text-gray-400 leading-tight">Kelola keuangan keluarga</p>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="cursor-pointer block">
+                            <input type="radio" name="account_type" value="independent" class="sr-only peer"
+                                {{ old('account_type') === 'independent' ? 'checked' : '' }}>
+                            <div class="relative flex items-center gap-3 border-2 border-gray-200 peer-checked:border-emerald-500 peer-checked:bg-emerald-50/60 rounded-2xl p-3 transition hover:border-emerald-300">
+                                <div class="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center absolute top-2 right-2 check-icon hidden">
+                                    <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                                </div>
+                                <div class="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#bae6fd,#7dd3fc);">
+                                    <svg class="text-sky-700" fill="currentColor" viewBox="0 0 24 24" style="width:22px;height:22px;">
+                                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                    </svg>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-sm font-bold text-gray-800 leading-tight">Pribadi</p>
+                                    <p class="text-[11px] text-gray-400 leading-tight">Transaksi harian praktis</p>
+                                </div>
+                            </div>
+                        </label>
                     </div>
+                    @error('account_type')<p class="text-red-500 text-xs -mt-3 mb-4">{{ $message }}</p>@enderror
 
                     {{-- Nama --}}
-                    <div class="mb-2.5">
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Lengkap</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                </svg>
-                            </div>
-                            <input type="text" name="name" value="{{ old('name') }}"
-                                placeholder="Nama lengkap"
-                                class="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 transition {{ $errors->has('name') ? 'border-red-400' : '' }}"
-                                required>
-                        </div>
-                        @error('name')<p class="text-red-500 text-xs mt-0.5">{{ $message }}</p>@enderror
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Nama Lengkap</label>
+                        <input type="text" name="name" value="{{ old('name') }}"
+                            placeholder="Masukkan nama lengkap"
+                            class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition {{ $errors->has('name') ? 'border-red-400' : '' }}"
+                            required autofocus>
+                        @error('name')<p class="text-red-500 text-xs mt-1.5">{{ $message }}</p>@enderror
                     </div>
 
                     {{-- Email --}}
-                    <div class="mb-2.5">
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Email</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                </svg>
-                            </div>
-                            <input type="email" name="email" value="{{ old('email') }}"
-                                placeholder="nama@gmail.com"
-                                class="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 transition {{ $errors->has('email') ? 'border-red-400' : '' }}"
-                                required>
-                        </div>
-                        @error('email')<p class="text-red-500 text-xs mt-0.5">{{ $message }}</p>@enderror
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
+                        <input type="email" name="email" value="{{ old('email') }}"
+                            placeholder="nama@email.com"
+                            class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition {{ $errors->has('email') ? 'border-red-400' : '' }}"
+                            required>
+                        @error('email')<p class="text-red-500 text-xs mt-1.5">{{ $message }}</p>@enderror
                     </div>
 
-                    {{-- Password --}}
-                    <div class="mb-2.5">
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Password</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                                </svg>
+                    {{-- Password & Konfirmasi --}}
+                    <div class="grid grid-cols-2 gap-3 mb-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Kata Sandi</label>
+                            <div class="relative">
+                                <input type="password" id="password" name="password" placeholder="Min 8 karakter"
+                                    class="w-full px-4 py-3 pr-9 bg-white border border-gray-200 rounded-xl text-sm placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition {{ $errors->has('password') ? 'border-red-400' : '' }}"
+                                    required>
+                                <button type="button" onclick="togglePass('password')" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                    <svg class="w-4 h-4 text-gray-300 hover:text-gray-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                </button>
                             </div>
-                            <input type="password" name="password" id="password"
-                                placeholder="Min 8 karakter"
-                                class="w-full pl-9 pr-10 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 transition {{ $errors->has('password') ? 'border-red-400' : '' }}"
-                                required>
-                            <button type="button" onclick="togglePass('password')"
-                                class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                <svg class="w-4 h-4 text-gray-300 hover:text-gray-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                </svg>
-                            </button>
+                            @error('password')<p class="text-red-500 text-xs mt-1.5">{{ $message }}</p>@enderror
                         </div>
-                        @error('password')<p class="text-red-500 text-xs mt-0.5">{{ $message }}</p>@enderror
-                    </div>
-
-                    {{-- Konfirmasi Password --}}
-                    <div class="mb-3">
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Konfirmasi Password</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                                </svg>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Konfirmasi Kata Sandi</label>
+                            <div class="relative">
+                                <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Ulangi sandi"
+                                    class="w-full px-4 py-3 pr-9 bg-white border border-gray-200 rounded-xl text-sm placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition"
+                                    required>
+                                <button type="button" onclick="togglePass('password_confirmation')" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                    <svg class="w-4 h-4 text-gray-300 hover:text-gray-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                </button>
                             </div>
-                            <input type="password" name="password_confirmation" id="password_confirmation"
-                                placeholder="Ulangi password"
-                                class="w-full pl-9 pr-10 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 transition"
-                                required>
-                            <button type="button" onclick="togglePass('password_confirmation')"
-                                class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                <svg class="w-4 h-4 text-gray-300 hover:text-gray-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                </svg>
-                            </button>
+                            @error('password_confirmation')<p class="text-red-500 text-xs mt-1.5">{{ $message }}</p>@enderror
                         </div>
-                        @error('password_confirmation')<p class="text-red-500 text-xs mt-0.5">{{ $message }}</p>@enderror
                     </div>
 
                     {{-- Submit --}}
                     <button type="submit"
-                        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition duration-200 text-sm shadow-lg">
-                        Buat Akun
+                        class="w-full text-white font-semibold py-3.5 rounded-xl transition duration-200 text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/30 hover:-translate-y-0.5"
+                        style="background: linear-gradient(135deg, #059669, #10b981);">
+                        Daftar Sekarang
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h11m5-4v8a2 2 0 01-2 2h-5"/>
+                        </svg>
                     </button>
                 </form>
 
-                {{-- Back to Login --}}
-                <p class="text-center text-gray-400 text-xs mt-3">
-                    Sudah punya akun?
-                    <a href="{{ route('auth.login') }}" class="text-emerald-600 font-semibold hover:underline">
-                        Masuk sekarang
-                    </a>
-                </p>
+                <div class="mt-5 bg-gray-50 border border-gray-100 rounded-2xl px-4 py-3.5 flex items-center justify-between">
+                    <span class="text-xs text-gray-500">
+                        Sudah punya akun?
+                        <a href="{{ route('auth.login') }}" class="text-emerald-600 font-bold hover:underline">Masuk di sini</a>
+                    </span>
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </div>
+            </div>
 
+            {{-- RIGHT: illustration --}}
+            <div class="hidden lg:flex relative h-[440px] items-center justify-center mt-2">
+                <div class="blob w-[360px] h-[360px]" style="background:radial-gradient(circle, rgba(16,185,129,0.10), transparent 70%); top:-10%; right:0;"></div>
+
+                <div class="relative z-10 w-full max-w-md rounded-3xl overflow-hidden shadow-xl" style="background: linear-gradient(160deg,#f1f5f3,#e9f3ef);">
+                    <div class="relative h-[300px] flex items-center justify-center px-8">
+
+                        <div class="absolute top-5 right-5 bg-white rounded-2xl shadow-lg px-3.5 py-2.5 flex items-center gap-2 animate-float z-20">
+                            <div class="w-7 h-7 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
+                                </svg>
+                            </div>
+                            <span class="text-[11px] font-bold text-gray-700">Cashback Hingga 50%</span>
+                        </div>
+
+                        <div class="absolute right-12 top-1/2 -translate-y-2 flex flex-col-reverse items-center z-10">
+                            @for ($i = 0; $i < 5; $i++)
+                            <div class="w-14 h-3.5 rounded-full -mb-1.5 border-2 border-amber-300" style="background: linear-gradient(180deg,#fde68a,#f59e0b);"></div>
+                            @endfor
+                        </div>
+
+                        <div class="absolute right-6 bottom-6 w-24 h-16 rounded-xl shadow-md bg-white border border-gray-100 rotate-6 z-0"></div>
+
+                        <div class="relative z-10 animate-float-slow">
+                            <div class="w-28 h-36 rounded-2xl shadow-2xl flex flex-col items-center justify-center gap-2 relative" style="background: linear-gradient(160deg,#065f46,#059669);">
+                                <svg class="w-9 h-9 text-white/90" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M21 18v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v1h-9a2 2 0 00-2 2v8a2 2 0 002 2h9zm-9-2h10V8H12v8zm4-2.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
+                                </svg>
+                                <div class="absolute top-1/2 -right-1.5 w-3 h-6 bg-amber-400 rounded-sm -translate-y-1/2 shadow"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="px-8 pb-6 -mt-4 relative z-20">
+                        <div class="bg-white rounded-2xl shadow-lg px-3.5 py-2.5 flex items-center gap-2.5 w-fit">
+                            <div class="w-8 h-8 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 14l-4-4 1.41-1.41L11 12.17l5.59-5.59L18 8l-7 7z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-gray-700 leading-tight">AMAN &amp; TERPERCAYA</p>
+                                <p class="text-[10px] text-gray-400 leading-tight">Lisensi BI Resmi</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Footer --}}
+        <div class="mt-12 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400 border-t border-gray-100 pt-6">
+            <p>© {{ date('Y') }} dompettkuu. Semua hak dilindungi.</p>
+            <div class="flex items-center gap-4">
+                <a href="{{ Route::has('privacy') ? route('privacy') : '#' }}" class="hover:text-emerald-600 transition">Privasi</a>
+                <span class="text-gray-200">•</span>
+                <a href="{{ Route::has('terms') ? route('terms') : '#' }}" class="hover:text-emerald-600 transition">Syarat & Ketentuan</a>
             </div>
         </div>
     </div>
@@ -265,6 +249,14 @@
             const input = document.getElementById(id);
             input.type = input.type === 'password' ? 'text' : 'password';
         }
+        function syncChecks() {
+            document.querySelectorAll('input[name="account_type"]').forEach(function (radio) {
+                const icon = radio.closest('label').querySelector('.check-icon');
+                icon.classList.toggle('hidden', !radio.checked);
+            });
+        }
+        document.querySelectorAll('input[name="account_type"]').forEach(r => r.addEventListener('change', syncChecks));
+        syncChecks();
     </script>
 </body>
 </html>

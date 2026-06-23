@@ -10,7 +10,7 @@
                         <option value="1">1 Bulan</option>
                         <option value="3">3 Bulan</option>
                         <option value="6">6 Bulan</option>
-                        <option value="12">12 Bulan</option>
+                        <option value="12">1 Tahun</option>
                     </select>
                     <select wire:model.live="filter"
                         style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid var(--color-border-tertiary);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer;">

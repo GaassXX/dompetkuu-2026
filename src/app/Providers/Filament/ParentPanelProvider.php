@@ -24,8 +24,9 @@ class ParentPanelProvider extends PanelProvider
     {
         return $panel
             ->id('parent')
+            ->default()
             ->path('parent')
-            ->login()
+            ->login(\App\Filament\Parent\Auth\Login::class)
             ->registration(\App\Filament\Parent\Auth\Register::class)
             ->passwordReset()
             ->profile(\App\Filament\Pages\Auth\EditProfile::class)
@@ -48,6 +49,7 @@ class ParentPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->font('Montserrat')
+            //->viteTheme('resources/css/filament/parent/theme.css')
             ->maxContentWidth(MaxWidth::SevenExtraLarge)
             ->sidebarCollapsibleOnDesktop()
             ->databaseNotifications()
@@ -72,6 +74,15 @@ class ParentPanelProvider extends PanelProvider
                 \App\Filament\Parent\Widgets\ChildSummaryWidget::class,
 
             ])
+            ->plugins([
+    \Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin::make()
+        ->slug('my-profile')
+        ->shouldRegisterNavigation(false)
+        ->shouldShowDeleteAccountForm(false)
+        ->shouldShowSanctumTokens(false)
+        ->shouldShowBrowserSessionsForm()
+        ->shouldShowAvatarForm(),
+    ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -83,6 +94,7 @@ class ParentPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->authGuard('web')
             ->authMiddleware([
                 Authenticate::class,
             ]);

@@ -12,6 +12,7 @@ class Category extends Model
         'name',
         'type',
         'is_global',
+        'is_active',
         'created_by'
     ];
 
@@ -19,6 +20,7 @@ class Category extends Model
     {
         return [
             'is_global' => 'boolean',
+            'is_active' => 'boolean',
         ];
     }
 

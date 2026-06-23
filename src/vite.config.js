@@ -13,6 +13,15 @@ export default defineConfig({
         }),
     ],
 
+     server: {
+        host: "0.0.0.0",
+        port: 5173,
+        cors: true,
+        hmr: {
+            host: "large-gorged-resurrect.ngrok-free.dev",
+        },
+    },
+
     // build: {
     //     chunkSizeWarningLimit: 500,
     //     cssCodeSplit: true,

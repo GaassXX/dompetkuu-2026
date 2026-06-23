@@ -98,7 +98,7 @@
 <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
     <div class="flex items-center justify-between mb-6">
         <h3 class="text-base font-semibold text-gray-900 dark:text-white">Target Tabungan Aktif</h3>
-        <a href="{{ \App\Filament\Parent\Resources\SavingResource::getUrl('all') }}"
+        <a href="{{ \App\Filament\Child\Resources\SavingResource::getUrl('all') }}"
            class="text-sm text-amber-500 hover:text-amber-600 font-medium">Lihat Semua →</a>
     </div>
 
@@ -174,7 +174,7 @@
                         <p style="font-size:12px;color:#9ca3af;">
                             Terkumpul: {{ $formatRupiah($saving->current_amount) }} / {{ $formatRupiah($saving->target_amount) }}
                         </p>
-                        <a href="{{ \App\Filament\Parent\Resources\SavingResource::getUrl('view', ['record' => $saving]) }}"
+                        <a href="{{ \App\Filament\Child\Resources\SavingResource::getUrl('view', ['record' => $saving]) }}"
                            style="display:inline-flex;align-items:center;gap:4px;padding:6px 12px;background:#fff;border:1px solid #e5e7eb;border-radius:8px;font-size:12px;font-weight:500;color:#374151;text-decoration:none;transition:all 0.2s;"
                            onmouseover="this.style.background='#fffbeb';this.style.borderColor='#fcd34d';this.style.color='#d97706';"
                            onmouseout="this.style.background='#fff';this.style.borderColor='#e5e7eb';this.style.color='#374151';">
@@ -196,7 +196,7 @@
                 </div>
                 <p style="font-size:14px;font-weight:500;color:#6b7280;">Belum ada tabungan aktif</p>
                 <p style="font-size:12px;color:#9ca3af;margin-top:4px;margin-bottom:16px;">Buat tabungan pertama Anda sekarang</p>
-                <a href="{{ \App\Filament\Parent\Resources\SavingResource::getUrl('create') }}"
+                <a href="{{ \App\Filament\Child\Resources\SavingResource::getUrl('create') }}"
                    style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:#f59e0b;color:#fff;font-size:14px;font-weight:500;border-radius:8px;text-decoration:none;">
                     <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>

@@ -17,7 +17,7 @@ class TransactionView extends Page
     protected static ?string $navigationIcon  = 'heroicon-o-arrow-path';
     protected static ?string $navigationLabel = 'Riwayat Transaksi';
     protected static ?string $title           = 'Riwayat Transaksi Anda';
-    protected static ?int    $navigationSort  = 4;
+    protected static ?int    $navigationSort  = 5;
     protected static string  $view            = 'filament.child.pages.transaction-view';
 
     // Filter properties

@@ -13,7 +13,10 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__ . '/../routes/api.php',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->web(append: [
+        \App\Http\Middleware\DetectDevice::class,
+    ]);
+    
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

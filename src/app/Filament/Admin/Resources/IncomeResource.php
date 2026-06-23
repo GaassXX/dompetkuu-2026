@@ -132,9 +132,9 @@ class IncomeResource extends Resource
     {
         $query = parent::getEloquentQuery();
 
-        if (auth()->user()->role === 'child') {
-            return $query->where('user_id', auth()->id());
-        }
+        if (in_array(auth()->user()->role, ['child', 'personal'])) {
+    return $query->where('user_id', auth()->id());
+    }
 
         return $query;
     }

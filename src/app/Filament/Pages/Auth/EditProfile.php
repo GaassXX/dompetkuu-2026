@@ -5,11 +5,16 @@ namespace App\Filament\Pages\Auth;
 
 use App\Models\Expense;
 use App\Models\Income;
+use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Pages\Auth\EditProfile as BaseEditProfile;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\MaxWidth;
+use Illuminate\Support\Str;
 
 class EditProfile extends BaseEditProfile
 {
@@ -90,6 +95,95 @@ class EditProfile extends BaseEditProfile
                                     ->dehydrated(false),
                             ])
                             ->columns(2),
+
+                        Forms\Components\Section::make('Koneksi Telegram')
+                            ->description('Hubungkan akun Anda dengan Bot Telegram untuk input transaksi cepat.')
+                            ->schema([
+                                Forms\Components\Placeholder::make('telegram_status')
+                                    ->label('Status')
+                                    ->content(function () use ($user) {
+                                        if ($user->telegram_chat_id) {
+                                            return new \Illuminate\Support\HtmlString(
+                                                "<span style='display:inline-flex;align-items:center;gap:6px;color:#16A34A;font-weight:600;font-size:13px;'>
+                                                    <span style='width:8px;height:8px;border-radius:50%;background:#16A34A;'></span>
+                                                    Terhubung
+                                                </span>"
+                                            );
+                                        }
+                                        if ($user->telegram_disconnected_at) {
+                                            return new \Illuminate\Support\HtmlString(
+                                                "<span style='display:inline-flex;align-items:center;gap:6px;color:#D97706;font-weight:600;font-size:13px;'>
+                                                    <span style='width:8px;height:8px;border-radius:50%;background:#D97706;'></span>
+                                                    Tidak Aktif
+                                                </span>"
+                                            );
+                                        }
+                                        return new \Illuminate\Support\HtmlString(
+                                            "<span style='display:inline-flex;align-items:center;gap:6px;color:#DC2626;font-weight:600;font-size:13px;'>
+                                                <span style='width:8px;height:8px;border-radius:50%;background:#DC2626;'></span>
+                                                Belum Terhubung
+                                            </span>"
+                                        );
+                                    }),
+
+                                Forms\Components\Placeholder::make('telegram_pair_code')
+                                    ->label('Kode Pairing Anda')
+                                    ->content(function () use ($user) {
+                                        return new \Illuminate\Support\HtmlString(
+                                            "<div style='display:flex;align-items:center;gap:10px;'>
+                                                <code style='font-size:16px;font-weight:700;padding:6px 14px;border-radius:8px;background:var(--color-background-secondary,#f3f4f6);letter-spacing:1px;'>
+                                                    {$user->telegram_pair_code}
+                                                </code>
+                                            </div>"
+                                        );
+                                    }),
+
+                                Actions::make([
+                                    Action::make('reset_telegram')
+                                        ->label('Putuskan Koneksi Telegram')
+                                        ->color('danger')
+                                        ->icon('heroicon-o-link-slash')
+                                        ->visible(fn () => auth()->user()->telegram_chat_id !== null)
+                                        ->requiresConfirmation()
+                                        ->modalHeading('Putuskan Koneksi Telegram?')
+                                        ->modalDescription('Bot Telegram akan terputus. Anda bisa menghubungkan kembali dengan kode pairing yang baru.')
+                                        ->action(function () {
+                                            $user = auth()->user();
+                                            do {
+                                                $code = 'TG-' . Str::upper(Str::random(6));
+                                            } while (User::where('telegram_pair_code', $code)->exists());
+
+                                            $user->update([
+                                                'telegram_chat_id' => null,
+                                                'telegram_disconnected_at' => now(),
+                                                'telegram_pair_code' => $code,
+                                            ]);
+
+                                            Notification::make()
+                                                ->title('Koneksi Telegram diputuskan')
+                                                ->body('Kode pairing baru telah dibuat. Gunakan kode baru untuk menghubungkan kembali.')
+                                                ->success()
+                                                ->send();
+
+                                            $this->redirect(request()->url());
+                                        }),
+                                ])
+                                    ->columnSpanFull(),
+
+                                Forms\Components\Placeholder::make('telegram_instructions')
+                                    ->label('Cara Menghubungkan')
+                                    ->content(new \Illuminate\Support\HtmlString(
+                                        "<ol style='font-size:13px;color:var(--color-text-secondary);line-height:1.8;margin:0;padding-left:18px;'>
+                                            <li>Buka Telegram, cari bot <strong>@dompettkuu_bot</strong></li>
+                                            <li>Tekan <strong>/Start</strong> lalu kirim pesan: <code>/connect KODE_ANDA</code></li>
+                                            <li>Setelah berhasil, status akan berubah jadi <strong>Terhubung</strong></li>
+                                            <li>Kirim transaksi contoh: <code>masuk 500000 gaji bulan mei</code></li>
+                                        </ol>"
+                                    ))
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(2)
+                            ->columnSpanFull(),
                     ])
                     ->columnSpan(6),
 

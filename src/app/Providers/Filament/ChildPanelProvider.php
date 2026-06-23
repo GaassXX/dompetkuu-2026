@@ -70,6 +70,15 @@ class ChildPanelProvider extends PanelProvider
                 \App\Filament\Child\Widgets\LatestTransactions::class,
                 \App\Filament\Child\Widgets\BudgetOverview::class,
             ])
+            ->plugins([
+    \Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin::make()
+        ->slug('my-profile')
+        ->shouldRegisterNavigation(false)
+        ->shouldShowDeleteAccountForm(false)
+        ->shouldShowSanctumTokens(false)
+        ->shouldShowBrowserSessionsForm()
+        ->shouldShowAvatarForm(),
+])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

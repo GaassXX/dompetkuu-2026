@@ -19,6 +19,17 @@ export default {
         "./vendor/filament/**/*.blade.php",
     ],
     darkMode: "class",
+    theme: {
+        extend: {
+            colors: {
+                danger: colors.red,
+                success: colors.green,
+                warning: colors.amber,
+                info: colors.cyan,
+                primary: colors.blue,
+            },
+        },
+    },
     plugins: [
         require("@tailwindcss/forms"),
         require("@tailwindcss/typography"),

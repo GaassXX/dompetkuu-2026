@@ -196,7 +196,7 @@
                         <td style="padding:14px 0; text-align: right; white-space: nowrap;">
                             <div style="display:inline-flex; gap:6px; align-items:center; justify-content:flex-end;">
                                 {{-- Edit Button --}}
-                                <a href="{{ \App\Filament\Parent\Resources\ExpenseResource::getUrl('edit', ['record' => $expense]) }}"
+                                <a href="{{ \App\Filament\Child\Resources\ExpenseResource::getUrl('edit', ['record' => $expense]) }}"
                                    title="Ubah"
                                    style="display:inline-flex;padding:6px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;color:#6b7280;text-decoration:none;"
                                    onmouseover="this.style.background='#fef3c7';this.style.borderColor='#fcd34d';"

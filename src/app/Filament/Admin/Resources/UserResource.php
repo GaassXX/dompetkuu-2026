@@ -82,13 +82,16 @@ class UserResource extends Resource
                             ->password(),
                     ]),
 
-                Forms\Components\Section::make('Roles')
+                Forms\Components\Section::make('Roles & Status')
                     ->schema([
                         Forms\Components\Select::make('roles')
                             ->required()
                             ->multiple()
                             ->relationship('roles', 'name')
                             ->label('Roles'),
+                        Forms\Components\Toggle::make('is_active')
+                            ->label('Akun Aktif')
+                            ->default(true),
                     ])
                     ->columns(1),
 
@@ -116,6 +119,10 @@ class UserResource extends Resource
                     ->badge()
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label('Aktif')
+                    ->boolean()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->date()
                     ->sortable()
@@ -123,7 +130,23 @@ class UserResource extends Resource
 
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('is_active')
+                    ->label('Status Akun')
+                    ->options([
+                        true => 'Aktif',
+                        false => 'Nonaktif',
+                    ]),
+                Tables\Filters\SelectFilter::make('role')
+                    ->label('Role')
+                    ->options([
+                        'admin' => 'Admin',
+                        'parent' => 'Parent',
+                        'child' => 'Child',
+                        'personal' => 'Personal',
+                    ]),
+                Tables\Filters\SelectFilter::make('roles.name')
+                    ->label('Spatie Role')
+                    ->relationship('roles', 'name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

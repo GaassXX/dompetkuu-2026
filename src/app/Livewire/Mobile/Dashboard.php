@@ -1,0 +1,98 @@
+<?php
+
+namespace App\Livewire\Mobile;
+
+use App\Models\Transaction;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
+
+class Dashboard extends Component
+{
+    public float $totalSaldo = 0;
+    public float $pemasukanBulanIni = 0;
+    public float $pengeluaranBulanIni = 0;
+    public array $chart7Hari = [];
+    public $transaksiTerakhir = [];
+
+    public function mount(): void
+    {
+        $this->loadSummary();
+        $this->loadChart();
+        $this->loadTransaksiTerakhir();
+    }
+
+    protected function loadSummary(): void
+    {
+        $userId = Auth::id();
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
+        $rows = Transaction::query()
+            ->whereRaw('user_id = ?', [$userId])
+            ->where('status', 'approved')
+            ->get();
+
+        $this->totalSaldo = $rows->where('type', 'Pemasukan')->sum('amount')
+            - $rows->where('type', 'Pengeluaran')->sum('amount');
+
+        $bulanIni = $rows->filter(
+            fn ($t) => Carbon::parse($t->date)->between($startOfMonth, $endOfMonth)
+        );
+
+        $this->pemasukanBulanIni = $bulanIni->where('type', 'Pemasukan')->sum('amount');
+        $this->pengeluaranBulanIni = $bulanIni->where('type', 'Pengeluaran')->sum('amount');
+    }
+
+   protected function loadChart(): void
+{
+    $userId = Auth::id();
+    $start = Carbon::now()->subDays(6)->startOfDay();
+
+    $rows = Transaction::query()
+        ->whereRaw('user_id = ?', [$userId])
+        ->where('status', 'approved')
+        ->where('date', '>=', $start->toDateString())
+        ->get()
+        ->groupBy(fn ($t) => Carbon::parse($t->date)->format('Y-m-d'));
+
+    $hariIndo = ['Sun' => 'Min', 'Mon' => 'Sen', 'Tue' => 'Sel', 'Wed' => 'Rab', 'Thu' => 'Kam', 'Fri' => 'Jum', 'Sat' => 'Sab'];
+
+    $result = [];
+    for ($i = 6; $i >= 0; $i--) {
+        $date = Carbon::now()->subDays($i);
+        $key = $date->format('Y-m-d');
+        $dayRows = $rows->get($key, collect());
+
+        $pemasukan = $dayRows->where('type', 'Pemasukan')->sum('amount');
+        $pengeluaran = $dayRows->where('type', 'Pengeluaran')->sum('amount');
+
+        $result[] = [
+            'label' => $hariIndo[$date->format('D')] ?? $date->format('D'),
+            'net'   => $pemasukan - $pengeluaran,
+            'total' => $pemasukan + $pengeluaran, // dipakai buat skala tinggi bar
+        ];
+    }
+
+    $this->chart7Hari = $result;
+}
+
+    protected function loadTransaksiTerakhir(): void
+    {
+        $userId = Auth::id();
+
+        $this->transaksiTerakhir = Transaction::query()
+            ->whereRaw('user_id = ?', [$userId])
+            ->where('status', 'approved')
+            ->orderByDesc('date')
+            ->orderByDesc('id')
+            ->limit(3)
+            ->get();
+    }
+
+    public function render()
+    {
+        return view('livewire.mobile.dashboard')
+            ->layout('layouts.mobile');
+    }
+}

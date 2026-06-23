@@ -26,9 +26,12 @@ class StatsOverview extends BaseWidget
 
         $saldo = $totalIncome - $totalExpense;
 
-        $totalUsers    = User::count();
-        $totalParents  = User::where('role', 'parent')->count();
-        $totalChildren = User::where('role', 'child')->count();
+        $totalUsers     = User::count();
+        $totalParents   = User::where('role', 'parent')->count();
+        $totalChildren  = User::where('role', 'child')->count();
+        $totalPersonal  = User::where('role', 'personal')->count();
+        $activeUsers    = User::where('is_active', true)->count();
+        $inactiveUsers  = User::where('is_active', false)->count();
 
         return [
             Stat::make('Pemasukan Bulan Ini', 'Rp ' . number_format($totalIncome, 0, ',', '.'))
@@ -47,9 +50,14 @@ class StatsOverview extends BaseWidget
                 ->color($saldo >= 0 ? 'success' : 'danger'),
 
             Stat::make('Total User', $totalUsers)
-                ->description("Parent: {$totalParents} | Anak: {$totalChildren}")
+                ->description('Parent: ' . $totalParents . ' · Child: ' . $totalChildren . ' · Personal: ' . $totalPersonal)
                 ->descriptionIcon('heroicon-m-users')
                 ->color('info'),
+
+            Stat::make('Akun Aktif', $activeUsers)
+                ->description('Nonaktif: ' . $inactiveUsers)
+                ->descriptionIcon('heroicon-m-check-badge')
+                ->color('success'),
         ];
     }
 }

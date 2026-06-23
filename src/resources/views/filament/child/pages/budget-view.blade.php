@@ -2,11 +2,20 @@
     <div class="space-y-4">
         @php
             $budgets = $this->getAllBudgets();
+            $isIndependent = auth()->user()->is_independent;
         @endphp
 
         @if($budgets->isEmpty())
             <div class="text-center py-12">
-                <p class="text-gray-400 text-sm">Belum ada anggaran yang diset orangtua</p>
+                @if($isIndependent)
+                    <p class="text-gray-400 text-sm mb-3">Anda belum membuat anggaran</p>
+                    <a href="{{ url('/child/budgets') }}"
+                       class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-500 text-white text-sm font-semibold hover:bg-primary-600 transition">
+                        + Buat Anggaran
+                    </a>
+                @else
+                    <p class="text-gray-400 text-sm">Belum ada anggaran yang diset orangtua</p>
+                @endif
             </div>
         @else
             <div class="grid grid-cols-1 gap-4">
@@ -49,6 +58,15 @@
                     </div>
                 </div>
                 @endforeach
+
+                @if($isIndependent)
+                <div class="text-center pt-2">
+                    <a href="{{ url('/child/budgets') }}"
+                       class="text-sm font-semibold text-primary-600 hover:underline">
+                        Kelola Anggaran →
+                    </a>
+                </div>
+                @endif
             </div>
         @endif
     </div>

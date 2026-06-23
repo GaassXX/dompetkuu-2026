@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Support\RoleRedirector;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,7 +12,7 @@ class LoginController extends Controller
     public function show()
     {
         if (Auth::check()) {
-            return $this->redirectByRole(Auth::user());
+            return RoleRedirector::to(Auth::user());
         }
 
         return view('auth.login');
@@ -19,28 +20,28 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email'    => 'required|email',
+        $request->validate([
+            'login'    => 'required',
             'password' => 'required',
         ]);
 
+        // Tentukan apakah input berupa email atau nomor HP
+        $loginField = filter_var($request->login, FILTER_VALIDATE_EMAIL)
+            ? 'email'
+            : 'phone'; // sesuaikan dengan nama kolom nomor HP di tabel users
+
+        $credentials = [
+            $loginField => $request->login,
+            'password'  => $request->password,
+        ];
+
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return $this->redirectByRole(Auth::user());
+            return RoleRedirector::to(Auth::user());
         }
 
         return back()
-            ->withErrors(['email' => 'Email atau password salah.'])
-            ->withInput($request->only('email'));
-    }
-
-    private function redirectByRole($user)
-    {
-        return match(true) {
-            $user->hasRole('super_admin'), $user->hasRole('admin') => redirect('/admin'),
-            $user->hasRole('parent') => redirect('/parent'),
-            $user->hasRole('child')  => redirect('/child'),
-            default                  => redirect('/'),
-        };
+            ->withErrors(['login' => 'Email/No. HP atau password salah.'])
+            ->withInput($request->only('login'));
     }
 }

@@ -39,6 +39,10 @@ class CategoryResource extends Resource
                     ->label('Global (semua user)')
                     ->default(false),
 
+                Forms\Components\Toggle::make('is_active')
+                    ->label('Aktif')
+                    ->default(true),
+
                 Forms\Components\Hidden::make('created_by')
                     ->default(fn() => auth()->id()),
             ]),
@@ -67,6 +71,11 @@ class CategoryResource extends Resource
                     ->label('Global')
                     ->boolean(),
 
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label('Aktif')
+                    ->boolean()
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('creator.name')
                     ->label('Dibuat Oleh')
                     ->sortable(),
@@ -82,6 +91,12 @@ class CategoryResource extends Resource
                     ->options([
                         'income' => 'Pemasukan',
                         'expense' => 'Pengeluaran',
+                    ]),
+                Tables\Filters\SelectFilter::make('is_active')
+                    ->label('Status')
+                    ->options([
+                        true => 'Aktif',
+                        false => 'Nonaktif',
                     ]),
             ])
             ->actions([

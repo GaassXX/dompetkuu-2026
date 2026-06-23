@@ -2,8 +2,8 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Support\Assets\Css;
-use Filament\Support\Facades\FilamentAsset;
+use App\Filament\Pages\Auth\EditProfile;
+use Awcodes\LightSwitch\Enums\Alignment;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -33,52 +33,70 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->spa()
+
             ->login()
             ->passwordReset()
-            ->profile()
-            ->userMenuItems([
-                \Filament\Navigation\MenuItem::make()
-                    ->label(fn() => auth()->user()?->name . ' · Admin')
-                    ->icon('heroicon-o-user-circle')
-                    ->url('#'),
-            ])
-            ->passwordReset()
-            ->profile(\App\Filament\Pages\Auth\EditProfile::class, isSimple: false)
+
+            ->profile(EditProfile::class, isSimple: false)
+
             ->defaultThemeMode(ThemeMode::Light)
             ->font('Montserrat')
+
             ->colors([
                 'primary' => Color::Blue,
+                'success' => Color::Emerald,
+                'danger' => Color::Rose,
+                'warning' => Color::Orange,
+                'info' => Color::Sky,
+                'gray' => Color::Zinc,
             ])
+
             ->maxContentWidth(MaxWidth::SevenExtraLarge)
+
             ->sidebarCollapsibleOnDesktop()
-            ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
-            ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
+
+            ->discoverResources(
+                in: app_path('Filament/Admin/Resources'),
+                for: 'App\\Filament\\Admin\\Resources',
+            )
+
+            ->discoverPages(
+                in: app_path('Filament/Admin/Pages'),
+                for: 'App\\Filament\\Admin\\Pages',
+            )
+
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverClusters(in: app_path('Filament/Admin/Clusters'), for: 'App\\Filament\\Admin\\Clusters')
-            ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
+
+            ->discoverClusters(
+                in: app_path('Filament/Admin/Clusters'),
+                for: 'App\\Filament\\Admin\\Clusters',
+            )
+
+            ->discoverWidgets(
+                in: app_path('Filament/Admin/Widgets'),
+                for: 'App\\Filament\\Admin\\Widgets',
+            )
+
             ->widgets([
                 \Awcodes\Overlook\Widgets\OverlookWidget::class,
                 \App\Filament\Admin\Widgets\StatsOverview::class,
                 \App\Filament\Admin\Widgets\IncomeExpenseChart::class,
-
-
-
             ])
+
             ->navigationGroups([
                 NavigationGroup::make()
                     ->label('Administration'),
             ])
+
             ->userMenuItems([
                 'profile' => MenuItem::make()
-                    ->label(fn () => auth()->user()->name)
+                    ->label(fn () => auth()->user()?->name ?? 'Profile')
                     ->url(fn (): string => EditProfilePage::getUrl())
                     ->icon('heroicon-m-user-circle'),
-                // 'profile' => \Filament\Navigation\MenuItem::make()
-                //     ->label(fn () => auth()->user()->name)
-                //     ->icon('heroicon-m-user-circle'),
             ])
+
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
                     ->gridColumns([
@@ -94,24 +112,33 @@ class AdminPanelProvider extends PanelProvider
                         'default' => 2,
                         'lg' => 3,
                     ]),
+
                 \Hasnayeen\Themes\ThemesPlugin::make(),
-                \Njxqlus\FilamentProgressbar\FilamentProgressbarPlugin::make()->color('#29b'),
+
+                \Njxqlus\FilamentProgressbar\FilamentProgressbarPlugin::make()
+                    ->color('#29b'),
+
                 \DiogoGPinto\AuthUIEnhancer\AuthUIEnhancerPlugin::make()
                     ->showEmptyPanelOnMobile(false)
                     ->formPanelPosition('right')
                     ->formPanelWidth('40%')
                     ->emptyPanelBackgroundImageOpacity('70%')
-                    ->emptyPanelBackgroundImageUrl('https://picsum.photos/seed/picsum/1260/750.webp/?blur=1'),
+                    ->emptyPanelBackgroundImageUrl(
+                        'https://picsum.photos/seed/picsum/1260/750.webp/?blur=1'
+                    ),
+
                 \Awcodes\LightSwitch\LightSwitchPlugin::make()
-                    ->position(\Awcodes\LightSwitch\Enums\Alignment::BottomCenter)
+                    ->position(Alignment::BottomCenter)
                     ->enabledOn([
                         'auth.login',
                         'auth.password',
                     ]),
+
                 \Awcodes\Overlook\OverlookPlugin::make()
                     ->includes([
                         \App\Filament\Admin\Resources\UserResource::class,
                     ]),
+
                 \Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin::make()
                     ->slug('my-profile')
                     ->setTitle('My Profile')
@@ -121,10 +148,13 @@ class AdminPanelProvider extends PanelProvider
                     ->shouldShowBrowserSessionsForm()
                     ->shouldShowAvatarForm(),
             ])
+
             ->resources([
                 config('filament-logger.activity_resource'),
             ])
+
             ->viteTheme('resources/css/filament/admin/theme.css')
+
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -137,6 +167,7 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
                 \Hasnayeen\Themes\Http\Middleware\SetTheme::class,
             ])
+
             ->authMiddleware([
                 Authenticate::class,
             ]);
