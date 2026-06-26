@@ -116,6 +116,18 @@ Route::get('/forgot-password', [ForgotPasswordController::class, 'show'])
 
 Route::post('/forgot-password', [ForgotPasswordController::class, 'send'])
     ->name('password.email');
+
+// Reset Password
+Route::get('/reset-password/{token}', [App\Http\Controllers\Auth\ResetPasswordController::class, 'show'])
+    ->name('password.reset');
+Route::post('/reset-password', [App\Http\Controllers\Auth\ResetPasswordController::class, 'reset'])
+    ->name('password.update');
+
+// Google OAuth
+Route::get('/auth/google', [App\Http\Controllers\Auth\SocialAuthController::class, 'redirectToGoogle'])
+    ->name('auth.google');
+Route::get('/auth/google/callback', [App\Http\Controllers\Auth\SocialAuthController::class, 'handleGoogleCallback']);
+
 //Route::get('/privacy', [PrivacyController::class, 'show'])
     //->name('privacy');
 

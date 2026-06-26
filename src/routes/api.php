@@ -9,7 +9,34 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/test', fn() => 'API OK');
+/*
+|--------------------------------------------------------------------------
+| API DompetKuu
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('auth')->group(function () {
+    Route::post('/login',   App\Http\Controllers\Api\Auth\LoginController::class);
+    Route::post('/register', App\Http\Controllers\Api\Auth\RegisterController::class);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout',  [App\Http\Controllers\Api\Auth\LoginController::class, 'logout']);
+        Route::get('/me',       App\Http\Controllers\Api\Auth\ProfileController::class);
+    });
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/transactions',          [App\Http\Controllers\Api\TransactionController::class, 'index']);
+    Route::post('/transactions',         [App\Http\Controllers\Api\TransactionController::class, 'store']);
+    Route::get('/transactions/{id}',     [App\Http\Controllers\Api\TransactionController::class, 'show']);
+    Route::put('/transactions/{id}',     [App\Http\Controllers\Api\TransactionController::class, 'update']);
+    Route::delete('/transactions/{id}',  [App\Http\Controllers\Api\TransactionController::class, 'destroy']);
+
+    Route::get('/categories',            [App\Http\Controllers\Api\CategoryController::class, 'index']);
+
+    Route::get('/dashboard/stats',       [App\Http\Controllers\Api\DashboardController::class, 'stats']);
+    Route::get('/dashboard/chart',       [App\Http\Controllers\Api\DashboardController::class, 'chart']);
+});
 
 Route::post('/telegram/webhook', function (Request $request) {
 

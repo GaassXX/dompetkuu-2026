@@ -80,9 +80,7 @@ class AdminPanelProvider extends PanelProvider
             )
 
             ->widgets([
-                \Awcodes\Overlook\Widgets\OverlookWidget::class,
                 \App\Filament\Admin\Widgets\StatsOverview::class,
-                \App\Filament\Admin\Widgets\IncomeExpenseChart::class,
             ])
 
             ->navigationGroups([
@@ -132,11 +130,6 @@ class AdminPanelProvider extends PanelProvider
                     ->enabledOn([
                         'auth.login',
                         'auth.password',
-                    ]),
-
-                \Awcodes\Overlook\OverlookPlugin::make()
-                    ->includes([
-                        \App\Filament\Admin\Resources\UserResource::class,
                     ]),
 
                 \Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin::make()

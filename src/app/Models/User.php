@@ -11,10 +11,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser, HasAvatar
 {
+    use HasApiTokens;
     use HasFactory;
     use HasRoles;
     use Notifiable;
@@ -31,6 +33,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'telegram_chat_id',
         'telegram_pair_code',
         'telegram_disconnected_at',
+        'google_id',
     ];
 
     protected $hidden = [

@@ -13,17 +13,31 @@ class RegisterController extends Controller
 {
     public function show()
     {
-        return view('auth.register');
+        return view('auth.register', [
+            'google_name'  => session('google_name'),
+            'google_email' => session('google_email'),
+            'google_id'    => session('google_id'),
+        ]);
     }
 
     public function register(Request $request)
     {
-        $request->validate([
+        session()->forget(['google_name', 'google_email', 'google_id']);
+        $rules = [
             'name'         => 'required|string|max:255',
             'email'        => 'required|email|unique:users,email',
-            'password'     => 'required|min:8|confirmed',
             'account_type' => 'required|in:parent,independent',
-        ]);
+        ];
+
+        $isFromGoogle = $request->filled('google_id');
+
+        if ($isFromGoogle) {
+            $rules['google_id'] = 'required|string|unique:users,google_id';
+        } else {
+            $rules['password'] = 'required|min:8|confirmed';
+        }
+
+        $request->validate($rules);
 
         $isParent      = $request->account_type === 'parent';
         $isIndependent = $request->account_type === 'independent';
@@ -45,11 +59,12 @@ class RegisterController extends Controller
         $user = User::create([
             'name'           => $request->name,
             'email'          => $request->email,
-            'password'       => Hash::make($request->password),
+            'password'       => $isFromGoogle ? Hash::make(uniqid()) : Hash::make($request->password),
             'role'           => $roleLabel,
             'is_independent' => $isIndependent,
             'parent_id'      => null,
             'is_active'      => true,
+            'google_id'      => $isFromGoogle ? $request->google_id : null,
         ]);
 
         $user->assignRole($spatieRole);
