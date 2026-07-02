@@ -25,7 +25,7 @@ class RegisterController extends Controller
         $user = User::create([
             'name'            => $validated['name'],
             'email'           => $validated['email'],
-            'password'        => bcrypt($validated['password']),
+            'password'        => $validated['password'],
             'role'            => $validated['account_type'] === 'parent' ? 'parent' : ($isIndependent ? 'personal' : 'child'),
             'is_independent'  => $isIndependent,
         ]);

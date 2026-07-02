@@ -59,7 +59,7 @@ class RegisterController extends Controller
         $user = User::create([
             'name'           => $request->name,
             'email'          => $request->email,
-            'password'       => $isFromGoogle ? Hash::make(uniqid()) : Hash::make($request->password),
+            'password'       => $isFromGoogle ? Hash::make(uniqid()) : $request->password,
             'role'           => $roleLabel,
             'is_independent' => $isIndependent,
             'parent_id'      => null,

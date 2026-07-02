@@ -6,7 +6,6 @@ use Livewire\Livewire;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\PrivacyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,12 +36,6 @@ Livewire::setScriptRoute(function ($handle) {
 Route::get('/', function () {
     if (Auth::check()) {
         $user = Auth::user();
-        $isMobile = session('is_mobile_device', false);
-
-        // Semua role, kalau device mobile/tablet → arahkan ke UI mobile
-        if ($isMobile) {
-            return redirect()->route('mobile.dashboard');
-        }
 
         return match (true) {
             $user->hasRole('super_admin'),
@@ -50,16 +43,16 @@ Route::get('/', function () {
 
             $user->hasRole('parent') => redirect('/parent'),
 
-            $user->is_independent => redirect('/personal'),
+            $user->is_independent     => redirect('/personal'),
 
-            $user->hasRole('child') => redirect('/child'),
+            $user->hasRole('child')   => redirect('/child'),
 
-            default => redirect('/login'),
+            default                   => redirect('/login'),
         };
     }
 
-    return redirect('/login');
-});
+    return view('landing');
+})->name('landing');
 
 /*
 |--------------------------------------------------------------------------
@@ -128,8 +121,8 @@ Route::get('/auth/google', [App\Http\Controllers\Auth\SocialAuthController::clas
     ->name('auth.google');
 Route::get('/auth/google/callback', [App\Http\Controllers\Auth\SocialAuthController::class, 'handleGoogleCallback']);
 
-//Route::get('/privacy', [PrivacyController::class, 'show'])
-    //->name('privacy');
+Route::view('/privacy', 'privacy')->name('privacy');
+Route::view('/terms', 'terms')->name('terms');
 
 /*
 |--------------------------------------------------------------------------

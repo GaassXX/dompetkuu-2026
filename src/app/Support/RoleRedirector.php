@@ -14,11 +14,6 @@ class RoleRedirector
      */
     public static function to(User $user): RedirectResponse
     {
-        // Device mobile/tablet → semua role diarahkan ke UI mobile
-        if (session('is_mobile_device', false)) {
-            return redirect()->route('mobile.dashboard');
-        }
-
         return match (true) {
             $user->hasRole('super_admin'),
             $user->hasRole('admin')   => redirect('/admin'),

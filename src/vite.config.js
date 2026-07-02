@@ -8,19 +8,11 @@ export default defineConfig({
                 "resources/js/app.js",
                 `resources/css/filament/admin/theme.css`,
                 `resources/css/filament/parent/theme.css`,
+                `resources/css/filament/child/theme.css`,
             ],
             refresh: true,
         }),
     ],
-
-     server: {
-        host: "0.0.0.0",
-        port: 5173,
-        cors: true,
-        hmr: {
-            host: "large-gorged-resurrect.ngrok-free.dev",
-        },
-    },
 
     // build: {
     //     chunkSizeWarningLimit: 500,

@@ -9,14 +9,15 @@ use Illuminate\Support\Collection;
 
 class BudgetOverview extends Widget
 {
-    protected static ?int $sort = 5;
+    protected static ?int $sort = 4;
     protected static ?string $maxHeight = '300px';
     protected static string $view = 'filament.child.widgets.budget-overview';
 
-    public function getColumnSpan(): int | string | array
-    {
-        return 5;
-    }
+    protected int|string|array $columnSpan = [
+        'default' => 1,
+        'md'      => 1,
+        'lg'      => 3,
+    ];
 
     public bool $showAll = false;
 

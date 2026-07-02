@@ -10,7 +10,7 @@
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
 
         body {
-            background: #f7f9f8;
+            background: #FFFDF9;
         }
 
         .animate-float {
@@ -41,12 +41,12 @@
         <div class="flex items-center justify-between mb-12 lg:mb-16">
             <div class="flex items-center gap-2">
                 <div class="w-9 h-9 rounded-xl flex items-center justify-center"
-                     style="background:linear-gradient(135deg,#059669,#10b981);">
+                     style="background:linear-gradient(135deg,#0D9488,#0F766E);">
                     <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M21 18v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v1h-9a2 2 0 00-2 2v8a2 2 0 002 2h9zm-9-2h10V8H12v8zm4-2.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
                     </svg>
                 </div>
-                <span class="text-lg font-extrabold text-gray-800">dompet<span class="text-emerald-600">tkuu</span></span>
+                <span class="text-lg font-extrabold text-[#1E293B]">dompet<span class="text-[#0D9488]">tkuu</span></span>
             </div>
 
             <a href="{{ Route::has('help') ? route('help') : '#' }}"
@@ -67,7 +67,7 @@
 
                 <h1 class="text-3xl lg:text-[2.5rem] font-extrabold text-gray-900 leading-tight mb-3">
                     Selamat datang<br>kembali di
-                    <span class="text-emerald-600">dompettkuu</span>
+                    <span class="text-[#0D9488]">dompettkuu</span>
                 </h1>
                 <p class="text-gray-500 text-sm mb-8">
                     Masuk untuk mengelola keuanganmu dengan lebih mudah, cepat, dan aman.
@@ -92,7 +92,7 @@
                         <div class="relative">
                             <input type="text" name="login" value="{{ old('login') }}"
                                 placeholder="Masukkan email atau nomor HP"
-                                class="w-full pl-4 pr-11 py-3.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition {{ $errors->has('login') ? 'border-red-400' : '' }}"
+                                class="w-full pl-4 pr-11 py-3.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition {{ $errors->has('login') ? 'border-red-400' : '' }}"
                                 required autofocus>
                             <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none">
                                 <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,7 +109,7 @@
                         <div class="relative">
                             <input type="password" id="password" name="password"
                                 placeholder="Masukkan kata sandi"
-                                class="w-full pl-4 pr-11 py-3.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition {{ $errors->has('password') ? 'border-red-400' : '' }}"
+                                class="w-full pl-4 pr-11 py-3.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition {{ $errors->has('password') ? 'border-red-400' : '' }}"
                                 required>
                             <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center">
                                 <svg id="eyeIcon" class="w-4 h-4 text-gray-300 hover:text-gray-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,18 +124,18 @@
                     {{-- Remember & forgot --}}
                     <div class="flex items-center justify-between">
                         <label class="flex items-center gap-2 cursor-pointer select-none">
-                            <input type="checkbox" name="remember" class="w-4 h-4 rounded border-gray-300 text-emerald-500 focus:ring-emerald-400">
+                            <input type="checkbox" name="remember" class="w-4 h-4 rounded border-gray-300 text-teal-500 focus:ring-teal-400">
                             <span class="text-xs text-gray-500 font-medium">Ingat saya</span>
                         </label>
-                        <a href="{{ route('password.request') }}" class="text-xs text-emerald-600 font-semibold hover:underline">
+                        <a href="{{ route('password.request') }}" class="text-xs text-teal-600 font-semibold hover:underline">
                             Lupa kata sandi?
                         </a>
                     </div>
 
                     {{-- Submit --}}
                     <button type="submit"
-                        class="w-full text-white font-semibold py-3.5 rounded-xl transition duration-200 text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/30 hover:-translate-y-0.5"
-                        style="background: linear-gradient(135deg, #059669, #10b981);">
+                        class="w-full text-white font-semibold py-3.5 rounded-xl transition duration-200 text-sm flex items-center justify-center gap-2 shadow-lg shadow-teal-600/20 hover:shadow-teal-600/30 hover:-translate-y-0.5"
+                        style="background: linear-gradient(135deg, #0D9488, #0F766E);">
                         Masuk
                     </button>
                 </form>
@@ -164,7 +164,7 @@
 
                 <p class="text-center text-gray-500 text-sm mt-6">
                     Belum punya akun?
-                    <a href="{{ route('auth.register') }}" class="text-emerald-600 font-bold hover:underline inline-flex items-center gap-1">
+                    <a href="{{ route('auth.register') }}" class="text-teal-600 font-bold hover:underline inline-flex items-center gap-1">
                         Daftar sekarang
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
@@ -173,8 +173,8 @@
                 </p>
 
                 {{-- Security note --}}
-                <div class="mt-10 bg-emerald-50/70 border border-emerald-100 rounded-2xl px-4 py-3.5 flex items-center gap-3">
-                    <div class="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div class="mt-10 bg-teal-50/70 border border-teal-100 rounded-2xl px-4 py-3.5 flex items-center gap-3">
+                    <div class="w-9 h-9 bg-teal-500 rounded-xl flex items-center justify-center flex-shrink-0">
                         <svg class="w-4.5 h-4.5 text-white" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 14l-4-4 1.41-1.41L11 12.17l5.59-5.59L18 8l-7 7z"/>
                         </svg>
@@ -190,8 +190,8 @@
             <div class="hidden lg:flex relative h-[640px] items-center justify-center">
 
                 {{-- background blobs --}}
-                <div class="blob w-[420px] h-[420px]" style="background:radial-gradient(circle, rgba(16,185,129,0.12), transparent 70%); top:0; right:0;"></div>
-                <div class="blob w-[320px] h-[320px]" style="background:radial-gradient(circle, rgba(16,185,129,0.10), transparent 70%); bottom:0; left:10%;"></div>
+                <div class="blob w-[420px] h-[420px]" style="background:radial-gradient(circle, rgba(13,148,136,0.12), transparent 70%); top:0; right:0;"></div>
+                <div class="blob w-[320px] h-[320px]" style="background:radial-gradient(circle, rgba(13,148,136,0.10), transparent 70%); bottom:0; left:10%;"></div>
 
                 {{-- phone mockup --}}
                 <div class="relative z-10 animate-float">
@@ -208,7 +208,7 @@
                             {{-- app header --}}
                             <div class="px-5 pt-2 pb-4">
                                 <div class="flex items-center gap-1.5 mb-4">
-                                    <div class="w-5 h-5 rounded-md flex items-center justify-center" style="background:linear-gradient(135deg,#059669,#10b981);">
+                                    <div class="w-5 h-5 rounded-md flex items-center justify-center" style="background:linear-gradient(135deg,#0D9488,#0F766E);">
                                         <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M21 18v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v1h-9a2 2 0 00-2 2v8a2 2 0 002 2h9zm-9-2h10V8H12v8zm4-2.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
                                         </svg>
@@ -228,7 +228,7 @@
                                         ['label' => 'Lainnya', 'path' => 'M4 6h16M4 12h16M4 18h16'],
                                     ] as $action)
                                     <div class="flex flex-col items-center gap-1">
-                                        <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#059669,#10b981);">
+                                        <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#0D9488,#0F766E);">
                                             <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $action['path'] }}"/>
                                             </svg>
@@ -241,7 +241,7 @@
                                 {{-- transactions --}}
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="text-[10px] font-bold text-gray-700">Transaksi Terakhir</span>
-                                    <span class="text-[9px] text-emerald-600 font-semibold">Lihat semua</span>
+                                    <span class="text-[9px] text-teal-600 font-semibold">Lihat semua</span>
                                 </div>
 
                                 <div class="space-y-2.5">
@@ -252,8 +252,8 @@
                                     ] as $t)
                                     <div class="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2">
                                         <div class="flex items-center gap-2">
-                                            <div class="w-7 h-7 rounded-lg flex items-center justify-center {{ $t['neg'] ? 'bg-red-100' : 'bg-emerald-100' }}">
-                                                <svg class="w-3.5 h-3.5 {{ $t['neg'] ? 'text-red-500' : 'text-emerald-600' }}" fill="currentColor" viewBox="0 0 24 24">
+                                            <div class="w-7 h-7 rounded-lg flex items-center justify-center {{ $t['neg'] ? 'bg-red-100' : 'bg-teal-100' }}">
+                                                <svg class="w-3.5 h-3.5 {{ $t['neg'] ? 'text-red-500' : 'text-teal-600' }}" fill="currentColor" viewBox="0 0 24 24">
                                                     <path d="M12 2L1 21h22L12 2z"/>
                                                 </svg>
                                             </div>
@@ -262,7 +262,7 @@
                                                 <p class="text-[8px] text-gray-400">{{ $t['date'] }}</p>
                                             </div>
                                         </div>
-                                        <span class="text-[9px] font-bold {{ $t['neg'] ? 'text-red-500' : 'text-emerald-600' }}">{{ $t['amount'] }}</span>
+                                        <span class="text-[9px] font-bold {{ $t['neg'] ? 'text-red-500' : 'text-teal-600' }}">{{ $t['amount'] }}</span>
                                     </div>
                                     @endforeach
                                 </div>
@@ -274,7 +274,7 @@
                 {{-- wallet card --}}
                 <div class="absolute bottom-10 right-4 z-20 animate-float-slow">
                     <div class="w-28 h-36 rounded-2xl shadow-xl flex flex-col items-center justify-center gap-1"
-                         style="background:linear-gradient(160deg,#065f46,#059669);">
+                         style="background:linear-gradient(160deg,#0F766E,#0D9488);">
                         <svg class="w-9 h-9 text-white/90" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M21 18v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v1h-9a2 2 0 00-2 2v8a2 2 0 002 2h9zm-9-2h10V8H12v8zm4-2.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
                         </svg>
@@ -284,7 +284,7 @@
 
                 {{-- floating leaf --}}
                 <div class="absolute top-16 left-4 z-0 animate-float">
-                    <svg class="w-16 h-16 text-emerald-200" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-16 h-16 text-teal-200" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z"/>
                     </svg>
                 </div>
@@ -295,9 +295,9 @@
         <div class="mt-14 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400 border-t border-gray-100 pt-6">
             <p>© {{ date('Y') }} dompettkuu. Semua hak dilindungi.</p>
             <div class="flex items-center gap-4">
-                <a href="{{ Route::has('privacy') ? route('privacy') : '#' }}" class="hover:text-emerald-600 transition">Privasi</a>
+                <a href="{{ Route::has('privacy') ? route('privacy') : '#' }}" class="hover:text-teal-600 transition">Privasi</a>
                 <span class="text-gray-200">•</span>
-                <a href="{{ Route::has('terms') ? route('terms') : '#' }}" class="hover:text-emerald-600 transition">Syarat & Ketentuan</a>
+                <a href="{{ Route::has('terms') ? route('terms') : '#' }}" class="hover:text-teal-600 transition">Syarat & Ketentuan</a>
             </div>
         </div>
     </div>

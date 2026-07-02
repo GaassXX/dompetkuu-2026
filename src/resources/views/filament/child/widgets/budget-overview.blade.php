@@ -5,13 +5,13 @@
             <div class="flex items-center justify-between w-full">
                 <span class="text-sm font-bold text-gray-900 dark:text-white tracking-tight">Anggaran Saya</span>
                 <a href="{{ route('filament.child.pages.budget-view') }}"
-                   class="text-xs font-medium text-amber-500 hover:text-amber-600 transition-colors">
+                   class="text-xs font-medium text-[var(--color-primary-500)] hover:text-[var(--color-primary-600)] transition-colors">
                     Lihat semua →
                 </a>
             </div>
         </x-slot>
 
-        <div class="min-h-[280px] flex flex-col justify-start overflow-y-auto pt-2">
+        <div class="min-h-[200px] flex flex-col justify-start overflow-y-auto pt-2">
             @php $budgets = $this->getBudgets() @endphp
 
             @if($budgets->isEmpty())

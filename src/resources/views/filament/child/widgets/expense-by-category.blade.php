@@ -22,14 +22,14 @@
             </div>
         </x-slot>
 
-        <div style="min-height:280px;display:flex;flex-direction:column;justify-content:center;">
+        <div style="min-height:200px;display:flex;flex-direction:column;justify-content:center;overflow:hidden;">
         @if(empty($categoryData))
             <div style="text-align:center;padding:32px 0;">
                 <x-heroicon-o-chart-pie style="width:40px;height:40px;color:var(--color-text-secondary);opacity:0.3;margin:0 auto 8px;"/>
                 <p style="font-size:13px;color:var(--color-text-secondary);">Belum ada pengeluaran bulan ini</p>
             </div>
         @else
-        <div style="display:flex;gap:20px;align-items:center;"
+        <div style="display:flex;gap:12px;align-items:center;width:100%;"
              x-data="{
                 slices: [],
                 tip: { show: false, x: 0, y: 0, label: '', amt: '', color: '' },
@@ -121,51 +121,41 @@
              }">
 
             {{-- Donut Canvas --}}
-            <div style="position:relative;width:150px;height:150px;flex-shrink:0;">
+            <div style="position:relative;width:120px;height:120px;flex-shrink:0;">
                 <canvas id="donut-{{ md5($currentMonth) }}"
-                        style="width:150px;height:150px;display:block;cursor:pointer;"></canvas>
+                        style="width:120px;height:120px;display:block;cursor:pointer;"></canvas>
 
                 {{-- Tooltip --}}
                 <template x-if="tip.show">
                     <div :style="'position:absolute;left:'+tip.x+'px;top:'+tip.y+'px;pointer-events:none;z-index:50;'">
-                        <div style="background:#111827;color:white;border-radius:8px;padding:7px 11px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.25);">
-                            <div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;">
-                                <div :style="'width:8px;height:8px;border-radius:2px;background:'+tip.color"></div>
-                                <span style="font-size:11px;font-weight:600;" x-text="tip.label"></span>
+                        <div style="background:#111827;color:white;border-radius:8px;padding:5px 9px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.25);">
+                            <div style="display:flex;align-items:center;gap:4px;margin-bottom:1px;">
+                                <div :style="'width:7px;height:7px;border-radius:2px;background:'+tip.color"></div>
+                                <span style="font-size:10px;font-weight:600;" x-text="tip.label"></span>
                             </div>
-                            <span style="font-size:12px;font-weight:700;font-family:ui-monospace,monospace;" x-text="tip.amt"></span>
+                            <span style="font-size:11px;font-weight:700;font-family:ui-monospace,monospace;" x-text="tip.amt"></span>
                         </div>
                     </div>
                 </template>
 
                 {{-- Center label --}}
                 <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;">
-                    <p style="font-size:9px;font-weight:700;color:var(--color-text-secondary);margin:0;text-transform:uppercase;letter-spacing:0.5px;">TOTAL</p>
-                    <p style="font-size:13px;font-weight:800;color:var(--color-text-primary);margin:0;line-height:1.3;">
-                        Rp {{ number_format($totalExpense/1000, 0, ',', '.') }}K
+                    <p style="font-size:8px;font-weight:700;color:var(--color-text-secondary);margin:0;text-transform:uppercase;letter-spacing:0.5px;">TOTAL</p>
+                    <p style="font-size:11px;font-weight:800;color:var(--color-text-primary);margin:0;line-height:1.3;">
+                        Rp{{ number_format($totalExpense/1000, 0, ',', '.') }}K
                     </p>
                 </div>
             </div>
 
-            {{-- Legend + Mini Bar --}}
-            <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+            {{-- Legend (nama kategori + garis warna aja) --}}
+            <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
                 @foreach($categoryData as $cat)
                 <div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-                        <div style="display:flex;align-items:center;gap:6px;">
-                            <div style="width:10px;height:10px;border-radius:3px;background:{{ $cat['color'] }};flex-shrink:0;"></div>
-                            <span style="font-size:12px;font-weight:500;color:var(--color-text-primary);">{{ $cat['name'] }}</span>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:5px;">
-                            <span style="font-size:11px;font-weight:600;color:var(--color-text-primary);font-family:ui-monospace,monospace;">
-                                Rp {{ number_format($cat['amount'], 0, ',', '.') }}
-                            </span>
-                            <span style="font-size:10px;font-weight:600;color:var(--color-text-secondary);min-width:26px;text-align:right;">{{ $cat['pct'] }}%</span>
-                        </div>
+                    <div style="display:flex;align-items:center;gap:5px;min-width:0;margin-bottom:3px;">
+                        <div style="width:8px;height:8px;border-radius:2px;background:{{ $cat['color'] }};flex-shrink:0;"></div>
+                        <span style="font-size:11px;font-weight:500;color:var(--color-text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $cat['name'] }}</span>
                     </div>
-                    <div style="height:4px;background:var(--color-background-secondary,#f3f4f6);border-radius:99px;overflow:hidden;">
-                        <div style="height:100%;width:{{ $cat['pct'] }}%;background:{{ $cat['color'] }};border-radius:99px;"></div>
-                    </div>
+                    <div style="height:3px;width:100%;background:{{ $cat['color'] }};border-radius:99px;"></div>
                 </div>
                 @endforeach
             </div>

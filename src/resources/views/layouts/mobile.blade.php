@@ -9,8 +9,11 @@
 </head>
 <body class="bg-gray-50 text-gray-900 font-sans antialiased">
 
-    <div class="max-w-md mx-auto min-h-screen relative bg-gray-50">
-        {{ $slot }}
+    <div class="min-h-screen bg-gray-50 flex">
+        <x-mobile.sidebar />
+        <main class="flex-1 md:ml-64 pb-28 md:pb-0 min-w-0">
+            {{ $slot }}
+        </main>
     </div>
 
     @livewireScripts

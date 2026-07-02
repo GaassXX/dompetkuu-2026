@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 const colors = require("tailwindcss/colors");
 const defaultTheme = require("tailwindcss/defaultTheme");
+const preset = require("./vendor/filament/support/tailwind.config.preset"); // ⬅️ BARU
 
 function withOpacityValue(variable) {
     return ({ opacityValue }) => {
@@ -12,6 +13,7 @@ function withOpacityValue(variable) {
 }
 
 export default {
+    presets: [preset], // ⬅️ BARU
     content: [
         "./resources/**/*.blade.php",
         "./app/Filament/**/*.php",
@@ -19,17 +21,6 @@ export default {
         "./vendor/filament/**/*.blade.php",
     ],
     darkMode: "class",
-    theme: {
-        extend: {
-            colors: {
-                danger: colors.red,
-                success: colors.green,
-                warning: colors.amber,
-                info: colors.cyan,
-                primary: colors.blue,
-            },
-        },
-    },
     plugins: [
         require("@tailwindcss/forms"),
         require("@tailwindcss/typography"),

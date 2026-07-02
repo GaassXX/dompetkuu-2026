@@ -41,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        \Carbon\Carbon::setLocale('id');
         Gate::policy(Activity::class, ActivityPolicy::class);
         Page::formActionsAlignment(Alignment::Right);
         Notifications::alignment(Alignment::End);

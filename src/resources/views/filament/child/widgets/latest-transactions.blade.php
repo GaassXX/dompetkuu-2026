@@ -18,7 +18,7 @@
             </div>
         </x-slot>
 
-        <div style="min-height:280px;display:flex;flex-direction:column;justify-content:flex-start;overflow-y:auto;">
+        <div style="min-height:200px;display:flex;flex-direction:column;justify-content:flex-start;overflow-y:auto;">
         <div style="display:flex;flex-direction:column;gap:8px;">
             @forelse($transactions as $tx)
             <div style="display:flex;align-items:center;justify-content:space-between;

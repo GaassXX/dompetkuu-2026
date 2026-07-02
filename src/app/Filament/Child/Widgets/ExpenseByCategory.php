@@ -8,18 +8,20 @@ use Filament\Widgets\Widget;
 class ExpenseByCategory extends Widget
 {
     protected static ?int $sort = 3;
-    protected static ?string $maxHeight = '400px';
+    protected static ?string $maxHeight = '300px';
     protected static string $view = 'filament.child.widgets.expense-by-category';
 
-    public function getColumnSpan(): int | string | array
-    {
-        return 5;
-    }
+    protected int|string|array $columnSpan = [
+        'default' => 1,
+        'md'      => 2,
+        'lg'      => 2,
+    ];
 
     public array $categoryData = [];
     public float $totalExpense = 0;
     public string $currentMonth = '';
 
+    // Filter bulan: 0 = bulan ini, 1 = bulan lalu, dst (5 bulan ke belakang)
     public string $monthFilter = '0';
 
     public function mount(): void
