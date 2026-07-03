@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 
 class BudgetResource extends Resource
@@ -21,36 +22,43 @@ class BudgetResource extends Resource
     protected static ?string $pluralModelLabel    = 'Anggaran Saya';
     protected static ?int    $navigationSort      = 4;
     protected static bool    $shouldCheckPolicyExistence = false;
+    protected static bool    $shouldRegisterNavigation   = false;
 
 
-    // ✅ Hanya tampil untuk user is_independent
+    // Semua child boleh membaca anggaran; hanya akun personal/mandiri yang boleh mengelola.
     public static function canAccess(): bool
     {
-        $user = auth()->user();
-        return $user->hasRole('child') && $user->is_independent;
+        $user = Auth::user();
+
+        return in_array($user?->role, ['child', 'personal'], true);
     }
 
     public static function canCreate(): bool
     {
-        $user = auth()->user();
-        return $user->hasRole('child') && $user->is_independent;
+        $user = Auth::user();
+
+        return in_array($user?->role, ['child', 'personal'], true) && (bool) $user?->is_independent;
     }
 
     public static function canEdit($record): bool
     {
-        return auth()->user()->is_independent;
+        $user = Auth::user();
+
+        return in_array($user?->role, ['child', 'personal'], true) && (bool) $user?->is_independent;
     }
 
     public static function canDelete($record): bool
     {
-        return auth()->user()->is_independent;
+        $user = Auth::user();
+
+        return in_array($user?->role, ['child', 'personal'], true) && (bool) $user?->is_independent;
     }
 
     // ✅ Hanya tampilkan budget milik user sendiri
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->where('user_id', auth()->id());
+            ->where('user_id', Auth::id());
     }
 
     public static function form(Form $form): Form
@@ -59,7 +67,7 @@ class BudgetResource extends Resource
             Forms\Components\Section::make()->schema([
 
                 Forms\Components\Hidden::make('user_id')
-                    ->default(fn() => auth()->id()),
+                    ->default(fn() => Auth::id()),
 
                 Forms\Components\Select::make('category_id')
                     ->label('Kategori')
@@ -74,9 +82,10 @@ class BudgetResource extends Resource
 
                 Forms\Components\TextInput::make('limit_amount')
                     ->label('Batas Anggaran')
-                    ->numeric()
                     ->prefix('Rp')
-                    ->required(),
+                    ->required()
+                    ->extraInputAttributes(['data-field' => 'amount'])
+                    ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
 
                 Forms\Components\Select::make('period')
                     ->label('Periode')
@@ -120,8 +129,10 @@ class BudgetResource extends Resource
                     ->sortable(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn () => in_array(Auth::user()?->role, ['child', 'personal'], true) && (bool) Auth::user()?->is_independent),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn () => in_array(Auth::user()?->role, ['child', 'personal'], true) && (bool) Auth::user()?->is_independent),
             ])
             ->emptyStateHeading('Belum ada anggaran')
             ->emptyStateDescription('Buat anggaran untuk mengontrol pengeluaran Anda')

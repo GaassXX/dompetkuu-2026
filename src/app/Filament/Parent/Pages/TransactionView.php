@@ -101,6 +101,7 @@ class TransactionView extends Page
         $incomes = DB::table('incomes')
             ->join('users', 'incomes.user_id', '=', 'users.id')
             ->join('categories', 'incomes.category_id', '=', 'categories.id')
+            ->leftJoin('users as approver', 'incomes.approved_by', '=', 'approver.id')
             ->whereIn('incomes.user_id', $allIds)
             ->select(
                 DB::raw("CONCAT('I-', incomes.id) as id"),
@@ -111,6 +112,7 @@ class TransactionView extends Page
                 'incomes.status',
                 'incomes.description',
                 'incomes.created_at',
+                'approver.name as approved_by_name',
                 DB::raw("'Pemasukan' as type")
             );
 
@@ -136,6 +138,7 @@ class TransactionView extends Page
         $expenses = DB::table('expenses')
             ->join('users', 'expenses.user_id', '=', 'users.id')
             ->join('categories', 'expenses.category_id', '=', 'categories.id')
+            ->leftJoin('users as approver', 'expenses.approved_by', '=', 'approver.id')
             ->whereIn('expenses.user_id', $allIds)
             ->select(
                 DB::raw("CONCAT('E-', expenses.id) as id"),
@@ -146,6 +149,7 @@ class TransactionView extends Page
                 'expenses.status',
                 'expenses.description',
                 'expenses.created_at',
+                'approver.name as approved_by_name',
                 DB::raw("'Pengeluaran' as type")
             );
 
@@ -176,8 +180,7 @@ class TransactionView extends Page
             $baseQuery = $incomes->unionAll($expenses);
         }
 
-        $query = DB::table(DB::raw("({$baseQuery->toSql()}) as transactions"))
-            ->mergeBindings($baseQuery);
+        $query = DB::query()->fromSub($baseQuery, 'transactions');
 
         // Menerapkan sisa filter status di query luar
         if ($this->filterStatus !== 'all') {
@@ -188,21 +191,8 @@ class TransactionView extends Page
         $query->orderByDesc('date')
               ->orderByDesc('created_at');
 
-        // --- PAGINASI MANUAL ---
-        $perPage = 10;
-        $total = $query->count();
-
-        $items = $query->offset(($this->currentPage - 1) * $perPage)
-            ->limit($perPage)
-            ->get();
-
-        return new \Illuminate\Pagination\LengthAwarePaginator(
-            $items,
-            $total,
-            $perPage,
-            $this->currentPage,
-            ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
-        );
+        // --- PAGINASI ---
+        return $query->paginate(perPage: 10, pageName: 'page', page: $this->currentPage);
     }
 
     public function getStats(): array
@@ -234,91 +224,5 @@ class TransactionView extends Page
             ->count();
 
         return compact('totalIncome', 'totalExpense', 'totalPending');
-    }
-
-    protected function getHeaderActions(): array
-    {
-        $childOptions = ['family' => 'Seluruh Keluarga', 'me' => 'Data Saya Sendiri'];
-        User::where('parent_id', auth()->id())->get()
-            ->each(fn($c) => $childOptions['child_' . $c->id] = 'Anak: ' . $c->name);
-
-        return [
-            HeaderAction::make('export')
-                ->label('Export Laporan')
-                ->icon('heroicon-o-arrow-down-tray')
-                ->color('success')
-                ->form([
-                    Select::make('format')
-                        ->label('Format')
-                        ->options(['pdf' => 'PDF', 'excel' => 'Excel'])
-                        ->default('pdf')->required(),
-                    Select::make('scope')
-                        ->label('Data')
-                        ->options($childOptions)
-                        ->default('family')->required(),
-                    Select::make('month')
-                        ->label('Bulan')
-                        ->options(collect(range(1, 12))->mapWithKeys(fn($m) =>
-                            [$m => Carbon::create()->month($m)->translatedFormat('F')]
-                        ))
-                        ->default(now()->month)->required(),
-                    Select::make('year')
-                        ->label('Tahun')
-                        ->options(collect(range(now()->year - 2, now()->year))->mapWithKeys(fn($y) => [$y => $y]))
-                        ->default(now()->year)->required(),
-                    Select::make('type')
-                        ->label('Tipe Transaksi')
-                        ->options(['all' => 'Semua', 'Pemasukan' => 'Pemasukan', 'Pengeluaran' => 'Pengeluaran'])
-                        ->default('all')->required(),
-                ])
-                ->action(function (array $data) {
-                    $parentId = auth()->id();
-                    $userIds  = match(true) {
-                        $data['scope'] === 'me'                               => [$parentId],
-                        $data['scope'] === 'family'                           => array_merge([$parentId], User::where('parent_id', $parentId)->pluck('id')->toArray()),
-                        str_starts_with($data['scope'], 'child_') => [(int) str_replace('child_', '', $data['scope'])],
-                        default                                   => [$parentId],
-                    };
-
-                    $incomes = DB::table('incomes')
-                        ->join('users', 'incomes.user_id', '=', 'users.id')
-                        ->join('categories', 'incomes.category_id', '=', 'categories.id')
-                        ->whereIn('incomes.user_id', $userIds)
-                        ->whereMonth('incomes.date', $data['month'])
-                        ->whereYear('incomes.date', $data['year'])
-                        ->select('users.name as user_name', 'categories.name as category_name', 'incomes.amount', 'incomes.date', 'incomes.status', 'incomes.description', DB::raw("'Pemasukan' as type"));
-
-                    $expenses = DB::table('expenses')
-                        ->join('users', 'expenses.user_id', '=', 'users.id')
-                        ->join('categories', 'expenses.category_id', '=', 'categories.id')
-                        ->whereIn('expenses.user_id', $userIds)
-                        ->whereMonth('expenses.date', $data['month'])
-                        ->whereYear('expenses.date', $data['year'])
-                        ->select('users.name as user_name', 'categories.name as category_name', 'expenses.amount', 'expenses.date', 'expenses.status', 'expenses.description', DB::raw("'Pengeluaran' as type"));
-
-                    $transactions = $data['type'] !== 'all'
-                        ? ($data['type'] === 'Pemasukan' ? collect($incomes->get()) : collect($expenses->get()))
-                        : collect($incomes->get())->merge(collect($expenses->get()))->sortByDesc('date')->values();
-
-                    $monthName    = Carbon::create()->month($data['month'])->translatedFormat('F');
-                    $period       = "$monthName {$data['year']}";
-                    $title        = "Laporan Transaksi Keluarga — $period";
-                    $fileName     = "laporan-keluarga-{$data['month']}-{$data['year']}";
-                    $totalIncome  = $transactions->where('type', 'Pemasukan')->sum('amount');
-                    $totalExpense = $transactions->where('type', 'Pengeluaran')->sum('amount');
-
-                    if ($data['format'] === 'excel') {
-                        return Excel::download(new TransactionExport($transactions, $title), "$fileName.xlsx");
-                    }
-
-                    $pdf = Pdf::loadView('exports.transactions-pdf', [
-                        'transactions' => $transactions, 'title' => $title, 'period' => $period,
-                        'userName' => auth()->user()->name, 'totalIncome' => $totalIncome,
-                        'totalExpense' => $totalExpense, 'showUserName' => true,
-                    ])->setPaper('a4', 'landscape');
-
-                    return response()->streamDownload(fn() => print($pdf->output()), "$fileName.pdf");
-                }),
-        ];
     }
 }

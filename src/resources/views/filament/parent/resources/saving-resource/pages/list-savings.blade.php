@@ -209,7 +209,7 @@
         {{-- RIWAYAT TRANSAKSI --}}
 <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
     @php
-        $periodLabels = ['7'=>'7 Hari','30'=>'30 Hari','90'=>'3 Bulan','180'=>'6 Bulan','365'=>'1 Tahun','all'=>'Semua'];
+        $periodLabels = ['7'=>'7H','30'=>'30H','90'=>'3B','180'=>'6B','365'=>'1T','all'=>'Semua'];
     @endphp
     <div class="flex items-center justify-between mb-6">
         <h3 class="text-base font-semibold text-gray-900 dark:text-white">Riwayat Menabung</h3>
@@ -228,7 +228,7 @@
 
             <div x-show="open" @click.outside="open = false" x-transition
                 style="position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #e5e7eb;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.08);min-width:160px;z-index:50;overflow:hidden;">
-                @foreach(['7'=>'7 Hari Terakhir','30'=>'30 Hari Terakhir','90'=>'3 Bulan Terakhir','180'=>'6 Bulan Terakhir','365'=>'1 Tahun Terakhir','all'=>'Semua Data'] as $val => $label)
+                @foreach(['7'=>'7H','30'=>'30H','90'=>'3B','180'=>'6B','365'=>'1T','all'=>'Semua'] as $val => $label)
                 <button
                     wire:click="setPeriod('{{ $val }}')"
                     @click="open = false"

@@ -42,9 +42,10 @@ class IncomeResource extends Resource
 
                 Forms\Components\TextInput::make('amount')
                     ->label('Jumlah')
-                    ->numeric()
                     ->prefix('Rp')
-                    ->required(),
+                    ->required()
+                    ->extraInputAttributes(['data-field' => 'amount'])
+                    ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
 
                 Forms\Components\DatePicker::make('date')
                     ->label('Tanggal')

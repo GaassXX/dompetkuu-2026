@@ -48,13 +48,14 @@ class ExpenseResource extends Resource
 
                 Forms\Components\TextInput::make('amount')
                     ->label('Jumlah')
-                    ->numeric()
                     ->prefix('Rp')
                     ->required()
+                    ->extraInputAttributes(['data-field' => 'amount'])
                     ->live(debounce: 500)
                     ->afterStateUpdated(function (Get $get, Set $set) {
                         $set('_budget_check', now()->timestamp);
-                    }),
+                    })
+                    ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
 
                 Forms\Components\Hidden::make('_budget_check'),
 
@@ -82,7 +83,7 @@ class ExpenseResource extends Resource
                     ->label('')
                     ->content(function (Get $get) {
                         $categoryId    = $get('category_id');
-                        $amount        = (float) ($get('amount') ?? 0);
+                        $amount        = (float) str_replace('.', '', $get('amount') ?? '0');
                         $isIndependent = auth()->user()->is_independent;
 
                         if (!$categoryId || $amount <= 0) {

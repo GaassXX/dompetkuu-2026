@@ -65,19 +65,20 @@ class SavingResource extends Resource
                     Forms\Components\TextInput::make('target_amount')
                         ->label('Target Jumlah')
                         ->prefix('Rp')
-                        ->numeric()
-                        ->required(),
+                        ->required()
+                        ->extraInputAttributes(['data-field' => 'target_amount'])
+                        ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
 
                     Forms\Components\DatePicker::make('target_date')
                         ->label('Target Waktu')
                         ->native(false),
 
-
                     Forms\Components\TextInput::make('current_amount')
                         ->label('Setoran Awal (Opsional)')
                         ->prefix('Rp')
-                        ->numeric()
                         ->default(0)
+                        ->extraInputAttributes(['data-field' => 'current_amount'])
+                        ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0'))
                         ->helperText('Modal awal untuk memulai tabungan ini.'),
 
                     Forms\Components\Textarea::make('description')
@@ -141,8 +142,9 @@ class SavingResource extends Resource
                         Forms\Components\TextInput::make('amount')
                             ->label('Jumlah Setoran')
                             ->prefix('Rp')
-                            ->numeric()
-                            ->required(),
+                            ->required()
+                            ->extraInputAttributes(['data-field' => 'amount'])
+                            ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
                         Forms\Components\DatePicker::make('date')
                             ->label('Tanggal')
                             ->default(now())

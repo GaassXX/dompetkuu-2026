@@ -10,6 +10,11 @@ class EditBudget extends EditRecord
 {
     protected static string $resource = BudgetResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return \App\Filament\Child\Pages\BudgetView::getUrl();
+    }
+
     protected function getHeaderActions(): array
     {
         return [

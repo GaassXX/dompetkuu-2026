@@ -35,8 +35,9 @@ class ViewSaving extends ViewRecord
                     TextInput::make('amount')
                         ->label('Jumlah Setoran')
                         ->prefix('Rp')
-                        ->numeric()
-                        ->required(),
+                        ->required()
+                        ->extraInputAttributes(['data-field' => 'amount'])
+                        ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
                     DatePicker::make('date')
                         ->label('Tanggal')
                         ->default(now())

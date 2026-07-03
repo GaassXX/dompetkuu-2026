@@ -178,7 +178,7 @@
         <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--color-border-tertiary);text-align:center;">
             <a href="{{ url('/parent/transactions?type=expense&month=' . urlencode($currentMonth)) }}"
                style="font-size:12px;font-weight:600;color:var(--color-primary-600);text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
-                Lihat semua kategori
+                Detail
                 <x-heroicon-o-arrow-right style="width:14px;height:14px;"/>
             </a>
         </div>

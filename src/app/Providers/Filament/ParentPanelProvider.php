@@ -82,7 +82,7 @@ class ParentPanelProvider extends PanelProvider
         ->shouldShowSanctumTokens(false)
         ->shouldShowBrowserSessionsForm()
         ->shouldShowAvatarForm(),
-    ])
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

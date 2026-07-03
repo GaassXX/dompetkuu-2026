@@ -221,9 +221,16 @@
                 </div>
 
                 <div style="display:flex;justify-content:space-between;font-size:13px;">
-                    <span style="color:#6b7280;">Oleh Anggota</span>
+                    <span style="color:#6b7280;">Dibuat Oleh</span>
                     <span style="font-weight:600;color:#111827;">{{ $selectedTransaction->user_name }}</span>
                 </div>
+
+                @if($selectedTransaction->approved_by_name)
+                <div style="display:flex;justify-content:space-between;font-size:13px;">
+                    <span style="color:#6b7280;">Disetujui Oleh</span>
+                    <span style="font-weight:600;color:#111827;">{{ $selectedTransaction->approved_by_name }}</span>
+                </div>
+                @endif
 
                 <div style="display:flex;justify-content:space-between;font-size:13px;">
                     <span style="color:#6b7280;">Tanggal Transaksi</span>

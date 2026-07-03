@@ -3,7 +3,7 @@
 
         <x-slot name="heading">
             <div class="flex items-center justify-between w-full">
-                <span class="text-sm font-bold text-gray-900 dark:text-white tracking-tight">Anggaran Saya</span>
+                <span class="text-sm font-bold text-gray-900 dark:text-white tracking-tight">Status Anggaran</span>
                 <a href="{{ route('filament.child.pages.budget-view') }}"
                    class="text-xs font-medium text-[var(--color-primary-500)] hover:text-[var(--color-primary-600)] transition-colors">
                     Lihat semua →

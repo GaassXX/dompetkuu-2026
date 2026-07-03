@@ -12,17 +12,19 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class BudgetResource extends Resource
 {
     protected static ?string $model = Budget::class;
     protected static ?string $navigationIcon = 'heroicon-o-wallet';
-    protected static ?string $navigationLabel = 'Anggaran';
+    protected static ?string $navigationLabel = 'Daftar Anggaran';
     protected static ?string $modelLabel = 'Anggaran';
     protected static ?string $navigationGroup = 'Kelola';
     protected static ?string $pluralModelLabel = 'Daftar Anggaran';
     protected static ?int $navigationSort = 4;
     protected static bool $shouldCheckPolicyExistence = false;
+    protected static bool $shouldRegisterNavigation   = false;
 
     public static function form(Form $form): Form
     {
@@ -32,8 +34,8 @@ class BudgetResource extends Resource
                     // 1. MENGUBAH LABEL AGAR LEBIH UMUM
                     ->label('Anggota Keluarga')
                     // 2. LOGIKA BARU: Mengambil ID Anak DAN ID Orang Tua itu sendiri
-                    ->options(fn() => User::where('parent_id', auth()->id())
-                        ->orWhere('id', auth()->id()) // <-- Menambahkan Akun Orang tua ke dalam pilihan
+                    ->options(fn() => User::where('parent_id', Auth::id())
+                        ->orWhere('id', Auth::id()) // <-- Menambahkan Akun Orang tua ke dalam pilihan
                         ->whereNotNull('name')
                         ->pluck('name', 'id')
                         ->toArray()
@@ -54,9 +56,10 @@ class BudgetResource extends Resource
 
                 Forms\Components\TextInput::make('limit_amount')
                     ->label('Batas Anggaran')
-                    ->numeric()
                     ->prefix('Rp')
-                    ->required(),
+                    ->required()
+                    ->extraInputAttributes(['data-field' => 'amount'])
+                    ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
 
                 Forms\Components\Select::make('period')
                     ->label('Periode')
@@ -119,11 +122,11 @@ class BudgetResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         // 3. LOGIKA BARU: Izinkan database menampilkan anggaran milik anak DAN milik orang tua itu sendiri
-        $allowedUserIds = User::where('parent_id', auth()->id())
+        $allowedUserIds = User::where('parent_id', Auth::id())
             ->pluck('id')
             ->toArray();
 
-        $allowedUserIds[] = auth()->id(); // <-- Masukkan ID orang tua ke dalam daftar query index
+        $allowedUserIds[] = Auth::id(); // <-- Masukkan ID orang tua ke dalam daftar query index
 
         return parent::getEloquentQuery()
             ->whereIn('user_id', $allowedUserIds);
@@ -131,22 +134,22 @@ class BudgetResource extends Resource
 
     public static function canAccess(): bool
     {
-        return auth()->user()->role === 'parent';
+        return Auth::user()?->role === 'parent';
     }
 
     public static function canCreate(): bool
     {
-        return auth()->user()->hasRole('parent');
+        return Auth::user()?->role === 'parent';
     }
 
     public static function canEdit($record): bool
     {
-        return auth()->user()->hasRole('parent');
+        return Auth::user()?->role === 'parent';
     }
 
     public static function canDelete($record): bool
     {
-        return auth()->user()->hasRole('parent');
+        return Auth::user()?->role === 'parent';
     }
 
     public static function getPages(): array

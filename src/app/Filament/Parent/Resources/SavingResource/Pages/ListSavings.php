@@ -87,4 +87,9 @@ public function getRecentDeposits()
 
     return $query->limit(50)->get();
 }
+
+public function setPeriod(string $period): void
+{
+    $this->period = $period;
+}
 }
