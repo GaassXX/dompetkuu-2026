@@ -18,7 +18,7 @@ class AddTransaction extends Component
 
     public function mount(): void
     {
-        $this->date = now()->format('Y-m-d');
+        $this->date = now()->format('Y-m-d\TH:i');
     }
 
     public function getCategoriesProperty()

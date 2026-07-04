@@ -71,7 +71,7 @@
 
                 <div>
                     <label class="text-xs text-gray-500 mb-1 block">Tanggal</label>
-                    <input type="date" wire:model="date"
+                    <input type="datetime-local" wire:model="date"
                            class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-amber-400">
                     @error('date') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
