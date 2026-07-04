@@ -14,7 +14,7 @@ class Dashboard extends Component
     public float $pemasukanBulanIni = 0;
     public float $pengeluaranBulanIni = 0;
     public float $tabunganBulanIni = 0;
-    public array $chart7Hari = [];
+    public array $chartDataForJS = [];
     public array $pengeluaranPerKategori = [];
     public array $tabunganList = [];
     public $transaksiTerakhir = [];
@@ -53,36 +53,69 @@ class Dashboard extends Component
     protected function loadChart(): void
     {
         $userId = Auth::id();
-        $start = Carbon::now()->subDays(6)->startOfDay();
+        $months = collect(range(5, 0))
+            ->map(fn($i) => Carbon::now()->startOfMonth()->subMonths($i));
+
+        $startDate = $months->first()->copy()->startOfMonth()->toDateString();
 
         $rows = Transaction::query()
-            ->whereRaw('user_id = ?', [$userId])
+            ->where('user_id', $userId)
             ->where('status', 'approved')
-            ->where('date', '>=', $start->toDateString())
-            ->get()
-            ->groupBy(fn ($t) => Carbon::parse($t->date)->format('Y-m-d'));
+            ->where('date', '>=', $startDate)
+            ->get();
 
-        $hariIndo = ['Sun' => 'Min', 'Mon' => 'Sen', 'Tue' => 'Sel', 'Wed' => 'Rab', 'Thu' => 'Kam', 'Fri' => 'Jum', 'Sat' => 'Sab'];
+        $labels = $months->map(fn($m) => $m->translatedFormat('M Y'));
 
-        $result = [];
-        for ($i = 6; $i >= 0; $i--) {
-            $date = Carbon::now()->subDays($i);
-            $key = $date->format('Y-m-d');
-            $dayRows = $rows->get($key, collect());
+        // PENTING: $m adalah Carbon (mutable). Jangan panggil ->startOfMonth()
+        // dan ->endOfMonth() pada objek $m yang sama dalam satu ekspresi,
+        // karena keduanya akan merujuk ke reference yang sama dan sama-sama
+        // berakhir sebagai "akhir bulan" setelah endOfMonth() dipanggil.
+        // Selalu clone ($m->copy()) dulu sebelum dimutasi.
+        $incomes = $months->map(function ($m) use ($rows) {
+            $start = $m->copy()->startOfMonth();
+            $end   = $m->copy()->endOfMonth();
 
-            $pemasukan = $dayRows->where('type', 'Pemasukan')->sum('amount');
-            $pengeluaran = $dayRows->where('type', 'Pengeluaran')->sum('amount');
+            return (float) $rows->filter(fn($t) =>
+                Carbon::parse($t->date)->between($start, $end)
+            )->where('type', 'Pemasukan')->sum('amount');
+        })->values()->toArray();
 
-            $result[] = [
-                'label'      => $hariIndo[$date->format('D')] ?? $date->format('D'),
-                'pemasukan'  => (float) $pemasukan,
-                'pengeluaran' => (float) $pengeluaran,
-                'net'        => $pemasukan - $pengeluaran,
-                'total'      => $pemasukan + $pengeluaran,
-            ];
-        }
+        $expenses = $months->map(function ($m) use ($rows) {
+            $start = $m->copy()->startOfMonth();
+            $end   = $m->copy()->endOfMonth();
 
-        $this->chart7Hari = $result;
+            return (float) $rows->filter(fn($t) =>
+                Carbon::parse($t->date)->between($start, $end)
+            )->where('type', 'Pengeluaran')->sum('amount');
+        })->values()->toArray();
+
+        $this->chartDataForJS = [
+            'labels' => $labels->toArray(),
+            'datasets' => [
+                [
+                    'label'           => 'Pemasukan',
+                    'data'            => $incomes,
+                    'borderColor'     => 'rgb(34, 197, 94)',
+                    'backgroundColor' => 'rgba(34, 197, 94, 0.1)',
+                    'fill'            => true,
+                    'tension'         => 0.4,
+                    'pointRadius'     => 4,
+                    'pointBackgroundColor' => 'rgb(34, 197, 94)',
+                    'borderWidth'     => 2,
+                ],
+                [
+                    'label'           => 'Pengeluaran',
+                    'data'            => $expenses,
+                    'borderColor'     => 'rgb(239, 68, 68)',
+                    'backgroundColor' => 'rgba(239, 68, 68, 0.1)',
+                    'fill'            => true,
+                    'tension'         => 0.4,
+                    'pointRadius'     => 4,
+                    'pointBackgroundColor' => 'rgb(239, 68, 68)',
+                    'borderWidth'     => 2,
+                ],
+            ],
+        ];
     }
 
     protected function loadPengeluaranPerKategori(): void

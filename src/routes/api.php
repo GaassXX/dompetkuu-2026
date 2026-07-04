@@ -38,6 +38,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/dashboard/chart',       [App\Http\Controllers\Api\DashboardController::class, 'chart']);
 });
 
+function botReply(int $chatId, string $text, string $parseMode = 'Markdown'): void
+{
+    Http::post(
+        "https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage",
+        [
+            'chat_id' => $chatId,
+            'text' => $text,
+            'parse_mode' => $parseMode,
+        ]
+    );
+}
+
 Route::post('/telegram/webhook', function (Request $request) {
 
     Log::info('TELEGRAM', $request->all());
@@ -65,12 +77,11 @@ Route::post('/telegram/webhook', function (Request $request) {
 
         if (! $user) {
 
-            Http::post(
-                "https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage",
-                [
-                    'chat_id' => $chatId,
-                    'text' => '❌ Kode integrasi tidak ditemukan.',
-                ]
+            botReply($chatId,
+                "❌ *Kode integrasi tidak valid*\n\n".
+                "Kode yang Anda masukkan tidak ditemukan dalam sistem.\n".
+                "Pastikan kode *pairing* yang dimasukkan sudah benar.\n\n".
+                "Kode *pairing* dapat ditemukan di halaman *Profil* aplikasi DompetKuu."
             );
 
             return response()->json(['ok' => true]);
@@ -81,12 +92,14 @@ Route::post('/telegram/webhook', function (Request $request) {
             'telegram_disconnected_at' => null,
         ]);
 
-        Http::post(
-            "https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage",
-            [
-                'chat_id' => $chatId,
-                'text' => "✅ Telegram berhasil terhubung ke akun:\n{$user->name}",
-            ]
+        botReply($chatId,
+            "✅ *Akun berhasil terhubung!*\n\n".
+            "📋 *Akun:* {$user->name}\n".
+            "💡 Sekarang kamu bisa mencatat transaksi langsung dari sini.\n\n".
+            "Contoh:\n".
+            "📈 `masuk 500000 gaji juni`\n".
+            "📉 `keluar 15000 beli kopi`\n\n".
+            "Butuh bantuan? Ketik /start"
         );
 
         return response()->json(['ok' => true]);
@@ -102,12 +115,14 @@ Route::post('/telegram/webhook', function (Request $request) {
 
     if (! $user) {
 
-        Http::post(
-            "https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage",
-            [
-                'chat_id' => $chatId,
-                'text' => "❌ Telegram belum terhubung.\n\nGunakan:\n/connect TG-XXXXXX",
-            ]
+        botReply($chatId,
+            "⚠️ *Akun belum terhubung*\n\n".
+            "Silakan hubungkan akun kamu terlebih dahulu menggunakan kode *pairing*.\n\n".
+            "Cara:\n".
+            "1. Buka menu *Profil* di aplikasi DompetKuu\n".
+            "2. Salin kode *pairing* Telegram\n".
+            "3. Ketik: `/connect TG-XXXXXX`\n\n".
+            "Contoh: `/connect TG-A1B2C3`"
         );
 
         return response()->json(['ok' => true]);
@@ -121,19 +136,19 @@ Route::post('/telegram/webhook', function (Request $request) {
 
     if ($text === '/start') {
 
-        Http::post(
-            "https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage",
-            [
-                'chat_id' => $chatId,
-                'text' =>
-                "👋 Halo {$user->name}\n\n".
-                "📌 *Perintah:*\n".
-                "📈 masuk 50000 uangsaku dari ayah\n".
-                "📉 keluar 15000 beli kopi\n".
-                "/saldo — Cek saldo bersih\n".
-                "/riwayat — 5 transaksi terakhir\n\n".
-                "Kategori akan dideteksi otomatis.",
-            ]
+        botReply($chatId,
+            "👋 *Halo, {$user->name}*\n\n".
+            "📌 *Cara Catat Transaksi:*\n".
+            "📈 `masuk [jumlah] [keterangan]`\n".
+            "📉 `keluar [jumlah] [keterangan]`\n\n".
+            "💡 Contoh:\n".
+            "✅ `masuk 500000 gaji bulan ini`\n".
+            "✅ `keluar 15.000 beli kopi`\n".
+            "✅ `masuk Rp 150.000 uang saku`\n\n".
+            "📌 *Perintah Lain:*\n".
+            "/saldo — Lihat ringkasan keuangan\n".
+            "/riwayat — 5 transaksi terbaru\n\n".
+            "Kategori akan terdeteksi otomatis."
         );
 
         return response()->json(['ok' => true]);
@@ -190,25 +205,19 @@ Route::post('/telegram/webhook', function (Request $request) {
 
         $balanceIcon = $netBalance >= 0 ? '💵' : '🔴';
 
-        Http::post(
-            "https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage",
-            [
-                'chat_id' => $chatId,
-                'text' =>
-                    "💰 *Saldo Keuangan Anda*\n\n".
-                    "📈 Total Pemasukan: Rp".number_format($totalIncome, 0, ',', '.')."\n".
-                    "📉 Total Pengeluaran: Rp".number_format($totalExpense, 0, ',', '.')."\n".
-                    "─────────────────────\n".
-                    "{$balanceIcon} Saldo Bersih: Rp".number_format($netBalance, 0, ',', '.').
-                    ($netBalance < 0 ? "\n⚠️ Saldo negatif!" : "").
-                    "\n\n📊 *Ringkasan Bulan Ini*\n".
-                    "   Pemasukan: Rp".number_format($monthIncome, 0, ',', '.')."\n".
-                    "   Pengeluaran: Rp".number_format($monthExpense, 0, ',', '.')."\n".
-                    "   Sisa: Rp".number_format($monthIncome - $monthExpense, 0, ',', '.').
-                    $topCategoryText.
-                    "\n\n📋 Total {$totalCount} transaksi",
-                'parse_mode' => 'Markdown',
-            ]
+        botReply($chatId,
+            "💰 *Ringkasan Keuangan*\n\n".
+            "📈 Pemasukan: Rp".number_format($totalIncome, 0, ',', '.')."\n".
+            "📉 Pengeluaran: Rp".number_format($totalExpense, 0, ',', '.')."\n".
+            "─────────────────────\n".
+            "{$balanceIcon} Saldo Bersih: Rp".number_format($netBalance, 0, ',', '.').
+            ($netBalance < 0 ? "\n⚠️ Saldo negatif!" : "").
+            "\n\n📊 *Bulan Ini*\n".
+            "   Pemasukan: Rp".number_format($monthIncome, 0, ',', '.')."\n".
+            "   Pengeluaran: Rp".number_format($monthExpense, 0, ',', '.')."\n".
+            "   Sisa: Rp".number_format($monthIncome - $monthExpense, 0, ',', '.').
+            $topCategoryText.
+            "\n\n📋 Total {$totalCount} transaksi tercatat"
         );
 
         return response()->json(['ok' => true]);
@@ -255,24 +264,23 @@ Route::post('/telegram/webhook', function (Request $request) {
             ->take(5);
 
         if ($riwayat->isEmpty()) {
-            $reply = "📭 Belum ada transaksi approved.";
+            botReply($chatId,
+                "📭 *Belum ada transaksi*\n\n".
+                "Belum ada transaksi yang tercatat. Mulai catat transaksi kamu:\n".
+                "📈 `masuk 500000 gaji`\n".
+                "📉 `keluar 15000 bakso`"
+            );
         } else {
             $reply = "📋 *Riwayat Transaksi Terbaru*\n\n";
             foreach ($riwayat as $t) {
-                $reply .= "✅ {$t['icon']} *{$t['type']}*\n";
+                $reply .= "{$t['icon']} *{$t['type']}*\n";
                 $reply .= "   Rp".number_format($t['amount'], 0, ',', '.')." | {$t['category']}\n";
                 $reply .= "   🗓 {$t['date']}\n\n";
             }
-        }
+            $reply .= "💡 Ketik /saldo untuk cek saldo lengkap";
 
-        Http::post(
-            "https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage",
-            [
-                'chat_id' => $chatId,
-                'text' => $reply,
-                'parse_mode' => 'Markdown',
-            ]
-        );
+            botReply($chatId, $reply);
+        }
 
         return response()->json(['ok' => true]);
     }
@@ -283,10 +291,10 @@ Route::post('/telegram/webhook', function (Request $request) {
     |--------------------------------------------------------------------------
     */
 
-    if (preg_match('/^(masuk|keluar)\s+(\d+)\s*(.*)$/i', $text, $matches)) {
+    if (preg_match('/^(masuk|keluar)\s+(?:Rp|rp)?\s*([0-9.]+)\s*(.*)$/iu', $text, $matches)) {
 
         $action = strtolower($matches[1]);
-        $amount = (float) $matches[2];
+        $amount = (float) str_replace('.', '', $matches[2]);
         $description = trim($matches[3]);
 
         $type = $action === 'masuk'
@@ -422,16 +430,11 @@ Route::post('/telegram/webhook', function (Request $request) {
                 'status' => 'approved',
             ]);
 
-            Http::post(
-                "https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage",
-                [
-                    'chat_id' => $chatId,
-                    'text' =>
-                        "✅ Pemasukan berhasil dicatat.\n\n".
-                        "💰 Rp".number_format($amount, 0, ',', '.')."\n".
-                        "📂 {$category?->name}\n".
-                        "📝 {$description}",
-                ]
+            botReply($chatId,
+                "✅ *Pemasukan berhasil dicatat*\n\n".
+                "💰 Rp".number_format($amount, 0, ',', '.')."\n".
+                "📂 {$category?->name}\n".
+                "📝 {$description}"
             );
 
             return response()->json(['ok' => true]);
@@ -456,18 +459,14 @@ Route::post('/telegram/webhook', function (Request $request) {
             'status' => $status,
         ]);
 
-        Http::post(
-            "https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage",
-            [
-                'chat_id' => $chatId,
-                'text' =>
-                    ($status === 'pending'
-                        ? "⏳ Pengeluaran diajukan.\n\n"
-                        : "✅ Pengeluaran berhasil dicatat.\n\n").
-                    "💰 Rp".number_format($amount, 0, ',', '.')."\n".
-                    "📂 {$category?->name}\n".
-                    "📝 {$description}",
-            ]
+        botReply($chatId,
+            ($status === 'pending'
+                ? "⏳ *Pengeluaran diajukan ke Orang Tua*\n\n"
+                : "✅ *Pengeluaran berhasil dicatat*\n\n").
+            "💰 Rp".number_format($amount, 0, ',', '.')."\n".
+            "📂 {$category?->name}\n".
+            "📝 {$description}".
+            ($status === 'pending' ? "\n\n⏳ Menunggu persetujuan Orang Tua..." : "")
         );
 
         return response()->json(['ok' => true]);
@@ -479,16 +478,17 @@ Route::post('/telegram/webhook', function (Request $request) {
     |--------------------------------------------------------------------------
     */
 
-    Http::post(
-        "https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage",
-        [
-            'chat_id' => $chatId,
-            'text' =>
-                "❓ Format tidak dikenali.\n\n".
-                "Contoh:\n".
-                "masuk 50000 uangsaku dari ayah\n".
-                "keluar 15000 beli kopi",
-        ]
+    botReply($chatId,
+        "⚠️ *Format tidak sesuai*\n\n".
+        "Gunakan format:\n".
+        "📈 `masuk [jumlah] [keterangan]`\n".
+        "📉 `keluar [jumlah] [keterangan]`\n\n".
+        "Contoh benar:\n".
+        "✅ `masuk 500000 gaji`\n".
+        "✅ `keluar 15.000 bakso`\n".
+        "✅ `masuk Rp 150.000 uang saku`\n".
+        "✅ `keluar rp 20000 bensin`\n\n".
+        "Ketik /start untuk bantuan lebih lanjut."
     );
 
     return response()->json(['ok' => true]);

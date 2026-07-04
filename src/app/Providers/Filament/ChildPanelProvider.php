@@ -72,6 +72,8 @@ class ChildPanelProvider extends PanelProvider
                 \App\Filament\Child\Widgets\BudgetOverview::class,
             ])
             ->middleware([
+                \App\Http\Middleware\DetectDevice::class,
+                \App\Http\Middleware\RedirectIfMobile::class,
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,

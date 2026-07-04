@@ -8,14 +8,15 @@
     @livewireStyles
 </head>
 <body class="bg-gray-50 text-gray-900 font-sans antialiased">
-
     <div class="min-h-screen bg-gray-50 flex">
         <x-mobile.sidebar />
         <main class="flex-1 md:ml-64 pb-28 md:pb-0 min-w-0">
+            @unless ($noNavbar ?? false)
+                <x-mobile.navbar />
+            @endunless
             {{ $slot }}
         </main>
     </div>
-
     @livewireScripts
 </body>
 </html>

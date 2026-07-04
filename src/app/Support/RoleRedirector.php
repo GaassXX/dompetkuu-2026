@@ -2,18 +2,24 @@
 
 namespace App\Support;
 
+use App\Http\Middleware\DetectDevice;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class RoleRedirector
 {
-    /**
-     * Tentukan redirect URL berdasarkan role/tipe akun user.
-     * Dipakai bersama oleh LoginController & RegisterController
-     * supaya logic redirect selalu konsisten di satu tempat.
-     */
-    public static function to(User $user): RedirectResponse
+    public static function to(User $user, ?Request $request = null): RedirectResponse
     {
+        $request ??= request();
+        $isMobile = session('is_mobile_device');
+        if ($isMobile === null) {
+            $isMobile = DetectDevice::isMobileDevice($request);
+        }
+        if (!$user->hasRole(['super_admin', 'admin']) && $isMobile) {
+            return redirect('/mobile/dashboard');
+        }
+
         return match (true) {
             $user->hasRole('super_admin'),
             $user->hasRole('admin')   => redirect('/admin'),

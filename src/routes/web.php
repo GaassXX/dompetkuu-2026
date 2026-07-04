@@ -6,6 +6,7 @@ use Livewire\Livewire;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Support\RoleRedirector;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,20 +36,7 @@ Livewire::setScriptRoute(function ($handle) {
 
 Route::get('/', function () {
     if (Auth::check()) {
-        $user = Auth::user();
-
-        return match (true) {
-            $user->hasRole('super_admin'),
-            $user->hasRole('admin') => redirect('/admin'),
-
-            $user->hasRole('parent') => redirect('/parent'),
-
-            $user->is_independent     => redirect('/personal'),
-
-            $user->hasRole('child')   => redirect('/child'),
-
-            default                   => redirect('/login'),
-        };
+        return RoleRedirector::to(Auth::user());
     }
 
     return view('landing');
@@ -137,17 +125,21 @@ Route::get('/personal/{any?}', function ($any = null) {
 })->where('any', '.*');
 
 
-Route::middleware(['auth'])->prefix('mobile')->name('mobile.')->group(function () {
+Route::middleware(['auth', \App\Http\Middleware\RedirectIfDesktop::class])->prefix('mobile')->name('mobile.')->group(function () {
     Route::get('/dashboard', \App\Livewire\Mobile\Dashboard::class)->name('dashboard');
     Route::get('/add-transaction', \App\Livewire\Mobile\AddTransaction::class)->name('add-transaction');
     Route::get('/history', \App\Livewire\Mobile\TransactionHistory::class)->name('history');
-    Route::get('/ai-bot', \App\Livewire\Mobile\AiChatBot::class)->name('ai-bot');
     Route::get('/profile', \App\Livewire\Mobile\Profile::class)->name('profile');
+    Route::get('/account', \App\Livewire\Mobile\AccountSetting::class)->name('account');
+    Route::get('/keluarga', \App\Livewire\Mobile\Keluarga::class)->name('keluarga');
+    Route::get('/anggaran', \App\Livewire\Mobile\Anggaran::class)->name('anggaran');
+    Route::get('/laporan', \App\Livewire\Mobile\Laporan::class)->name('laporan');
+    Route::get('/tabungan', \App\Livewire\Mobile\Tabungan::class)->name('tabungan');
+    Route::get('/tabungan/create', \App\Livewire\Mobile\TabunganCreate::class)->name('tabungan.create');
+    Route::get('/tabungan/completed', \App\Livewire\Mobile\TabunganComplete::class)->name('tabungan.completed');
+    Route::get('/tabungan/{saving}', \App\Livewire\Mobile\TabunganDetail::class)->name('tabungan.show');
 });
 
 Route::get('/test-device', function () {
     return session('is_mobile_device') ? 'MOBILE TERDETEKSI' : 'DESKTOP TERDETEKSI';
 });
-
-
-

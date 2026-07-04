@@ -84,6 +84,8 @@ class ParentPanelProvider extends PanelProvider
         ->shouldShowAvatarForm(),
             ])
             ->middleware([
+                \App\Http\Middleware\DetectDevice::class,
+                \App\Http\Middleware\RedirectIfMobile::class,
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,

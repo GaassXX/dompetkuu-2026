@@ -16,7 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
         \App\Http\Middleware\DetectDevice::class,
     ]);
-    
+
+        $middleware->alias([
+            'redirect.desktop' => \App\Http\Middleware\RedirectIfDesktop::class,
+            'redirect.mobile'  => \App\Http\Middleware\RedirectIfMobile::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

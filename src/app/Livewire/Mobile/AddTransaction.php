@@ -78,6 +78,6 @@ class AddTransaction extends Component
     {
         return view('livewire.mobile.add-transaction', [
             'categories' => $this->categories,
-        ])->layout('layouts.mobile');
+        ])->layout('layouts.mobile', ['noNavbar' => true]);
     }
 }

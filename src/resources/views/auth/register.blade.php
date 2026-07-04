@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dompettkuu — Daftar</title>
+    <title>DompetKuu — Daftar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -31,7 +31,7 @@
                         <path d="M21 18v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v1h-9a2 2 0 00-2 2v8a2 2 0 002 2h9zm-9-2h10V8H12v8zm4-2.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
                         </svg>
                     </div>
-                    <span class="text-lg font-extrabold text-[#1E293B]">dompet<span class="text-[#F59E0B]">tkuu</span></span>
+                    <span class="text-lg font-extrabold text-[#1E293B]">Dompet<span class="text-[#F59E0B]">Kuu</span></span>
             </div>
             <a href="{{ Route::has('help') ? route('help') : '#' }}"
                class="flex items-center gap-2 border border-gray-200 bg-white rounded-full px-4 py-2 text-xs font-semibold text-gray-600 shadow-sm hover:shadow transition">
@@ -49,7 +49,7 @@
             <div class="relative z-10 max-w-lg">
 
                 <h1 class="text-2xl lg:text-[1.85rem] font-extrabold text-gray-900 leading-snug mb-2">
-                    Buat akun baru di <span class="text-[#F59E0B]">dompettkuu</span>
+                    Buat akun baru di <span class="text-[#F59E0B]">DompetKuu</span>
                 </h1>
                 <p class="text-gray-500 text-sm mb-6">
                     Daftar sekarang dan nikmati berbagai kemudahan transaksi dalam satu aplikasi finansial yang cerdas.

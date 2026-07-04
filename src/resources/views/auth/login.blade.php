@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dompettkuu — Masuk</title>
+    <title>DompetKuu — Masuk</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -46,7 +46,7 @@
                         <path d="M21 18v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v1h-9a2 2 0 00-2 2v8a2 2 0 002 2h9zm-9-2h10V8H12v8zm4-2.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
                     </svg>
                 </div>
-                <span class="text-lg font-extrabold text-[#1E293B]">dompet<span class="text-[#F59E0B]">tkuu</span></span>
+                <span class="text-lg font-extrabold text-[#1E293B]">Dompet<span class="text-[#F59E0B]">Kuu</span></span>
             </div>
 
             <a href="{{ Route::has('help') ? route('help') : '#' }}"
@@ -67,7 +67,7 @@
 
                 <h1 class="text-3xl lg:text-[2.5rem] font-extrabold text-gray-900 leading-tight mb-3">
                     Selamat datang<br>kembali di
-                    <span class="text-[#F59E0B]">dompettkuu</span>
+                    <span class="text-[#F59E0B]">DompetKuu</span>
                 </h1>
                 <p class="text-gray-500 text-sm mb-8">
                     Masuk untuk mengelola keuanganmu dengan lebih mudah, cepat, dan aman.
@@ -88,10 +88,10 @@
 
                     {{-- Email / Phone --}}
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Email atau Nomor HP</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
                         <div class="relative">
                             <input type="text" name="login" value="{{ old('login') }}"
-                                placeholder="Masukkan email atau nomor HP"
+                                placeholder="Masukkan email"
                                 class="w-full pl-4 pr-11 py-3.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition {{ $errors->has('login') ? 'border-red-400' : '' }}"
                                 required autofocus>
                             <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none">

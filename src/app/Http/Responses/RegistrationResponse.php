@@ -10,6 +10,10 @@ class RegistrationResponse implements RegistrationResponseContract
     {
         $user = auth()->user();
 
+        if (session('is_mobile_device')) {
+            return redirect('/mobile/dashboard');
+        }
+
         $url = match(true) {
             $user->hasRole('parent') => route('filament.parent.pages.dashboard'),
             $user->hasRole('child')  => route('filament.child.pages.dashboard'),

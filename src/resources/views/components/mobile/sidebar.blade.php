@@ -2,8 +2,7 @@
     $route = request()->route()->getName();
     $items = [
         'dashboard' => ['label' => 'Dashboard',     'icon' => 'squares-2x2', 'route' => 'mobile.dashboard'],
-        'history'   => ['label' => 'Riwayat',       'icon' => 'clock',       'route' => 'mobile.history'],
-        'ai-bot'    => ['label' => 'AI Bot',        'icon' => 'cpu-chip',    'route' => 'mobile.ai-bot'],
+        'history'   => ['label' => 'Riwayat Transaksi', 'icon' => 'clock',       'route' => 'mobile.history'],
         'profile'   => ['label' => 'Profil',        'icon' => 'user',        'route' => 'mobile.profile'],
     ];
     $active = collect($items)->search(fn ($i) => $route === $i['route']) ?: 'dashboard';
@@ -12,7 +11,7 @@
 <div class="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:w-64 bg-white border-r border-gray-200 z-30">
     {{-- Logo --}}
     <div class="flex items-center gap-2.5 px-5 py-5 border-b border-gray-100">
-        <div class="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center shrink-0 shadow-sm">
+        <div class="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center shrink-0 shadow-sm">
             <x-dynamic-component :component="'heroicon-o-banknotes'" class="w-5 h-5 text-white" />
         </div>
         <span class="font-bold text-gray-800 text-lg tracking-tight">Dompetkuu</span>
@@ -23,7 +22,7 @@
         @foreach ($items as $key => $item)
             <a href="{{ route($item['route']) }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
-                      {{ $active === $key ? 'bg-emerald-50 text-emerald-700' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700' }}">
+                      {{ $active === $key ? 'bg-amber-50 text-amber-700' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700' }}">
                 <x-dynamic-component :component="'heroicon-o-' . $item['icon']" class="w-5 h-5 shrink-0" />
                 {{ $item['label'] }}
             </a>
@@ -34,8 +33,8 @@
     @auth
     <div class="px-3 py-4 border-t border-gray-100">
         <div class="flex items-center gap-3 px-3 py-2">
-            <div class="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                <span class="text-sm font-semibold text-emerald-700">
+            <div class="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+                <span class="text-sm font-semibold text-amber-700">
                     {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                 </span>
             </div>

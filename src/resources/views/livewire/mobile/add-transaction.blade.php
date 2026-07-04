@@ -46,7 +46,7 @@
             <form wire:submit.prevent="save" class="space-y-4">
                 <div>
                     <label class="text-xs text-gray-500 mb-1 block">Kategori</label>
-                    <select wire:model="category_id" class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400">
+                    <select wire:model="category_id" class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-amber-400">
                         <option value="">Pilih kategori</option>
                         @foreach ($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -57,26 +57,33 @@
 
                 <div>
                     <label class="text-xs text-gray-500 mb-1 block">Jumlah (Rp)</label>
-                    <input type="number" wire:model="amount" placeholder="0"
-                           class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400">
+                    <input type="text" inputmode="numeric" placeholder="0"
+                           x-data="{ display: '{{ $amount ? number_format((int)$amount, 0, ',', '.') : '' }}' }"
+                           x-model="display"
+                           x-on:input="
+                               let raw = $el.value.replace(/\./g, '').replace(/\D/g, '');
+                               display = raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                               $wire.set('amount', raw);
+                           "
+                           class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-amber-400">
                     @error('amount') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
                     <label class="text-xs text-gray-500 mb-1 block">Tanggal</label>
                     <input type="date" wire:model="date"
-                           class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400">
+                           class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-amber-400">
                     @error('date') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
                     <label class="text-xs text-gray-500 mb-1 block">Catatan (opsional)</label>
                     <textarea wire:model="description" rows="2" placeholder="Tulis catatan..."
-                              class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-400"></textarea>
+                              class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-amber-400"></textarea>
                 </div>
 
                 <button type="submit"
-                    class="w-full bg-emerald-600 text-white font-medium text-sm py-3 rounded-xl">
+                    class="w-full bg-amber-500 text-white font-medium text-sm py-3 rounded-xl">
                     Simpan Transaksi
                 </button>
             </form>
