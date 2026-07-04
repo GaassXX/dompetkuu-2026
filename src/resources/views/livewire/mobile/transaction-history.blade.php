@@ -39,7 +39,7 @@
                 <p class="text-[10px] font-semibold text-gray-400 tracking-wider mb-2">{{ $label }}</p>
                 <div class="space-y-1.5">
                     @foreach ($transactions as $tx)
-                        <x-mobile.transaction-item :transaction="$tx" />
+                        <x-mobile.transaction-item :transaction="$tx" :showActions="true" />
                     @endforeach
                 </div>
             </div>
@@ -53,6 +53,57 @@
        class="fixed right-5 bottom-24 z-40 w-12 h-12 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-600/30 hover:bg-emerald-700 transition">
         <x-heroicon-o-plus class="w-6 h-6" />
     </a>
+
+    {{-- Detail Bottom Sheet --}}
+    @if ($showDetail && $detailTransaction)
+        @php $d = \Carbon\Carbon::parse($detailTransaction->date); @endphp
+        <div class="fixed inset-0 z-50 flex items-end md:items-center md:justify-center">
+            <div class="absolute inset-0 bg-black/40" wire:click="closeDetail"></div>
+            <div class="relative bg-white w-full md:w-96 rounded-t-2xl md:rounded-2xl p-5 pb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <p class="text-sm font-semibold text-gray-800">Detail Transaksi</p>
+                    <button wire:click="closeDetail" class="p-1">
+                        <x-heroicon-o-x-mark class="w-5 h-5 text-gray-400" />
+                    </button>
+                </div>
+
+                <div class="flex flex-col items-center mb-4">
+                    <p class="text-lg font-bold text-gray-800">{{ $detailTransaction->category_name }}</p>
+                    <span class="text-xs font-medium px-2.5 py-0.5 rounded-full mt-1 {{ $detailTransaction->type === 'Pemasukan' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600' }}">
+                        {{ $detailTransaction->type }}
+                    </span>
+                </div>
+
+                <p class="text-2xl font-bold text-center {{ $detailTransaction->type === 'Pemasukan' ? 'text-emerald-600' : 'text-red-500' }}">
+                    {{ $detailTransaction->type === 'Pemasukan' ? '+' : '-' }}Rp {{ number_format($detailTransaction->amount, 0, ',', '.') }}
+                </p>
+                <div class="mt-4 bg-gray-50 rounded-xl p-3 space-y-2 text-xs">
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Kategori</span>
+                        <span class="text-gray-700 font-medium">{{ $detailTransaction->category_name }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Tipe</span>
+                        <span class="text-gray-700 font-medium">{{ $detailTransaction->type }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Tanggal</span>
+                        <span class="text-gray-700 font-medium">{{ $d->translatedFormat('d F Y, H:i') }}</span>
+                    </div>
+                    @if ($detailTransaction->description)
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Catatan</span>
+                        <span class="text-gray-700 font-medium">{{ $detailTransaction->description }}</span>
+                    </div>
+                    @endif
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Status</span>
+                        <span class="text-emerald-600 font-medium">Berhasil</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <x-mobile.bottom-nav active="history" />
 </div>

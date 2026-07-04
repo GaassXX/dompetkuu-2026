@@ -181,7 +181,7 @@ class Dashboard extends Component
         $this->transaksiTerakhir = Transaction::query()
             ->whereRaw('user_id = ?', [$userId])
             ->where('status', 'approved')
-            ->orderByDesc('date')
+            ->orderByDesc('created_at')
             ->orderByDesc('id')
             ->limit(3)
             ->get();

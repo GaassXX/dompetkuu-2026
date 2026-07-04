@@ -1,4 +1,4 @@
-@props(['transaction'])
+@props(['transaction', 'showActions' => false])
 
 @php
     $categoryIcons = [
@@ -31,10 +31,30 @@
         </div>
         <div>
             <p class="text-sm font-medium text-gray-800">{{ $transaction->category_name }}</p>
-            <p class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($transaction->date)->translatedFormat('d M, H:i') }}</p>
+            @php $d = \Carbon\Carbon::parse($transaction->date); @endphp
+            <p class="text-xs text-gray-400">{{ $d->format('H:i') === '00:00' ? $d->translatedFormat('d M Y') : $d->translatedFormat('d M, H:i') }}</p>
         </div>
     </div>
-    <span class="text-sm font-semibold {{ $transaction->type === 'Pemasukan' ? 'text-emerald-600' : 'text-red-500' }}">
-        {{ $transaction->type === 'Pemasukan' ? '+' : '-' }}Rp {{ number_format($transaction->amount, 0, ',', '.') }}
-    </span>
+    <div class="flex items-center gap-2">
+        <span class="text-sm font-semibold {{ $transaction->type === 'Pemasukan' ? 'text-emerald-600' : 'text-red-500' }}">
+            {{ $transaction->type === 'Pemasukan' ? '+' : '-' }}Rp {{ number_format($transaction->amount, 0, ',', '.') }}
+        </span>
+        @if ($showActions)
+            <div class="flex items-center gap-0.5">
+                <button wire:click="viewTransaction({{ $transaction->original_id }}, '{{ $transaction->type }}')"
+                        class="p-1.5 rounded hover:bg-gray-100">
+                    <x-heroicon-o-eye class="w-4 h-4 text-gray-400" />
+                </button>
+                <a href="{{ route('mobile.add-transaction', ['edit' => $transaction->original_id, 'type' => $transaction->type]) }}"
+                   class="p-1.5 rounded hover:bg-gray-100">
+                    <x-heroicon-o-pencil-square class="w-4 h-4 text-gray-400" />
+                </a>
+                <button wire:click="deleteTransaction({{ $transaction->original_id }}, '{{ $transaction->type }}')"
+                        wire:confirm="Hapus transaksi ini?"
+                        class="p-1.5 rounded hover:bg-red-50">
+                    <x-heroicon-o-trash class="w-4 h-4 text-red-400" />
+                </button>
+            </div>
+        @endif
+    </div>
 </div>

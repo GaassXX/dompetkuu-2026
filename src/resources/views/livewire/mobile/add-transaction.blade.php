@@ -5,7 +5,7 @@
         <a href="{{ route('mobile.history') }}" class="text-gray-500">
             <x-heroicon-o-arrow-left class="w-5 h-5" />
         </a>
-        <span class="font-bold text-gray-800">Tambah Transaksi</span>
+        <span class="font-bold text-gray-800">{{ $editId ? 'Edit Transaksi' : 'Tambah Transaksi' }}</span>
     </div>
 
     {{-- Step 1: Pilih tipe --}}
@@ -40,7 +40,9 @@
                 <span class="text-xs font-medium px-3 py-1 rounded-full {{ $type === 'Pemasukan' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600' }}">
                     {{ $type }}
                 </span>
-                <button wire:click="selectType(null)" type="button" class="text-xs text-gray-400 underline">Ganti</button>
+                @unless ($editId)
+                    <button wire:click="selectType(null)" type="button" class="text-xs text-gray-400 underline">Ganti</button>
+                @endunless
             </div>
 
             <form wire:submit.prevent="save" class="space-y-4">
@@ -84,7 +86,7 @@
 
                 <button type="submit"
                     class="w-full bg-amber-500 text-white font-medium text-sm py-3 rounded-xl">
-                    Simpan Transaksi
+                    {{ $editId ? 'Perbarui Transaksi' : 'Simpan Transaksi' }}
                 </button>
             </form>
         </div>

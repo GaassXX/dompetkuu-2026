@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Mobile;
 
+use App\Models\Expense;
+use App\Models\Income;
 use App\Models\Transaction;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +15,8 @@ class TransactionHistory extends Component
     public string $periode = '';
     public int $bulan = 0;
     public int $tahun = 0;
+    public bool $showDetail = false;
+    public $detailTransaction = null;
 
     public function mount(): void
     {
@@ -44,6 +48,30 @@ class TransactionHistory extends Component
         $this->bulan = (int) ($parts[1] ?? now()->month);
     }
 
+    public function closeDetail(): void
+    {
+        $this->showDetail = false;
+        $this->detailTransaction = null;
+    }
+
+    public function viewTransaction(int $id, string $type): void
+    {
+        $this->detailTransaction = Transaction::whereRaw('user_id = ?', [Auth::id()])
+            ->where('original_id', $id)
+            ->where('type', $type)
+            ->first();
+        $this->showDetail = true;
+    }
+
+    public function deleteTransaction(int $id, string $type): void
+    {
+        if ($type === 'Pemasukan') {
+            Income::where('user_id', Auth::id())->where('id', $id)->delete();
+        } else {
+            Expense::where('user_id', Auth::id())->where('id', $id)->delete();
+        }
+    }
+
     public function getPeriodeOptionsProperty(): array
     {
         $start = now()->startOfYear();
@@ -64,7 +92,7 @@ class TransactionHistory extends Component
             ->where('status', 'approved')
             ->whereMonth('date', $this->bulan)
             ->whereYear('date', $this->tahun)
-            ->orderByDesc('date')
+            ->orderByDesc('created_at')
             ->orderByDesc('id');
 
         if ($this->filter === 'pengeluaran') {
