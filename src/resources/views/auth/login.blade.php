@@ -49,14 +49,14 @@
                 <span class="text-lg font-extrabold text-[#1E293B]">Dompet<span class="text-[#F59E0B]">Kuu</span></span>
             </div>
 
-            <a href="{{ Route::has('help') ? route('help') : '#' }}"
-               class="flex items-center gap-2 border border-gray-200 bg-white rounded-full px-4 py-2 text-xs font-semibold text-gray-600 shadow-sm hover:shadow transition">
+            <button onclick="showHelp()"
+               class="flex items-center gap-2 border border-gray-200 bg-white rounded-full px-4 py-2 text-xs font-semibold text-gray-600 shadow-sm hover:shadow transition cursor-pointer">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 18v-6a9 9 0 0118 0v6"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3v5zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3v5z"/>
                 </svg>
                 Butuh bantuan?
-            </a>
+            </button>
         </div>
 
         {{-- Main grid --}}
@@ -302,11 +302,39 @@
         </div>
     </div>
 
+    {{-- Help Modal --}}
+    <div id="helpModal" class="fixed inset-0 z-50 hidden bg-black/30 flex items-center justify-center" onclick="closeHelp(event)">
+        <div class="bg-white rounded-2xl p-6 max-w-sm mx-4 shadow-2xl" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-gray-800">Hubungi Kami</h3>
+                <button onclick="closeHelp()" class="text-2xl text-gray-400 hover:text-gray-600 leading-none">&times;</button>
+            </div>
+            <div class="flex items-center gap-3 bg-amber-50 rounded-xl p-4 border border-amber-100">
+                <span class="text-xl">📧</span>
+                <div>
+                    <p class="text-sm font-semibold text-gray-700">Email</p>
+                    <a href="mailto:infodompetkuu@gmail.com" class="text-amber-600 font-medium text-sm">infodompetkuu@gmail.com</a>
+                </div>
+            </div>
+            <p class="text-xs text-gray-400 mt-4 text-center">Kami akan merespon dalam 1x24 jam</p>
+        </div>
+    </div>
+
     <script>
         function togglePassword() {
             const input = document.getElementById('password');
             const isHidden = input.type === 'password';
             input.type = isHidden ? 'text' : 'password';
+        }
+
+        function showHelp() {
+            document.getElementById('helpModal').classList.remove('hidden');
+        }
+
+        function closeHelp(e) {
+            if (!e || e.target === document.getElementById('helpModal')) {
+                document.getElementById('helpModal').classList.add('hidden');
+            }
         }
     </script>
 </body>

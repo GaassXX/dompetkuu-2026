@@ -26,9 +26,6 @@ class ParentPanelProvider extends PanelProvider
             ->id('parent')
             ->default()
             ->path('parent')
-            ->login(\App\Filament\Parent\Auth\Login::class)
-            ->registration(\App\Filament\Parent\Auth\Register::class)
-            ->passwordReset()
             ->profile(\App\Filament\Pages\Auth\EditProfile::class)
 
             ->brandName('Dompetkuu')

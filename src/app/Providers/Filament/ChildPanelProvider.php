@@ -24,8 +24,6 @@ class ChildPanelProvider extends PanelProvider
         return $panel
             ->id('child')
             ->path('child')
-            ->login()
-            ->passwordReset()
             ->profile(\App\Filament\Pages\Auth\EditProfile::class)
             ->databaseNotifications()
             ->databaseNotificationsPolling('15s')

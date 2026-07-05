@@ -25,6 +25,14 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
+        @media (max-width: 767px) {
+            #navbar {
+                background: rgba(255, 255, 255, 0.95) !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+        }
     </style>
 </head>
 
@@ -97,7 +105,7 @@
     <!-- Hero Section -->
     <section id="home" class="relative min-h-screen flex items-center overflow-hidden"
         style="background:linear-gradient(180deg,#FFFDF9 0%,#FFF9EF 55%,#FFFDF9 100%);">
-        <div class="absolute inset-0 -z-10 pointer-events-none">
+        <div class="absolute inset-0 -z-10 pointer-events-none hidden lg:block">
             <div class="absolute top-1/4 -right-20 w-[500px] h-[500px] rounded-full bg-[#1E293B]/5 blur-3xl"></div>
             <div class="absolute bottom-1/4 -left-20 w-[400px] h-[400px] rounded-full bg-[#FBBF24]/5 blur-3xl"></div>
         </div>
@@ -151,10 +159,10 @@
 
                 <div class="lg:col-span-6 relative">
                     <div
-                        class="relative rounded-3xl bg-white shadow-2xl p-6 md:p-8 border border-[#E2E8F0] transform rotate-2 hover:rotate-0 transition-all duration-700 hover:shadow-3xl">
-                        <div class="absolute -top-8 -right-8 w-32 h-32 bg-[#FEF3C7] rounded-full blur-2xl opacity-50">
+                        class="relative rounded-3xl bg-white shadow-2xl p-6 md:p-8 border border-[#E2E8F0] transform lg:rotate-2 hover:rotate-0 transition-transform duration-700 hover:shadow-3xl">
+                        <div class="absolute -top-8 -right-8 w-32 h-32 bg-[#FEF3C7] rounded-full blur-2xl opacity-50 hidden lg:block">
                         </div>
-                        <div class="absolute -bottom-8 -left-8 w-40 h-40 bg-[#FEF3C7] rounded-full blur-2xl opacity-50">
+                        <div class="absolute -bottom-8 -left-8 w-40 h-40 bg-[#FEF3C7] rounded-full blur-2xl opacity-50 hidden lg:block">
                         </div>
 
                         <div class="bg-white rounded-2xl overflow-hidden border border-[#E2E8F0] shadow-sm relative">
@@ -236,7 +244,7 @@
     <!-- Mengapa Manual Section -->
     <section id="mengapa" class="py-24 lg:py-32 relative overflow-hidden"
         style="background:linear-gradient(180deg,#FFFDF9 0%,#FFF7EB 52%,#FFFDF9 100%);">
-        <div class="absolute inset-0 -z-10 pointer-events-none">
+        <div class="absolute inset-0 -z-10 pointer-events-none hidden lg:block">
             <div class="absolute top-1/3 -right-20 w-[400px] h-[400px] rounded-full bg-[#1E293B]/5 blur-3xl"></div>
             <div class="absolute bottom-1/4 -left-20 w-[300px] h-[300px] rounded-full bg-[#FBBF24]/5 blur-3xl"></div>
         </div>
@@ -270,7 +278,7 @@
             <div class="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto mb-16 lg:mb-20">
 
                 <div
-                    class="bg-[#FFFCF6] rounded-3xl p-8 border border-[#F5E7C8] shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-center">
+                    class="bg-[#FFFCF6] rounded-3xl p-8 border border-[#F5E7C8] shadow-sm hover:shadow-xl transition-transform duration-300 hover:-translate-y-1 text-center">
                     <div
                         class="w-16 h-16 bg-[#FFFBEB] rounded-2xl flex items-center justify-center mx-auto mb-5 ring-1 ring-[#FDE68A]/50">
                         <svg class="w-8 h-8 text-[#D97706]" fill="none" stroke="currentColor"
@@ -287,7 +295,7 @@
                 </div>
 
                 <div
-                    class="bg-[#FFFCF6] rounded-3xl p-8 border border-[#F5E7C8] shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-center">
+                    class="bg-[#FFFCF6] rounded-3xl p-8 border border-[#F5E7C8] shadow-sm hover:shadow-xl transition-transform duration-300 hover:-translate-y-1 text-center">
                     <div
                         class="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-5 ring-1 ring-red-200/50">
                         <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -303,7 +311,7 @@
                 </div>
 
                 <div
-                    class="bg-[#FFFCF6] rounded-3xl p-8 border border-[#F5E7C8] shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-center">
+                    class="bg-[#FFFCF6] rounded-3xl p-8 border border-[#F5E7C8] shadow-sm hover:shadow-xl transition-transform duration-300 hover:-translate-y-1 text-center">
                     <div
                         class="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-5 ring-1 ring-blue-200/50">
                         <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -346,7 +354,7 @@
     <!-- Fitur Section -->
     <section id="fitur" class="py-24 lg:py-32 relative"
         style="background:linear-gradient(180deg,#FFF8EE 0%,#FFFDF9 100%);">
-        <div class="absolute inset-0 -z-10 pointer-events-none">
+        <div class="absolute inset-0 -z-10 pointer-events-none hidden lg:block">
             <div class="absolute top-1/2 left-0 w-72 h-72 bg-[#1E293B]/5 rounded-full blur-3xl"></div>
             <div class="absolute bottom-0 right-0 w-96 h-96 bg-[#FCD34D]/5 rounded-full blur-3xl"></div>
         </div>
@@ -364,7 +372,7 @@
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
 
                 <div
-                    class="group relative bg-[#FFF9F0] rounded-3xl p-8 border border-[#F3E2C5] shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    class="group relative bg-[#FFF9F0] rounded-3xl p-8 border border-[#F3E2C5] shadow-sm hover:shadow-xl transition-transform duration-300 hover:-translate-y-1">
                     <div
                         class="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#FFFBEB]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     </div>
@@ -385,7 +393,7 @@
                 </div>
 
                 <div
-                    class="group relative bg-[#FFF9F0] rounded-3xl p-8 border border-[#F3E2C5] shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    class="group relative bg-[#FFF9F0] rounded-3xl p-8 border border-[#F3E2C5] shadow-sm hover:shadow-xl transition-transform duration-300 hover:-translate-y-1">
                     <div
                         class="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#FFFBEB]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     </div>
@@ -406,7 +414,7 @@
                 </div>
 
                 <div
-                    class="group relative bg-[#FFF9F0] rounded-3xl p-8 border border-[#F3E2C5] shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    class="group relative bg-[#FFF9F0] rounded-3xl p-8 border border-[#F3E2C5] shadow-sm hover:shadow-xl transition-transform duration-300 hover:-translate-y-1">
                     <div
                         class="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#FFFBEB]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     </div>
@@ -428,7 +436,7 @@
                 </div>
 
                 <div
-                    class="group relative bg-[#FFF9F0] rounded-3xl p-8 border border-[#F3E2C5] shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    class="group relative bg-[#FFF9F0] rounded-3xl p-8 border border-[#F3E2C5] shadow-sm hover:shadow-xl transition-transform duration-300 hover:-translate-y-1">
                     <div
                         class="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#FFFBEB]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     </div>
@@ -449,7 +457,7 @@
                 </div>
 
                 <div
-                    class="group relative bg-[#FFF9F0] rounded-3xl p-8 border border-[#F3E2C5] shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    class="group relative bg-[#FFF9F0] rounded-3xl p-8 border border-[#F3E2C5] shadow-sm hover:shadow-xl transition-transform duration-300 hover:-translate-y-1">
                     <div
                         class="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#FFFBEB]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     </div>
@@ -470,7 +478,7 @@
                 </div>
 
                 <div
-                    class="group relative bg-[#FFF9F0] rounded-3xl p-8 border border-[#F3E2C5] shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    class="group relative bg-[#FFF9F0] rounded-3xl p-8 border border-[#F3E2C5] shadow-sm hover:shadow-xl transition-transform duration-300 hover:-translate-y-1">
                     <div
                         class="absolute inset-0 rounded-3xl bg-gradient-to-br from-[#FFFBEB]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     </div>
@@ -497,10 +505,10 @@
     <!-- CTA Section -->
     <section class="py-24 relative overflow-hidden bg-[#1E293B]">
         <div
-            class="absolute top-0 right-0 w-96 h-96 bg-[#F59E0B] rounded-full blur-3xl opacity-10 transform translate-x-1/3 -translate-y-1/3">
+            class="absolute top-0 right-0 w-96 h-96 bg-[#F59E0B] rounded-full blur-3xl opacity-10 transform translate-x-1/3 -translate-y-1/3 hidden lg:block">
         </div>
         <div
-            class="absolute bottom-0 left-0 w-80 h-80 bg-[#F59E0B] rounded-full blur-3xl opacity-10 transform -translate-x-1/3 translate-y-1/3">
+            class="absolute bottom-0 left-0 w-80 h-80 bg-[#F59E0B] rounded-full blur-3xl opacity-10 transform -translate-x-1/3 translate-y-1/3 hidden lg:block">
         </div>
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
             <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">Siap Merapikan Keuangan
