@@ -189,7 +189,20 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('livewire.mobile.dashboard')
-            ->layout('layouts.mobile');
+        $formatRp = function ($number) {
+            $number = (float) $number;
+            if ($number >= 1000000000) {
+                $val = $number / 1000000000;
+                return 'Rp ' . ($val == floor($val) ? number_format($val, 0, ',', '.') : number_format($val, 1, ',', '.')) . ' M';
+            } elseif ($number >= 100000000) {
+                $val = $number / 1000000;
+                return 'Rp ' . ($val == floor($val) ? number_format($val, 0, ',', '.') : number_format($val, 1, ',', '.')) . ' Jt';
+            }
+            return 'Rp ' . number_format($number, 0, ',', '.');
+        };
+
+        return view('livewire.mobile.dashboard', [
+            'formatRp' => $formatRp,
+        ])->layout('layouts.mobile');
     }
 }

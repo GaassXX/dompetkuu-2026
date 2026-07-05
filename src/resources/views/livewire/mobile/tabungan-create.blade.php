@@ -5,7 +5,7 @@
         <a href="{{ route('mobile.tabungan') }}" class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center">
             <x-heroicon-o-arrow-left class="w-4 h-4 text-gray-500" />
         </a>
-        <span class="font-bold text-gray-800">Tambah Tabungan</span>
+        <span class="font-bold text-gray-800">{{ $editId ? 'Edit Tabungan' : 'Tambah Tabungan' }}</span>
     </div>
 
     <form wire:submit="save" class="mx-4 mt-3 space-y-4">
@@ -75,7 +75,7 @@
 
         <button type="submit"
             class="w-full bg-amber-500 text-white text-sm font-semibold py-3 rounded-xl shadow-sm hover:bg-amber-600 transition">
-            Simpan Tabungan
+            {{ $editId ? 'Perbarui Tabungan' : 'Simpan Tabungan' }}
         </button>
     </form>
 

@@ -19,11 +19,40 @@
 <div class="min-h-screen bg-gray-50 text-gray-900 pb-28">
 
     {{-- Header --}}
-    <div class="flex items-center gap-3 px-4 pt-4 pb-2">
-        <a href="{{ route('mobile.tabungan') }}" class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center">
-            <x-heroicon-o-arrow-left class="w-4 h-4 text-gray-500" />
-        </a>
-        <span class="font-bold text-gray-800 truncate">{{ $saving->name }}</span>
+    <div class="flex items-center justify-between px-4 pt-4 pb-2" x-data="{ menu: false }">
+        <div class="flex items-center gap-3">
+            <a href="{{ route('mobile.tabungan') }}" class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center">
+                <x-heroicon-o-arrow-left class="w-4 h-4 text-gray-500" />
+            </a>
+            <span class="font-bold text-gray-800 truncate">{{ $saving->name }}</span>
+        </div>
+
+        <div class="relative">
+            <button @click="menu = !menu" class="w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition">
+                <x-heroicon-o-ellipsis-vertical class="w-4 h-4 text-gray-500" />
+            </button>
+
+            <div x-show="menu" @click.away="menu = false"
+                 x-transition:enter="transition ease-out duration-100"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-75"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="absolute right-0 top-full mt-1 w-44 bg-white border border-gray-100 rounded-xl shadow-lg z-50 py-1.5"
+                 style="display: none;">
+                <a href="{{ route('mobile.tabungan.create', ['edit' => $saving->id]) }}"
+                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 transition-colors">
+                    <x-heroicon-o-pencil class="w-4 h-4 text-gray-400" />
+                    Edit Tabungan
+                </a>
+                <button wire:click="delete" wire:confirm="Hapus tabungan? Semua setoran juga akan dihapus."
+                    class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                    <x-heroicon-o-trash class="w-4 h-4 text-gray-400" />
+                    Hapus Tabungan
+                </button>
+            </div>
+        </div>
     </div>
 
     @if (session('success'))

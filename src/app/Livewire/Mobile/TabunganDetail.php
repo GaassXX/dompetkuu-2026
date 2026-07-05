@@ -18,7 +18,6 @@ class TabunganDetail extends Component
 
     public function mount(Saving $saving): void
     {
-        // Pastikan hanya pemilik yang bisa akses (bukan tabungan orang lain)
         abort_unless($saving->user_id === Auth::id(), 403);
 
         $this->saving = $saving;
@@ -33,30 +32,43 @@ class TabunganDetail extends Component
     public function setor()
     {
         $this->validate([
-            'amount' => 'required|numeric|min:1',
+            'amount' => 'required|integer|min:1',
             'date'   => 'required|date',
             'note'   => 'nullable|string|max:255',
         ]);
 
+        $amount = (int) $this->amount;
+
         SavingDeposit::create([
             'saving_id' => $this->saving->id,
             'user_id'   => Auth::id(),
-            'amount'    => $this->amount,
+            'amount'    => $amount,
             'date'      => $this->date,
             'note'      => $this->note ?: null,
         ]);
 
-        $this->saving->increment('current_amount', $this->amount);
+        $this->saving->update([
+            'current_amount' => $this->saving->current_amount + $amount,
+        ]);
 
-        if ((float) $this->saving->fresh()->current_amount >= (float) $this->saving->target_amount) {
+        $this->saving->refresh();
+
+        if ((float) $this->saving->current_amount >= (float) $this->saving->target_amount) {
             $this->saving->update(['status' => 'completed']);
         }
 
-        $this->saving->refresh();
         $this->reset(['amount', 'note', 'showDepositForm']);
         $this->date = now()->format('Y-m-d');
 
         session()->flash('success', 'Setoran berhasil dicatat.');
+    }
+
+    public function delete()
+    {
+        $this->saving->deposits()->delete();
+        $this->saving->delete();
+
+        return redirect()->route('mobile.tabungan');
     }
 
     public function render()

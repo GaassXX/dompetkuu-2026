@@ -58,11 +58,24 @@ class Profile extends Component
             ->where('status', 'active')
             ->sum('target_amount');
 
+        $formatRp = function ($number) {
+            $number = (float) $number;
+            if ($number >= 1000000000) {
+                $val = $number / 1000000000;
+                return 'Rp ' . ($val == floor($val) ? number_format($val, 0, ',', '.') : number_format($val, 1, ',', '.')) . ' M';
+            } elseif ($number >= 100000000) {
+                $val = $number / 1000000;
+                return 'Rp ' . ($val == floor($val) ? number_format($val, 0, ',', '.') : number_format($val, 1, ',', '.')) . ' Jt';
+            }
+            return 'Rp ' . number_format($number, 0, ',', '.');
+        };
+
         return view('livewire.mobile.profile', [
             'user'                => $user,
             'totalSaldo'          => $totalSaldo,
             'totalTabungan'       => $totalTabungan,
             'totalTargetTabungan' => $totalTargetTabungan,
+            'formatRp'            => $formatRp,
         ])->layout('layouts.mobile');
     }
 }

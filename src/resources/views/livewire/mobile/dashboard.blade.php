@@ -9,7 +9,7 @@
                 </div>
                 <div class="min-w-0">
                     <p class="text-[11px] text-gray-400">Pemasukan</p>
-                    <p class="font-semibold text-gray-800 text-sm truncate">Rp {{ number_format($pemasukanBulanIni, 0, ',', '.') }}</p>
+                    <p class="font-semibold text-gray-800 text-sm truncate">{{ $formatRp($pemasukanBulanIni) }}</p>
                 </div>
             </div>
         </div>
@@ -20,7 +20,7 @@
                 </div>
                 <div class="min-w-0">
                     <p class="text-[11px] text-gray-400">Pengeluaran</p>
-                    <p class="font-semibold text-gray-800 text-sm truncate">Rp {{ number_format($pengeluaranBulanIni, 0, ',', '.') }}</p>
+                    <p class="font-semibold text-gray-800 text-sm truncate">{{ $formatRp($pengeluaranBulanIni) }}</p>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
                 </div>
                 <div class="min-w-0">
                     <p class="text-[11px] text-gray-400">Saldo</p>
-                    <p class="font-semibold text-gray-800 text-sm truncate">Rp {{ number_format($totalSaldo, 0, ',', '.') }}</p>
+                    <p class="font-semibold text-gray-800 text-sm truncate">{{ $formatRp($totalSaldo) }}</p>
                 </div>
             </div>
         </div>
@@ -42,7 +42,7 @@
                 </div>
                 <div class="min-w-0">
                     <p class="text-[11px] text-gray-400">Tabungan</p>
-                    <p class="font-semibold text-gray-800 text-sm truncate">Rp {{ number_format($tabunganBulanIni, 0, ',', '.') }}</p>
+                    <p class="font-semibold text-gray-800 text-sm truncate">{{ $formatRp($tabunganBulanIni) }}</p>
                 </div>
             </div>
         </div>
@@ -152,7 +152,7 @@
                             <div class="flex items-center gap-2 text-xs">
                                 <span class="w-2 h-2 rounded-full shrink-0" style="background:{{ $colors[$i] }}"></span>
                                 <span class="text-gray-600 truncate">{{ $cat['label'] }}</span>
-                                <span class="ml-auto font-medium text-gray-800 shrink-0">Rp {{ number_format($cat['amount'], 0, ',', '.') }}</span>
+                                <span class="ml-auto font-medium text-gray-800 shrink-0">{{ $formatRp($cat['amount']) }}</span>
                             </div>
                         @endforeach
                     </div>
@@ -192,7 +192,7 @@
                              style="width: {{ min($tab['progress'], 100) }}%"></div>
                     </div>
                     <p class="text-[10px] text-gray-400 mt-1">
-                        Rp {{ number_format($tab['current_amount'], 0, ',', '.') }} / Rp {{ number_format($tab['target_amount'], 0, ',', '.') }}
+                        {{ $formatRp($tab['current_amount']) }} / {{ $formatRp($tab['target_amount']) }}
                     </p>
                 </div>
             @empty

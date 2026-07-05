@@ -21,12 +21,12 @@
     <div class="flex gap-3 mx-4 mt-3">
         <div class="flex-1 bg-white border border-gray-100 rounded-xl p-3 shadow-sm">
             <p class="text-xs text-gray-400">Total Saldo</p>
-            <p class="font-semibold text-gray-800">Rp {{ number_format($totalSaldo, 0, ',', '.') }}</p>
+            <p class="font-semibold text-gray-800">{{ $formatRp($totalSaldo) }}</p>
         </div>
         <a href="{{ route('mobile.tabungan') }}" class="flex-1 bg-white border border-gray-100 rounded-xl p-3 shadow-sm">
             <p class="text-xs text-gray-400">Tabungan</p>
-            <p class="font-semibold text-gray-800">Rp {{ number_format($totalTabungan, 0, ',', '.') }}</p>
-            <p class="text-[10px] text-gray-400 mt-0.5">Dari Rp {{ number_format($totalTargetTabungan, 0, ',', '.') }}</p>
+            <p class="font-semibold text-gray-800">{{ $formatRp($totalTabungan) }}</p>
+            <p class="text-[10px] text-gray-400 mt-0.5">Dari {{ $formatRp($totalTargetTabungan) }}</p>
         </a>
     </div>
 
