@@ -7,6 +7,9 @@ src/node_modules/
 .idea/
 .vscode/
 .DS_Store
+# Sensitive docs
+startAzure.md
+
 # Environment files
 .env
 src/.env
