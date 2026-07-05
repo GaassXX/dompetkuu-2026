@@ -113,7 +113,7 @@
                     <x-heroicon-o-chevron-right class="w-4 h-4 text-gray-300" />
                 </button>
             @endif
-            <a href="#" class="flex items-center justify-between px-4 py-3">
+            <a href="{{ route('mobile.keamanan') }}" class="flex items-center justify-between px-4 py-3">
                 <span class="flex items-center gap-3 text-sm text-gray-800">
                     <x-heroicon-o-shield-check class="w-4 h-4 text-amber-600" /> Keamanan
                 </span>
@@ -126,7 +126,7 @@
     <div class="mx-4 mt-5">
         <p class="text-xs text-gray-400 mb-2">LAINNYA</p>
         <div class="bg-white border border-gray-100 rounded-xl divide-y divide-gray-100 shadow-sm">
-            <a href="#" class="flex items-center justify-between px-4 py-3">
+            <a href="{{ route('mobile.panduan') }}" class="flex items-center justify-between px-4 py-3">
                 <span class="flex items-center gap-3 text-sm text-gray-800">
                     <x-heroicon-o-question-mark-circle class="w-4 h-4 text-gray-500" /> Pusat Bantuan
                 </span>

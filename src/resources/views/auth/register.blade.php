@@ -274,7 +274,7 @@
 
         {{-- Footer --}}
         <div class="mt-12 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400 border-t border-gray-100 pt-6">
-            <p>© {{ date('Y') }} dompettkuu. Semua hak dilindungi.</p>
+            <p>© {{ date('Y') }} DompetKuu. Semua hak dilindungi.</p>
             <div class="flex items-center gap-4">
                 <a href="{{ Route::has('privacy') ? route('privacy') : '#' }}" class="hover:text-amber-600 transition">Privasi</a>
                 <span class="text-gray-200">•</span>

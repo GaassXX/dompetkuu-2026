@@ -79,7 +79,7 @@
         </div>
 
         <p class="text-center text-xs text-gray-400 mt-6">
-            &copy; {{ date('Y') }} dompettkuu. Semua hak dilindungi.
+            &copy; {{ date('Y') }} DompetKuu. Semua hak dilindungi.
         </p>
     </div>
 

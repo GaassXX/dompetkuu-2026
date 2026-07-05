@@ -61,6 +61,11 @@ $menuItems = $isParent ? [
                         {{ $item['label'] }}
                     </a>
                 @endforeach
+                <a href="{{ route('mobile.panduan') }}"
+                   class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">
+                    <x-heroicon-o-book-open class="w-4 h-4 text-gray-400 shrink-0" />
+                    Panduan
+                </a>
                 <div class="border-t border-gray-100 my-1"></div>
                 <p class="px-4 pt-1 pb-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Akun</p>
                 <a href="{{ route('mobile.profile') }}"

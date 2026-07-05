@@ -144,6 +144,8 @@ Route::middleware(['auth', \App\Http\Middleware\RedirectIfDesktop::class])->pref
     Route::get('/tabungan/create', \App\Livewire\Mobile\TabunganCreate::class)->name('tabungan.create');
     Route::get('/tabungan/completed', \App\Livewire\Mobile\TabunganComplete::class)->name('tabungan.completed');
     Route::get('/tabungan/{saving}', \App\Livewire\Mobile\TabunganDetail::class)->name('tabungan.show');
+    Route::get('/panduan', \App\Livewire\Mobile\Panduan::class)->name('panduan');
+    Route::get('/keamanan', \App\Livewire\Mobile\Keamanan::class)->name('keamanan');
 });
 
 Route::get('/test-device', function () {
