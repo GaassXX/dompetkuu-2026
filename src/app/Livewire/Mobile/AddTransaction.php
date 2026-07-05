@@ -54,7 +54,7 @@ class AddTransaction extends Component
             ->get();
     }
 
-    public function selectType(string $type): void
+    public function selectType(?string $type): void
     {
         $this->type = $type;
         $this->category_id = '';

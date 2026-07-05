@@ -2,9 +2,15 @@
 
     {{-- Header --}}
     <div class="flex items-center gap-3 px-4 pt-4 pb-2">
-        <a href="{{ route('mobile.history') }}" class="text-gray-500">
-            <x-heroicon-o-arrow-left class="w-5 h-5" />
-        </a>
+        @if ($type)
+            <button wire:click="selectType(null)" class="text-gray-500">
+                <x-heroicon-o-arrow-left class="w-5 h-5" />
+            </button>
+        @else
+            <a href="{{ route('mobile.dashboard') }}" class="text-gray-500">
+                <x-heroicon-o-arrow-left class="w-5 h-5" />
+            </a>
+        @endif
         <span class="font-bold text-gray-800">{{ $editId ? 'Edit Transaksi' : 'Tambah Transaksi' }}</span>
     </div>
 
@@ -40,9 +46,7 @@
                 <span class="text-xs font-medium px-3 py-1 rounded-full {{ $type === 'Pemasukan' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600' }}">
                     {{ $type }}
                 </span>
-                @unless ($editId)
-                    <button wire:click="selectType(null)" type="button" class="text-xs text-gray-400 underline">Ganti</button>
-                @endunless
+
             </div>
 
             <form wire:submit.prevent="save" class="space-y-4">
