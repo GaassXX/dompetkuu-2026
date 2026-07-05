@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dompettkuu — Lupa Kata Sandi</title>
+    <title>DompetKuu — Lupa Kata Sandi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -23,7 +23,7 @@
                     <path d="M21 18v1a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v1h-9a2 2 0 00-2 2v8a2 2 0 002 2h9zm-9-2h10V8H12v8zm4-2.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
                 </svg>
             </div>
-            <span class="text-lg font-extrabold text-[#1E293B]">dompet<span class="text-[#F59E0B]">tkuu</span></span>
+            <span class="text-lg font-extrabold text-[#1E293B]">Dompet<span class="text-[#F59E0B]">Kuu</span></span>
         </div>
 
         {{-- Card --}}
@@ -81,7 +81,7 @@
         </div>
 
         <p class="text-center text-xs text-gray-400 mt-6">
-            &copy; {{ date('Y') }} dompettkuu. Semua hak dilindungi.
+            &copy; {{ date('Y') }} DompetKuu. Semua hak dilindungi.
         </p>
     </div>
 

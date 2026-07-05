@@ -98,6 +98,12 @@ Route::get('/forgot-password', [ForgotPasswordController::class, 'show'])
 Route::post('/forgot-password', [ForgotPasswordController::class, 'send'])
     ->name('password.email');
 
+// Verify Code
+Route::get('/verify-code', [App\Http\Controllers\Auth\VerifyCodeController::class, 'show'])
+    ->name('password.verify');
+Route::post('/verify-code', [App\Http\Controllers\Auth\VerifyCodeController::class, 'verify'])
+    ->name('password.verify.post');
+
 // Reset Password
 Route::get('/reset-password/{token}', [App\Http\Controllers\Auth\ResetPasswordController::class, 'show'])
     ->name('password.reset');
