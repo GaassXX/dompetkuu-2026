@@ -8,6 +8,7 @@ use App\Support\RoleRedirector;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterController extends Controller
 {
@@ -68,6 +69,19 @@ class RegisterController extends Controller
         ]);
 
         $user->assignRole($spatieRole);
+
+        Mail::raw(
+            "Halo {$user->name},\n\n"
+            . "Selamat datang di DompetKuu! Akun Anda berhasil dibuat.\n\n"
+            . "Email: {$user->email}\n"
+            . "Role: " . ($isParent ? 'Orang Tua' : 'Personal') . "\n\n"
+            . "Mulai catat keuangan sekarang:\n"
+            . "https://dompetkuu.my.id/login\n\n"
+            . "— Tim DompetKuu",
+            fn ($message) => $message->to($user->email)
+                ->subject('Selamat Datang di DompetKuu 🎉')
+        );
+
         Auth::login($user);
 
         return RoleRedirector::to($user);

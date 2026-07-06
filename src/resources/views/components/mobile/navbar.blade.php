@@ -28,7 +28,20 @@ $menuItems = $isParent ? [
         <span class="font-bold text-gray-800 text-sm tracking-tight">Dompet<span class="text-amber-500">Kuu</span></span>
     </div>
     <div class="flex items-center gap-1">
-        <x-heroicon-o-bell class="w-5 h-5 text-gray-400" />
+        @php
+            $childIds = $user ? \App\Models\User::where('parent_id', $user->id)->pluck('id') : collect();
+            $pendingCount = \App\Models\Income::whereIn('user_id', $childIds)->where('status', 'pending')->count()
+                + \App\Models\Expense::whereIn('user_id', $childIds)->where('status', 'pending')->count();
+        @endphp
+        <a href="{{ route('mobile.notifikasi') }}" class="relative p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+            <x-heroicon-o-bell class="w-5 h-5 text-gray-400" />
+            @php
+                $_unreadCount = auth()->user()->unreadNotifications->count();
+            @endphp
+            @if ($_unreadCount > 0)
+                <span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center">{{ $_unreadCount > 9 ? '9+' : $_unreadCount }}</span>
+            @endif
+        </a>
         <div class="relative">
             <button @click="open = !open" class="p-1.5 rounded-lg hover:bg-gray-100 transition-colors">
                 <x-heroicon-o-ellipsis-vertical class="w-5 h-5 text-gray-500" />
@@ -61,6 +74,16 @@ $menuItems = $isParent ? [
                         {{ $item['label'] }}
                     </a>
                 @endforeach
+                @if ($isParent)
+                    <a href="{{ route('mobile.persetujuan') }}"
+                       class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">
+                        <x-heroicon-o-check-circle class="w-4 h-4 text-gray-400 shrink-0" />
+                        Persetujuan
+                        @if ($pendingCount > 0)
+                            <span class="ml-auto bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">{{ $pendingCount }}</span>
+                        @endif
+                    </a>
+                @endif
                 <a href="{{ route('mobile.panduan') }}"
                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">
                     <x-heroicon-o-book-open class="w-4 h-4 text-gray-400 shrink-0" />

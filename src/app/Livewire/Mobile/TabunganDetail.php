@@ -4,6 +4,7 @@ namespace App\Livewire\Mobile;
 
 use App\Models\Saving;
 use App\Models\SavingDeposit;
+use App\Notifications\SavingGoalReached;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -55,6 +56,10 @@ class TabunganDetail extends Component
 
         if ((float) $this->saving->current_amount >= (float) $this->saving->target_amount) {
             $this->saving->update(['status' => 'completed']);
+            Auth::user()->notify(new SavingGoalReached(
+                savingName: $this->saving->name,
+                targetAmount: $this->saving->target_amount,
+            ));
         }
 
         $this->reset(['amount', 'note', 'showDepositForm']);

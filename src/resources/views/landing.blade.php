@@ -34,6 +34,7 @@
             }
         }
     </style>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <body class="text-[#1E293B] antialiased overflow-x-hidden selection:bg-[#FEF3C7] selection:text-[#78350F]"
@@ -61,6 +62,8 @@
                     <a href="#home" class="text-[#475569] hover:text-[#F59E0B] font-medium transition-colors">Home</a>
                     <a href="#fitur"
                         class="text-[#475569] hover:text-[#F59E0B] font-medium transition-colors">Fitur</a>
+                    <a href="#faq"
+                        class="text-[#475569] hover:text-[#F59E0B] font-medium transition-colors">FAQ</a>
                 </div>
 
                 <div class="hidden md:flex items-center space-x-4">
@@ -91,6 +94,8 @@
                     class="block px-3 py-3 rounded-md text-base font-medium text-[#475569] hover:text-[#F59E0B] hover:bg-[#FFFBEB]">Home</a>
                 <a href="#fitur"
                     class="block px-3 py-3 rounded-md text-base font-medium text-[#475569] hover:text-[#F59E0B] hover:bg-[#FFFBEB]">Fitur</a>
+                <a href="#faq"
+                    class="block px-3 py-3 rounded-md text-base font-medium text-[#475569] hover:text-[#F59E0B] hover:bg-[#FFFBEB]">FAQ</a>
                 <div class="mt-4 pt-4 border-t border-[#E2E8F0] flex flex-col gap-3">
                     <a href="{{ route('login') }}"
                         class="w-full text-center block px-4 py-3 rounded-xl text-base font-medium text-[#475569] bg-gray-50 border border-[#F1F5F9]">Login</a>
@@ -498,6 +503,57 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-24 lg:py-32 relative"
+        style="background:linear-gradient(180deg,#FFFDF9 0%,#FFF8ED 52%,#FFFDF9 100%);">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 lg:mb-20">
+                <span
+                    class="inline-block px-4 py-1.5 rounded-full bg-[#FEF3C7] text-[#D97706] font-semibold text-sm mb-4 border border-[#FDE68A]/60">❓
+                    Pertanyaan Umum</span>
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#1E293B] mb-6 tracking-tight">
+                    Yang Sering Ditanyakan</h2>
+                <p class="text-lg text-[#475569] leading-relaxed">Temukan jawaban cepat seputar DompetKuu sebelum memulai.
+                </p>
+            </div>
+
+            <div class="space-y-3" x-data="{ open: null }">
+                @forelse ($faqs as $index => $faq)
+                    <div class="bg-white rounded-2xl border border-[#E2E8F0] shadow-sm overflow-hidden">
+                        <button @click="open = open === {{ $index }} ? null : {{ $index }}"
+                            class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-[#FFFBEB] transition"
+                            :class="{ 'border-b border-[#E2E8F0]': open === {{ $index }} }">
+                            <div class="flex items-center gap-3">
+                                <span class="text-xl">{{ $faq->icon }}</span>
+                                <span class="font-semibold text-[#1E293B]">{{ $faq->title }}</span>
+                            </div>
+                            <svg class="w-5 h-5 text-[#94A3B8] transition-transform duration-200"
+                                :class="{ 'rotate-180': open === {{ $index }} }" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div x-show="open === {{ $index }}" x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 -translate-y-2"
+                            x-transition:enter-end="opacity-100 translate-y-0"
+                            x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100 translate-y-0"
+                            x-transition:leave-end="opacity-0 -translate-y-2"
+                            class="px-6 pb-5 pt-2 text-sm text-[#475569] leading-relaxed">
+                            {!! $faq->content !!}
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center py-12 text-[#94A3B8]">
+                        <p class="text-4xl mb-3">📭</p>
+                        <p>Belum ada FAQ tersedia.</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </section>

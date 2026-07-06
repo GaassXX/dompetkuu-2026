@@ -4,6 +4,8 @@ use App\Models\Category;
 use App\Models\Expense;
 use App\Models\Income;
 use App\Models\User;
+use App\Notifications\TransactionPending;
+use App\Notifications\TransactionSuccess;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -41,7 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
 function botReply(int $chatId, string $text, string $parseMode = 'Markdown'): void
 {
     Http::post(
-        "https://api.telegram.org/bot".env('TELEGRAM_BOT_TOKEN')."/sendMessage",
+        "https://api.telegram.org/bot" . config('services.telegram.bot_token') . "/sendMessage",
         [
             'chat_id' => $chatId,
             'text' => $text,
@@ -430,6 +432,14 @@ Route::post('/telegram/webhook', function (Request $request) {
                 'status' => 'approved',
             ]);
 
+            $user->notify(new TransactionSuccess(
+                type: 'Pemasukan',
+                amount: $amount,
+                category: $category?->name ?? '-',
+                description: $description,
+                source: 'Telegram',
+            ));
+
             botReply($chatId,
                 "✅ *Pemasukan berhasil dicatat*\n\n".
                 "💰 Rp".number_format($amount, 0, ',', '.')."\n".
@@ -458,6 +468,23 @@ Route::post('/telegram/webhook', function (Request $request) {
             'date' => now(),
             'status' => $status,
         ]);
+
+        $user->notify(new TransactionSuccess(
+            type: 'Pengeluaran',
+            amount: $amount,
+            category: $category?->name ?? '-',
+            description: $description,
+            source: 'Telegram',
+        ));
+
+        if ($status === 'pending' && $user->parent_id) {
+            $user->parent?->notify(new TransactionPending(
+                childName: $user->name,
+                type: 'Pengeluaran',
+                amount: $amount,
+                description: $description,
+            ));
+        }
 
         botReply($chatId,
             ($status === 'pending'

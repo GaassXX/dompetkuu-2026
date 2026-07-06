@@ -89,11 +89,14 @@ class TransactionHistory extends Component
 
         $query = Transaction::query()
             ->whereRaw('user_id = ?', [$userId])
-            ->where('status', 'approved')
             ->whereMonth('date', $this->bulan)
             ->whereYear('date', $this->tahun)
             ->orderByDesc('created_at')
             ->orderByDesc('id');
+
+        if (!Auth::user()->parent_id) {
+            $query->where('status', 'approved');
+        }
 
         if ($this->filter === 'pengeluaran') {
             $query->where('type', 'Pengeluaran');

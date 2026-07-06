@@ -2,9 +2,12 @@
 
 namespace App\Livewire\Mobile;
 
+use App\Models\Budget;
 use App\Models\Category;
 use App\Models\Expense;
 use App\Models\Income;
+use App\Notifications\BudgetLimit;
+use App\Notifications\TransactionPending;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -75,7 +78,7 @@ class AddTransaction extends Component
             'amount'      => $this->amount,
             'description' => $this->description,
             'date'        => \Carbon\Carbon::parse($this->date)->format('Y-m-d H:i:s'),
-            'status'      => 'approved',
+            'status'      => Auth::user()->parent_id ? 'pending' : 'approved',
         ];
 
         if ($this->editId) {
@@ -88,12 +91,49 @@ class AddTransaction extends Component
             if ($this->type === 'Pemasukan') {
                 Income::create($data);
             } else {
-                Expense::create($data);
+                $expense = Expense::create($data);
+
+                if (Auth::user()->parent_id) {
+                    $parent = Auth::user()->parent;
+                    if ($parent) {
+                        $parent->notify(new TransactionPending(
+                            childName: Auth::user()->name,
+                            type: 'Pengeluaran',
+                            amount: $expense->amount,
+                            description: $expense->description,
+                        ));
+                    }
+                }
+
+                $this->checkBudgetLimit($this->category_id, $this->amount);
             }
             session()->flash('success', 'Transaksi berhasil dicatat.');
         }
 
         return redirect()->route('mobile.dashboard');
+    }
+
+    protected function checkBudgetLimit($categoryId, $amount)
+    {
+        if (!$categoryId || $this->type !== 'Pengeluaran') return;
+
+        $user = Auth::user();
+        $budgets = Budget::where('user_id', $user->id)
+            ->where('category_id', $categoryId)
+            ->get();
+
+        foreach ($budgets as $budget) {
+            $totalSpent = $budget->getSpentAmount();
+            $limitAmount = (float) $budget->limit_amount;
+
+            if ($limitAmount > 0 && $totalSpent >= $limitAmount * 0.8) {
+                $user->notify(new BudgetLimit(
+                    categoryName: $budget->category?->name ?? 'Kategori',
+                    totalSpent: $totalSpent,
+                    limitAmount: $limitAmount,
+                ));
+            }
+        }
     }
 
     public function render()

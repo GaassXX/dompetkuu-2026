@@ -39,7 +39,11 @@ Route::get('/', function () {
         return RoleRedirector::to(Auth::user());
     }
 
-    return view('landing');
+    $faqs = \App\Models\PanduanSection::where('is_active', true)
+        ->orderBy('order')
+        ->get();
+
+    return view('landing', ['faqs' => $faqs]);
 })->name('landing');
 
 /*
@@ -146,6 +150,8 @@ Route::middleware(['auth', \App\Http\Middleware\RedirectIfDesktop::class])->pref
     Route::get('/tabungan/{saving}', \App\Livewire\Mobile\TabunganDetail::class)->name('tabungan.show');
     Route::get('/panduan', \App\Livewire\Mobile\Panduan::class)->name('panduan');
     Route::get('/keamanan', \App\Livewire\Mobile\Keamanan::class)->name('keamanan');
+    Route::get('/persetujuan', \App\Livewire\Mobile\Persetujuan::class)->name('persetujuan');
+    Route::get('/notifikasi', \App\Livewire\Mobile\Notifikasi::class)->name('notifikasi');
 });
 
 Route::get('/test-device', function () {

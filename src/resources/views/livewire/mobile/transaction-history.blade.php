@@ -98,7 +98,9 @@
                     @endif
                     <div class="flex justify-between">
                         <span class="text-gray-400">Status</span>
-                        <span class="text-emerald-600 font-medium">Berhasil</span>
+                        <span class="font-medium {{ $detailTransaction->status === 'approved' ? 'text-emerald-600' : ($detailTransaction->status === 'pending' ? 'text-amber-600' : 'text-red-500') }}">
+                            {{ $detailTransaction->status === 'approved' ? ' Berhasil' : ($detailTransaction->status === 'pending' ? ' Menunggu' : ' Ditolak') }}
+                        </span>
                     </div>
                 </div>
             </div>

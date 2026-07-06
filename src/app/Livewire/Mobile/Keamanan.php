@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Mobile;
 
+use App\Notifications\PasswordChanged;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
@@ -25,6 +26,8 @@ class Keamanan extends Component
         ]);
 
         $this->reset(['current_password', 'new_password', 'new_password_confirmation']);
+
+        Auth::user()->notify(new PasswordChanged());
 
         session()->flash('success', 'Password berhasil diubah.');
     }

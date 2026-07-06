@@ -56,18 +56,34 @@
 
                 <div class="mb-4">
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Kata Sandi Baru</label>
-                    <input type="password" name="password"
-                        placeholder="Minimal 8 karakter"
-                        class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition {{ $errors->has('password') ? 'border-red-400' : '' }}"
-                        required minlength="8">
+                    <div class="relative">
+                        <input type="password" id="password" name="password"
+                            placeholder="Minimal 8 karakter"
+                            class="w-full pl-4 pr-11 py-3.5 bg-white border border-gray-200 rounded-xl text-sm placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition {{ $errors->has('password') ? 'border-red-400' : '' }}"
+                            required minlength="8">
+                        <button type="button" onclick="togglePassword('password')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center">
+                            <svg id="eyePassword" class="w-4 h-4 text-gray-300 hover:text-gray-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="mb-5">
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Konfirmasi Kata Sandi Baru</label>
-                    <input type="password" name="password_confirmation"
-                        placeholder="Ulangi kata sandi baru"
-                        class="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
-                        required minlength="8">
+                    <div class="relative">
+                        <input type="password" id="passwordConfirm" name="password_confirmation"
+                            placeholder="Ulangi kata sandi baru"
+                            class="w-full pl-4 pr-11 py-3.5 bg-white border border-gray-200 rounded-xl text-sm placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
+                            required minlength="8">
+                        <button type="button" onclick="togglePassword('passwordConfirm')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center">
+                            <svg id="eyePasswordConfirm" class="w-4 h-4 text-gray-300 hover:text-gray-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <button type="submit"
@@ -83,5 +99,18 @@
         </p>
     </div>
 
+    <script>
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            const icon = document.getElementById('eye' + id.charAt(0).toUpperCase() + id.slice(1));
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>';
+            } else {
+                input.type = 'password';
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
+            }
+        }
+    </script>
 </body>
 </html>

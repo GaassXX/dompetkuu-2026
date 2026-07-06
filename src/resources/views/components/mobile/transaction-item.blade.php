@@ -31,8 +31,15 @@
         </div>
         <div>
             <p class="text-sm font-medium text-gray-800">{{ $transaction->category_name }}</p>
-            @php $d = \Carbon\Carbon::parse($transaction->date); @endphp
-            <p class="text-xs text-gray-400">{{ $d->format('H:i') === '00:00' ? $d->translatedFormat('d M Y') : $d->translatedFormat('d M, H:i') }}</p>
+            <div class="flex items-center gap-1.5">
+                @if ($transaction->status === 'pending')
+                    <span class="text-[9px] font-semibold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full">🟡 Menunggu</span>
+                @elseif ($transaction->status === 'rejected')
+                    <span class="text-[9px] font-semibold text-red-600 bg-red-50 px-1.5 py-0.5 rounded-full">❌ Ditolak</span>
+                @endif
+                @php $d = \Carbon\Carbon::parse($transaction->date); @endphp
+                <p class="text-xs text-gray-400">{{ $d->format('H:i') === '00:00' ? $d->translatedFormat('d M Y') : $d->translatedFormat('d M, H:i') }}</p>
+            </div>
         </div>
     </div>
     <div class="flex items-center gap-2">
