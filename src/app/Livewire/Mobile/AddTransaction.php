@@ -7,18 +7,25 @@ use App\Models\Category;
 use App\Models\Expense;
 use App\Models\Income;
 use App\Notifications\BudgetLimit;
-use App\Notifications\TransactionPending;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class AddTransaction extends Component
 {
-    public ?string $type = null; // 'Pemasukan' | 'Pengeluaran'
+    public ?string $type = null;
     public $category_id = '';
     public $amount = '';
+    public $source = 'Cash';
     public $date;
     public $description = '';
     public $editId = null;
+
+    public array $sources = [
+        'Cash'          => '💵 Cash',
+        'Transfer Bank' => '🏦 Transfer Bank',
+        'E-Wallet'      => '📱 E-Wallet',
+        'Lainnya'       => '📦 Lainnya',
+    ];
 
     public function mount(): void
     {
@@ -34,6 +41,7 @@ class AddTransaction extends Component
             $this->type = $type;
             $this->category_id = (string) $model->category_id;
             $this->amount = (string) (int) $model->amount;
+            $this->source = $model->source ?? 'Cash';
             $this->date = \Carbon\Carbon::parse($model->date)->format('Y-m-d\TH:i');
             $this->description = $model->description ?? '';
         }
@@ -41,9 +49,7 @@ class AddTransaction extends Component
 
     public function getCategoriesProperty()
     {
-        if (!$this->type) {
-            return collect();
-        }
+        if (!$this->type) return collect();
 
         $dbType = $this->type === 'Pemasukan' ? 'income' : 'expense';
 
@@ -67,18 +73,22 @@ class AddTransaction extends Component
     {
         $this->validate([
             'category_id' => 'required|exists:categories,id',
-            'amount'      => 'required|numeric|min:1',
+            'amount'      => 'required|numeric|min:1|max:999999999999999999',
+            'source'      => 'required|string|in:Cash,Transfer Bank,E-Wallet,Lainnya',
             'date'        => 'required|date',
             'description' => 'nullable|string|max:255',
+        ], [
+            'amount.max' => 'Jumlah tidak boleh lebih dari 999.999.999.999.999.999',
         ]);
 
         $data = [
             'user_id'     => Auth::id(),
             'category_id' => $this->category_id,
             'amount'      => $this->amount,
+            'source'      => $this->source,
             'description' => $this->description,
             'date'        => \Carbon\Carbon::parse($this->date)->format('Y-m-d H:i:s'),
-            'status'      => Auth::user()->parent_id ? 'pending' : 'approved',
+            'status'      => 'approved',
         ];
 
         if ($this->editId) {
@@ -91,20 +101,7 @@ class AddTransaction extends Component
             if ($this->type === 'Pemasukan') {
                 Income::create($data);
             } else {
-                $expense = Expense::create($data);
-
-                if (Auth::user()->parent_id) {
-                    $parent = Auth::user()->parent;
-                    if ($parent) {
-                        $parent->notify(new TransactionPending(
-                            childName: Auth::user()->name,
-                            type: 'Pengeluaran',
-                            amount: $expense->amount,
-                            description: $expense->description,
-                        ));
-                    }
-                }
-
+                Expense::create($data);
                 $this->checkBudgetLimit($this->category_id, $this->amount);
             }
             session()->flash('success', 'Transaksi berhasil dicatat.');
@@ -140,6 +137,7 @@ class AddTransaction extends Component
     {
         return view('livewire.mobile.add-transaction', [
             'categories' => $this->categories,
+            'sources'    => $this->sources,
         ])->layout('layouts.mobile', ['noNavbar' => true]);
     }
 }

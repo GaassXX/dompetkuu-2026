@@ -28,7 +28,7 @@ class LatestTransactions extends Widget
     $incomes = Income::where('user_id', $userId)
         ->with('category')
         ->latest('created_at') // Ambil yang paling baru dibuat
-        ->take(5)
+        ->take(3)
         ->get()
         ->map(fn($item) => [
             'type'       => 'Pemasukan',
@@ -42,7 +42,7 @@ class LatestTransactions extends Widget
     $expenses = Expense::where('user_id', $userId)
         ->with('category')
         ->latest('created_at') // Ambil yang paling baru dibuat
-        ->take(5)
+        ->take(3)
         ->get()
         ->map(fn($item) => [
             'type'       => 'Pengeluaran',
@@ -58,6 +58,6 @@ class LatestTransactions extends Widget
     // Sort berdasarkan created_at secara DESC (terbaru paling atas)
     usort($merged, fn($a, $b) => $b['created_at'] <=> $a['created_at']);
 
-    $this->transactions = array_slice($merged, 0, 5);
+    $this->transactions = array_slice($merged, 0, 3);
     }
 }

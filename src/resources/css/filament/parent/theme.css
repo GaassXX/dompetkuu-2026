@@ -13,3 +13,41 @@
 .grid-image .filepond--item {
     width: calc(33.3% - 0.5em);
 }
+
+/* Sidebar Parent - Amber hangat seperti mobile */
+.fi-main-sidebar,
+aside.fi-sidebar {
+    background: linear-gradient(180deg, #FFFBEB 0%, #FEF3C7 100%) !important;
+    background-color: #FEF3C7 !important;
+    border-right: 1px solid #FDE68A !important;
+}
+
+.fi-sidebar-header {
+    background: #FFFBEB !important;
+    border-bottom: 1px solid #FDE68A !important;
+}
+
+.fi-sidebar-nav {
+    background: transparent !important;
+}
+
+.fi-sidebar-item-button {
+    border-radius: 0.75rem !important;
+    transition: all 0.15s ease !important;
+}
+
+.fi-sidebar-item-button:hover {
+    background: #FEF3C7 !important;
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-button {
+    background: #F59E0B !important;
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-label {
+    color: white !important;
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-icon {
+    color: white !important;
+}

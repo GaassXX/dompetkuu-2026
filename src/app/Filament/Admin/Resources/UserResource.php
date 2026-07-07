@@ -115,8 +115,23 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('roles.name')
+                Tables\Columns\TextColumn::make('role')
+                    ->label('Role')
                     ->badge()
+                    ->color(fn($state) => match($state) {
+                        'admin'    => 'danger',
+                        'parent'   => 'warning',
+                        'child'    => 'info',
+                        'personal' => 'success',
+                        default    => 'gray',
+                    })
+                    ->formatStateUsing(fn($state) => match($state) {
+                        'admin'    => 'Admin',
+                        'parent'   => 'Orang Tua',
+                        'child'    => 'Anak',
+                        'personal' => 'Personal',
+                        default    => $state,
+                    })
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_active')

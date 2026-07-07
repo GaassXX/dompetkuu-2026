@@ -112,8 +112,8 @@
                                    $wire.set('amount', raw);
                                "
                                class="w-full text-sm border-0 focus:ring-0 bg-transparent">
-                    </div>
-                    @error('amount') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                     </div>
+                     @error('amount') <p class="text-[11px] text-red-500 mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="text-xs font-medium text-gray-500">Tanggal</label>

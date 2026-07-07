@@ -46,10 +46,12 @@ class TabunganCreate extends Component
         $this->validate([
             'name'           => 'required|string|max:255',
             'category'       => 'required|string',
-            'target_amount'  => 'required|integer|min:1',
+            'target_amount'  => 'required|integer|min:1|max:999999999999999999',
             'current_amount' => 'nullable|numeric|min:0',
             'target_date'    => 'nullable|date',
             'description'    => 'nullable|string',
+        ], [
+            'target_amount.max' => 'Jumlah tidak boleh lebih dari 999.999.999.999.999.999',
         ]);
 
         $data = [

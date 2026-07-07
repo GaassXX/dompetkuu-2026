@@ -66,6 +66,9 @@ class SavingResource extends Resource
                         ->label('Target Jumlah')
                         ->prefix('Rp')
                         ->required()
+                        ->numeric()
+                        ->minValue(1)
+                        ->maxValue(999999999999999999)
                         ->extraInputAttributes(['data-field' => 'target_amount'])
                         ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
 
@@ -143,6 +146,9 @@ class SavingResource extends Resource
                             ->label('Jumlah Setoran')
                             ->prefix('Rp')
                             ->required()
+                            ->numeric()
+                            ->minValue(1)
+                            ->maxValue(999999999999999999)
                             ->extraInputAttributes(['data-field' => 'amount'])
                             ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
                         Forms\Components\DatePicker::make('date')

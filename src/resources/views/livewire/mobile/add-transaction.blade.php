@@ -76,6 +76,17 @@
                 </div>
 
                 <div>
+                    <label class="text-xs text-gray-500 mb-1 block">{{ $type === 'Pemasukan' ? 'Sumber' : 'Metode' }}</label>
+                    <select wire:model="source"
+                            class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-amber-400">
+                        @foreach ($sources as $val => $label)
+                            <option value="{{ $val }}">{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    @error('source') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div>
                     <label class="text-xs text-gray-500 mb-1 block">Tanggal</label>
                     <input type="datetime-local" wire:model="date"
                            class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-amber-400">

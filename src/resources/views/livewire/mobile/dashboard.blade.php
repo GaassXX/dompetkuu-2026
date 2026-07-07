@@ -58,7 +58,10 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 px-4 md:px-6 mt-3 max-w-6xl mx-auto">
         {{-- Arus Kas 6 Bulan --}}
         <div class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm">
-            <p class="text-sm font-semibold text-gray-800 mb-3">Arus Kas 6 Bulan</p>
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-sm font-semibold text-gray-800">ARUS KAS BULANAN</p>
+                <span class="text-[10px] text-gray-400 font-medium">6 Bulan</span>
+            </div>
             <div wire:ignore>
                 <div style="height: 200px; position: relative;">
                     <canvas x-init="

@@ -67,6 +67,6 @@ class ParentLatestTransactions extends Widget
         });
 
         // 4. Ambil 5 data paling atas setelah diurutkan
-        $this->transactions = $sorted->take(5)->toArray();
+        $this->transactions = $sorted->take(3)->toArray();
     }
 }

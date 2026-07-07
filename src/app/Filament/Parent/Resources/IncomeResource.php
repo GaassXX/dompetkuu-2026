@@ -44,22 +44,26 @@ class IncomeResource extends Resource
                     ->label('Jumlah')
                     ->prefix('Rp')
                     ->required()
+                    ->numeric()
+                    ->minValue(1)
+                    ->maxValue(999999999999999999)
                     ->extraInputAttributes(['data-field' => 'amount'])
                     ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
+
+                Forms\Components\Select::make('source')
+                    ->label('Sumber')
+                    ->options([
+                        'Cash'          => '💵 Cash',
+                        'Transfer Bank' => '🏦 Transfer Bank',
+                        'E-Wallet'      => '📱 E-Wallet',
+                        'Lainnya'       => '📦 Lainnya',
+                    ])
+                    ->default('Cash')
+                    ->required(),
 
                 Forms\Components\DatePicker::make('date')
                     ->label('Tanggal')
                     ->default(now())
-                    ->required(),
-
-                Forms\Components\Select::make('status')
-                    ->label('Status')
-                    ->options([
-                        'pending'  => 'Pending',
-                        'approved' => 'Disetujui',
-                        'rejected' => 'Ditolak',
-                    ])
-                    ->default('approved')
                     ->required(),
 
                 Forms\Components\Textarea::make('description')
@@ -85,36 +89,23 @@ class IncomeResource extends Resource
 
                 Tables\Columns\TextColumn::make('amount')
                     ->label('Jumlah')
-                    ->formatStateUsing(fn($state) => 'Rp ' . number_format((float) $state, 0, ',', '.'))
+                    ->formatStateUsing(fn($state) => 'Rp ' . number_format((float)$state, 0, ',', '.'))
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('source')
+                    ->label('Sumber'),
 
                 Tables\Columns\TextColumn::make('date')
                     ->label('Tanggal')
                     ->date('d M Y')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('status')
-                    ->label('Status')
-                    ->badge()
-                    ->color(fn($state) => match($state) {
-                        'pending'  => 'warning',
-                        'approved' => 'success',
-                        'rejected' => 'danger',
-                        default    => 'gray',
-                    }),
-
-
                 Tables\Columns\TextColumn::make('description')
                     ->label('Keterangan')
                     ->limit(30)
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('status')
-                    ->options([
-                        'pending'  => 'Pending',
-                        'approved' => 'Disetujui',
-                        'rejected' => 'Ditolak',
-                    ]),
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

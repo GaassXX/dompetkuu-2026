@@ -29,12 +29,25 @@ class ParentPanelProvider extends PanelProvider
             ->profile(\App\Filament\Pages\Auth\EditProfile::class)
 
             ->brandName('Dompetkuu')
-            ->brandLogo(null)
+            ->brandLogo(fn () => view('components.filament.brand-logo'))
+            ->brandLogoHeight('2.5rem')
 
             ->renderHook(
                 'panels::sidebar.footer',
                 fn() => view('filament.parent.sidebar-footer')
             )
+
+            ->renderHook('panels::body.end', fn () => \Illuminate\Support\Facades\Blade::render('
+                <script>
+                    document.addEventListener(\'DOMContentLoaded\', function() {
+                        var s = document.querySelector(\'aside.fi-sidebar\');
+                        if (s) {
+                            s.style.setProperty(\'background\', \'linear-gradient(180deg, #FFFBEB 0%, #FEF3C7 100%)\', \'important\');
+                            s.style.setProperty(\'background-color\', \'#FEF3C7\', \'important\');
+                        }
+                    });
+                </script>
+            '))
 
             ->userMenuItems([
                     \Filament\Navigation\MenuItem::make()
@@ -45,10 +58,10 @@ class ParentPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->font('Montserrat')
-            //->viteTheme('resources/css/filament/parent/theme.css')
+            ->font('Plus Jakarta Sans')
+            ->viteTheme('resources/css/filament/parent/theme.css')
             ->maxContentWidth(MaxWidth::SevenExtraLarge)
-            ->sidebarCollapsibleOnDesktop()
+            //->sidebarCollapsibleOnDesktop()
             ->databaseNotifications()
             ->databaseNotificationsPolling('5s')
             ->discoverResources(in: app_path('Filament/Parent/Resources'), for: 'App\\Filament\\Parent\\Resources')

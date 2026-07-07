@@ -12,12 +12,12 @@ class StatsOverview extends BaseWidget
 
     protected function getStats(): array
     {
-        $totalUsers     = User::count();
-        $totalParents   = User::where('role', 'parent')->count();
-        $totalChildren  = User::where('role', 'child')->count();
-        $totalPersonal  = User::where('role', 'personal')->count();
-        $activeUsers    = User::where('is_active', true)->count();
-        $inactiveUsers  = User::where('is_active', false)->count();
+        $totalUsers     = User::whereDoesntHave('roles', fn($q) => $q->whereIn('name', ['super_admin', 'admin']))->count();
+        $totalParents   = User::whereHas('roles', fn($q) => $q->where('name', 'parent'))->count();
+        $totalChildren  = User::whereHas('roles', fn($q) => $q->where('name', 'child'))->where('is_independent', false)->count();
+        $totalPersonal  = User::where('is_independent', true)->count();
+        $activeUsers    = User::where('is_active', true)->whereDoesntHave('roles', fn($q) => $q->whereIn('name', ['super_admin', 'admin']))->count();
+        $inactiveUsers  = User::where('is_active', false)->whereDoesntHave('roles', fn($q) => $q->whereIn('name', ['super_admin', 'admin']))->count();
 
         return [
             Stat::make('Total User', $totalUsers)

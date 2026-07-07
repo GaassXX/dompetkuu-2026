@@ -19,7 +19,7 @@ class ChildFinanceChart extends ChartWidget
     protected static ?string $pollingInterval = null;
     protected static ?string $heading         = 'Arus Keuangan';
 
-    public ?string $filter = '3'; // ✅ pakai $filter bawaan Filament, default 3 bulan
+    public ?string $filter = '6'; // ✅ pakai $filter bawaan Filament, default 3 bulan
 
     protected function getFilters(): ?array
     {

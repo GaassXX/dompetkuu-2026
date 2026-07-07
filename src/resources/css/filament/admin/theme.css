@@ -13,3 +13,41 @@
 .grid-image .filepond--item {
     width: calc(33.3% - 0.5em);
 }
+
+/* Sidebar Admin - Biru profesional */
+.fi-main-sidebar,
+aside.fi-sidebar {
+    background: linear-gradient(180deg, #EFF6FF 0%, #DBEAFE 100%) !important;
+    background-color: #DBEAFE !important;
+    border-right: 1px solid #BFDBFE !important;
+}
+
+.fi-sidebar-header {
+    background: #EFF6FF !important;
+    border-bottom: 1px solid #BFDBFE !important;
+}
+
+.fi-sidebar-nav {
+    background: transparent !important;
+}
+
+.fi-sidebar-item-button {
+    border-radius: 0.75rem !important;
+    transition: all 0.15s ease !important;
+}
+
+.fi-sidebar-item-button:hover {
+    background: #DBEAFE !important;
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-button {
+    background: #3B82F6 !important;
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-label {
+    color: white !important;
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-icon {
+    color: white !important;
+}

@@ -34,6 +34,9 @@ class ViewSaving extends ViewRecord
                         ->label('Jumlah Setoran')
                         ->prefix('Rp')
                         ->required()
+                        ->numeric()
+                        ->minValue(1)
+                        ->maxValue(999999999999999999)
                         ->extraInputAttributes(['data-field' => 'amount'])
                         ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
                     DatePicker::make('date')

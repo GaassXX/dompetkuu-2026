@@ -30,13 +30,26 @@ class ChildPanelProvider extends PanelProvider
 
             // ✅ Branding sidebar
             ->brandName('Dompetkuu')
-            ->brandLogo(null)
+            ->brandLogo(fn () => view('components.filament.brand-logo'))
+            ->brandLogoHeight('2.5rem')
 
             // ✅ Info tipe akun di sidebar bawah
             ->renderHook(
                 'panels::sidebar.footer',
                 fn() => view('filament.child.sidebar-footer')
             )
+
+            ->renderHook('panels::body.end', fn () => \Illuminate\Support\Facades\Blade::render('
+                <script>
+                    document.addEventListener(\'DOMContentLoaded\', function() {
+                        var s = document.querySelector(\'aside.fi-sidebar\');
+                        if (s) {
+                            s.style.setProperty(\'background\', \'linear-gradient(180deg, #FFFBEB 0%, #FEF3C7 100%)\', \'important\');
+                            s.style.setProperty(\'background-color\', \'#FEF3C7\', \'important\');
+                        }
+                    });
+                </script>
+            '))
 
             // ✅ User menu lebih informatif
             ->userMenuItems([
@@ -47,12 +60,12 @@ class ChildPanelProvider extends PanelProvider
             ])
 
             ->colors([
-                'primary' => Color::Orange,
+                'primary' => Color::Amber,
             ])
             ->viteTheme('resources/css/filament/child/theme.css')
-            ->font('Montserrat')
+            ->font('Plus Jakarta Sans')
             ->maxContentWidth(MaxWidth::SevenExtraLarge)
-            ->sidebarCollapsibleOnDesktop()
+            //->sidebarCollapsibleOnDesktop()
             ->databaseNotifications()          // ← tambah ini
             ->databaseNotificationsPolling('30s')
             ->discoverResources(in: app_path('Filament/Child/Resources'), for: 'App\\Filament\\Child\\Resources')

@@ -33,9 +33,11 @@ class TabunganDetail extends Component
     public function setor()
     {
         $this->validate([
-            'amount' => 'required|integer|min:1',
+            'amount' => 'required|integer|min:1|max:999999999999999999',
             'date'   => 'required|date',
             'note'   => 'nullable|string|max:255',
+        ], [
+            'amount.max' => 'Jumlah tidak boleh lebih dari 999.999.999.999.999.999',
         ]);
 
         $amount = (int) $this->amount;

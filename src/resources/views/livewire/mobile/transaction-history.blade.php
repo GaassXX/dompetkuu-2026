@@ -96,12 +96,12 @@
                         <span class="text-gray-700 font-medium">{{ $detailTransaction->description }}</span>
                     </div>
                     @endif
+                    @if ($detailTransaction->source)
                     <div class="flex justify-between">
-                        <span class="text-gray-400">Status</span>
-                        <span class="font-medium {{ $detailTransaction->status === 'approved' ? 'text-emerald-600' : ($detailTransaction->status === 'pending' ? 'text-amber-600' : 'text-red-500') }}">
-                            {{ $detailTransaction->status === 'approved' ? ' Berhasil' : ($detailTransaction->status === 'pending' ? ' Menunggu' : ' Ditolak') }}
-                        </span>
+                        <span class="text-gray-400">Sumber</span>
+                        <span class="text-gray-700 font-medium">{{ $detailTransaction->source }}</span>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

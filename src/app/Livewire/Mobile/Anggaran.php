@@ -224,7 +224,7 @@ class Anggaran extends Component
     {
         $this->validate([
             'formCategoryId' => 'required|exists:categories,id',
-            'formLimit' => 'required|numeric|min:1',
+            'formLimit' => 'required|numeric|min:1|max:999999999999999999',
             'formPeriod' => 'required|in:monthly,weekly',
         ]);
 

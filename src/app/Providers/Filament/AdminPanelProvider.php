@@ -35,8 +35,11 @@ class AdminPanelProvider extends PanelProvider
 
             ->profile(EditProfile::class, isSimple: false)
 
+            ->brandLogo(fn () => view('components.filament.brand-logo'))
+            ->brandLogoHeight('2.5rem')
+
             ->defaultThemeMode(ThemeMode::Light)
-            ->font('Montserrat')
+            ->font('Plus Jakarta Sans')
 
             ->colors([
                 'primary' => Color::Blue,
@@ -62,7 +65,7 @@ class AdminPanelProvider extends PanelProvider
             )
 
             ->pages([
-                Pages\Dashboard::class,
+                \Filament\Pages\Dashboard::class,
             ])
 
             ->discoverClusters(
@@ -143,6 +146,18 @@ class AdminPanelProvider extends PanelProvider
             ])
 
             ->viteTheme('resources/css/filament/admin/theme.css')
+
+            ->renderHook('panels::body.end', fn () => \Illuminate\Support\Facades\Blade::render('
+                <script>
+                    document.addEventListener(\'DOMContentLoaded\', function() {
+                        var s = document.querySelector(\'aside.fi-sidebar\');
+                        if (s) {
+                            s.style.setProperty(\'background\', \'linear-gradient(180deg, #EFF6FF 0%, #DBEAFE 100%)\', \'important\');
+                            s.style.setProperty(\'background-color\', \'#DBEAFE\', \'important\');
+                        }
+                    });
+                </script>
+            '))
 
             ->middleware([
                 EncryptCookies::class,
