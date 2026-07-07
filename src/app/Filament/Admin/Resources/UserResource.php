@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
@@ -23,6 +24,14 @@ class UserResource extends Resource
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?int $navigationSort = -2;
+
+    public static function canCreate(): bool { return true; }
+
+    public static function canEdit(Model $record): bool { return true; }
+
+    public static function canDelete(Model $record): bool { return true; }
+
+    public static function canDeleteAny(): bool { return true; }
 
     public static function getNavigationBadge(): ?string
     {
