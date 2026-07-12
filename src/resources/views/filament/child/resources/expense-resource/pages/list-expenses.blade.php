@@ -62,7 +62,7 @@
                 </div>
                 @if($stats['totalBudget'] > 0)
                     <p style="font-size:24px;font-weight:700;color:{{ $stats['isOverBudget'] ? '#ef4444' : '#111827' }};">
-                        {{ $stats['isOverBudget'] ? '- ' : '' }}Rp {{ number_format($stats['sisaAnggaran'], 0, ',', '.') }}
+                        {{ $stats['isOverBudget'] ? '- ' : '' }}Rp {{ number_format(abs($stats['sisaAnggaran']), 0, ',', '.') }}
                     </p>
                     <div style="margin-top:8px;">
                         <div style="display:flex;justify-content:space-between;font-size:11px;color:#9ca3af;margin-bottom:4px;">

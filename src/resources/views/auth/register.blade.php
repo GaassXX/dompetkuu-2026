@@ -88,7 +88,7 @@
                                     </svg>
                                 </div>
                                 <div class="text-left">
-                                    <p class="text-sm font-bold text-gray-800 leading-tight">Orangtua</p>
+                                    <p class="text-sm font-bold text-gray-800 leading-tight">Orang Tua</p>
                                     <p class="text-[11px] text-gray-400 leading-tight">Kelola keuangan keluarga</p>
                                     <ul class="text-[10px] text-gray-400 mt-1.5 space-y-0.5">
                                         <li class="flex items-center gap-1"><span class="text-emerald-500">✓</span> Pantau & setujui pengeluaran anak</li>
@@ -111,7 +111,7 @@
                                     </svg>
                                 </div>
                                 <div class="text-left">
-                                    <p class="text-sm font-bold text-gray-800 leading-tight">Pribadi</p>
+                                    <p class="text-sm font-bold text-gray-800 leading-tight">Personal</p>
                                     <p class="text-[11px] text-gray-400 leading-tight">Transaksi harian mandiri</p>
                                     <ul class="text-[10px] text-gray-400 mt-1.5 space-y-0.5">
                                         <li class="flex items-center gap-1"><span class="text-emerald-500">✓</span> Catat pemasukan & pengeluaran sendiri</li>

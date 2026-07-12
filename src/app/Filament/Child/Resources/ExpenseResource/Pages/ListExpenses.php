@@ -90,16 +90,29 @@ class ListExpenses extends Page
             ? round(($topCategoryTotal / $totalThisMonth) * 100)
             : 0;
 
-        // Sisa anggaran parent
+        // Sisa anggaran — hitung per kategori budget aja
         $totalBudget = Budget::where('user_id', $userId)
-    ->where('period', 'monthly')
-    ->sum('limit_amount');
+            ->where('period', 'monthly')
+            ->sum('limit_amount');
 
-        $sisaAnggaran   = max(0, $totalBudget - $totalThisMonth);
+        $budgetCategoryIds = Budget::where('user_id', $userId)
+            ->where('period', 'monthly')
+            ->pluck('category_id');
+
+        $spentInBudget = 0;
+        if ($budgetCategoryIds->isNotEmpty()) {
+            $spentInBudget = Expense::where('user_id', $userId)
+                ->where('status', 'approved')
+                ->whereIn('category_id', $budgetCategoryIds)
+                ->whereBetween('date', [$startDate, $endDate])
+                ->sum('amount');
+        }
+
+        $sisaAnggaran   = $totalBudget - $spentInBudget;
         $budgetPct      = $totalBudget > 0
-            ? round(($totalThisMonth / $totalBudget) * 100)
+            ? round(($spentInBudget / $totalBudget) * 100)
             : 0;
-        $isOverBudget   = $totalThisMonth > $totalBudget && $totalBudget > 0;
+        $isOverBudget   = $spentInBudget > $totalBudget && $totalBudget > 0;
 
         return compact(
             'totalThisMonth', 'totalLastMonth', 'percentChange', 'isHigher',
@@ -123,7 +136,8 @@ class ListExpenses extends Page
         $query = Expense::where('user_id', $userId)
             ->with('category')
             ->whereBetween('date', [$startDate, $endDate])
-            ->orderByDesc('date');
+            ->orderByDesc('date')
+            ->orderByDesc('created_at');
 
         if ($this->filterCategory !== 'all') {
             $query->where('category_id', $this->filterCategory);

@@ -134,9 +134,9 @@ class Dashboard extends Component
         $grouped = $rows->groupBy('category_name')
             ->map(fn ($items) => $items->sum('amount'))
             ->sortDesc()
-            ->take(6);
+            ->take(5);
 
-        $palette = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6'];
+        $palette = ['#EF4444', '#F97316', '#EAB308', '#22C55E', '#6B7280'];
 
         $i = 0;
         $this->pengeluaranPerKategori = $grouped->map(function ($amount, $label) use ($palette, &$i) {

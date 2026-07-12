@@ -50,15 +50,14 @@ class ExpenseResource extends Resource
                     ->label('Jumlah')
                     ->prefix('Rp')
                     ->required()
-                    ->numeric()
+                    ->rule('regex:/^[0-9.,]+$/')
                     ->minValue(1)
                     ->maxValue(999999999999999999)
-                    ->extraInputAttributes(['data-field' => 'amount'])
+                    ->extraInputAttributes(['data-field' => 'amount', 'inputmode' => 'numeric'])
                     ->live(debounce: 500)
-                    ->afterStateUpdated(function (Get $get, Set $set) {
+                    ->afterStateUpdated(function (Set $set) {
                         $set('_budget_check', now()->timestamp);
-                    })
-                    ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
+                    }),
 
                 Forms\Components\Select::make('source')
                     ->label('Metode')
@@ -87,7 +86,7 @@ class ExpenseResource extends Resource
                     ->label('')
                     ->content(function (Get $get) {
                         $categoryId    = $get('category_id');
-                        $amount        = (float) str_replace('.', '', $get('amount') ?? '0');
+                        $amount        = (float) str_replace(['.', ','], '', $get('amount') ?? '0');
                         $isIndependent = auth()->user()->is_independent;
 
                         if (!$categoryId || $amount <= 0) {

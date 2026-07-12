@@ -70,7 +70,7 @@ class SavingResource extends Resource
                         ->minValue(1)
                         ->maxValue(999999999999999999)
                         ->extraInputAttributes(['data-field' => 'target_amount'])
-                        ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
+                        ->mutateStateForValidationUsing(fn ($state) => (int) str_replace(['.', ','], '', $state ?? '0')),
 
                     Forms\Components\DatePicker::make('target_date')
                         ->label('Target Waktu')
@@ -81,7 +81,7 @@ class SavingResource extends Resource
                         ->prefix('Rp')
                         ->default(0)
                         ->extraInputAttributes(['data-field' => 'current_amount'])
-                        ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0'))
+                        ->mutateStateForValidationUsing(fn ($state) => (int) str_replace(['.', ','], '', $state ?? '0'))
                         ->helperText('Modal awal untuk memulai tabungan ini.'),
 
                     Forms\Components\Textarea::make('description')
@@ -150,7 +150,7 @@ class SavingResource extends Resource
                             ->minValue(1)
                             ->maxValue(999999999999999999)
                             ->extraInputAttributes(['data-field' => 'amount'])
-                            ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
+                            ->mutateStateForValidationUsing(fn ($state) => (int) str_replace(['.', ','], '', $state ?? '0')),
                         Forms\Components\DatePicker::make('date')
                             ->label('Tanggal')
                             ->default(now())

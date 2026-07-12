@@ -114,8 +114,13 @@
                                     <span class="text-[#6B7280]">Sisa Rp
                                         {{ number_format($budget['remaining'], 0, ',', '.') }}</span>
                                     <span
-                                        class="font-semibold {{ $budget['is_over'] ? 'text-red-500' : 'text-emerald-500' }}">
-                                        {{ $budget['is_over'] ? 'Melebihi batas!' : 'Terkendali' }}
+                                        class="font-semibold {{ $budget['is_over'] ? ($budget['remaining'] > 0 ? 'text-red-500' : 'text-orange-500') : 'text-emerald-500' }}">
+                                        @php
+                                            $label = 'Terkendali';
+                                            if ($budget['remaining'] <= 0 && $budget['spent'] > 0) $label = 'Habis';
+                                            if ($budget['is_over'] && $budget['remaining'] < 0) $label = 'Melebihi batas!';
+                                        @endphp
+                                        {{ $label }}
                                     </span>
                                 </div>
                             </div>

@@ -115,7 +115,7 @@ class Anggaran extends Page
                 'spent'      => $spent,
                 'remaining'  => $remaining,
                 'percentage' => $percentage,
-                'is_over'    => $spent > $limit,
+                'is_over'    => $spent >= $limit,
             ];
         })->toArray();
     }

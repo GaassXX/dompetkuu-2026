@@ -12,6 +12,8 @@ class FamilyBudgetAlertWidget extends Widget
     protected static ?string $maxHeight = '300px';
     protected static string $view = 'filament.parent.widgets.family-budget-alert-widget';
 
+    protected int|string|array $columnSpan = 'full';
+    
     public static function canView(): bool
     {
         $childIds = User::where('parent_id', auth()->id())->pluck('id')->toArray();
@@ -25,14 +27,27 @@ class FamilyBudgetAlertWidget extends Widget
 
     public function mount(): void
     {
+        $this->refreshAlerts();
+    }
+
+    public function dismissAlert(int $budgetId, string $period, int $childId): void
+    {
+        BudgetAlertService::dismissAlert($childId, $budgetId, $period);
+        $this->refreshAlerts();
+    }
+
+    private function refreshAlerts(): void
+    {
         $childIds = User::where('parent_id', auth()->id())
             ->pluck('id', 'name')
             ->toArray();
 
+        $this->alerts = [];
+
         foreach ($childIds as $name => $id) {
             $childAlerts = BudgetAlertService::getAlerts($id, 90);
             foreach ($childAlerts as $alert) {
-                $this->alerts[] = array_merge($alert, ['child_name' => $name]);
+                $this->alerts[] = array_merge($alert, ['child_name' => $name, 'child_id' => $id]);
             }
         }
     }

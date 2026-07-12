@@ -66,16 +66,12 @@ class ChildPanelProvider extends PanelProvider
             ->font('Plus Jakarta Sans')
             ->maxContentWidth(MaxWidth::SevenExtraLarge)
             //->sidebarCollapsibleOnDesktop()
-            ->databaseNotifications()          // ← tambah ini
-            ->databaseNotificationsPolling('30s')
             ->discoverResources(in: app_path('Filament/Child/Resources'), for: 'App\\Filament\\Child\\Resources')
             ->discoverPages(in: app_path('Filament/Child/Pages'), for: 'App\\Filament\\Child\\Pages')
-            ->discoverWidgets(in: app_path('Filament/Child/Widgets'), for: 'App\\Filament\\Child\\Widgets')
             ->pages([
                 \App\Filament\Child\Pages\Dashboard::class,
             ])
             ->widgets([
-                \App\Filament\Child\Widgets\BudgetAlertWidget::class,
                 \App\Filament\Child\Widgets\ChildStatsCards::class,
                 \App\Filament\Child\Widgets\ChildFinanceChart::class,
                 \App\Filament\Child\Widgets\ExpenseByCategory::class,

@@ -13,4 +13,18 @@ class CreateUser extends CreateRecord
     {
         return $this->getResource()::getUrl('index');
     }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        if (isset($data['roles'])) {
+            $role = $data['roles'][0] ?? 'child';
+            $data['role'] = match (true) {
+                in_array($role, ['super_admin', 'admin']) => 'admin',
+                $role === 'parent' => 'parent',
+                $role === 'child' && ($data['is_independent'] ?? false) => 'personal',
+                default => 'child',
+            };
+        }
+        return $data;
+    }
 }

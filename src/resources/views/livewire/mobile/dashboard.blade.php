@@ -111,10 +111,9 @@
             <p class="text-sm font-semibold text-gray-800 mb-3">Pengeluaran per Kategori</p>
             @if (count($pengeluaranPerKategori) > 0)
                 @php
-                    $palette  = ['#10B981','#F59E0B','#EF4444','#3B82F6','#8B5CF6','#EC4899'];
                     $labels   = array_column($pengeluaranPerKategori, 'label');
                     $amounts  = array_column($pengeluaranPerKategori, 'amount');
-                    $colors   = array_map(fn($i) => $palette[$i % count($palette)], array_keys($pengeluaranPerKategori));
+                    $colors   = array_column($pengeluaranPerKategori, 'color');
                 @endphp
                 <div class="flex items-center gap-4" wire:ignore>
                     <div class="w-20 h-20 shrink-0">
@@ -153,7 +152,7 @@
                     <div class="space-y-1.5 min-w-0 flex-1">
                         @foreach ($pengeluaranPerKategori as $i => $cat)
                             <div class="flex items-center gap-2 text-xs">
-                                <span class="w-2 h-2 rounded-full shrink-0" style="background:{{ $colors[$i] }}"></span>
+                                <span class="w-2 h-2 rounded-full shrink-0" style="background:{{ $cat['color'] }}"></span>
                                 <span class="text-gray-600 truncate">{{ $cat['label'] }}</span>
                                 <span class="ml-auto font-medium text-gray-800 shrink-0">{{ $formatRp($cat['amount']) }}</span>
                             </div>

@@ -26,9 +26,15 @@ class BudgetLimit extends Notification
             ? round(($this->totalSpent / $this->limitAmount) * 100)
             : 0;
 
+        $title = match (true) {
+            $percentage > 100 => '🚨 Budget Melebihi Limit!',
+            $percentage == 100 => 'Budget Habis!',
+            default => '⚠️ Budget Hampir Habis!',
+        };
+
         return [
             'icon'    => 'heroicon-o-exclamation-triangle',
-            'title'   => 'Budget Hampir Habis',
+            'title'   => $title,
             'message' => "Budget {$this->categoryName} sudah terpakai {$percentage}%",
             'description' => "Rp " . number_format($this->totalSpent, 0, ',', '.') . " dari Rp " . number_format($this->limitAmount, 0, ',', '.'),
             'type'    => 'budget',

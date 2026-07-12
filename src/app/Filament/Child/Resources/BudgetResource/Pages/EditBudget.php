@@ -21,4 +21,12 @@ class EditBudget extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if (isset($data['limit_amount'])) {
+            $data['limit_amount'] = (int) str_replace(['.', ','], '', $data['limit_amount']);
+        }
+        return $data;
+    }
 }

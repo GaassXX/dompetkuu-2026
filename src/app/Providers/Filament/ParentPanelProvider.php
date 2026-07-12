@@ -70,7 +70,6 @@ class ParentPanelProvider extends PanelProvider
             //     \App\Filament\Parent\Resources\SavingResource::class, // ✅ tambah ini
             // ])
             ->discoverPages(in: app_path('Filament/Parent/Pages'), for: 'App\\Filament\\Parent\\Pages')
-            ->discoverWidgets(in: app_path('Filament/Parent/Widgets'), for: 'App\\Filament\\Parent\\Widgets')
             ->pages([
                 \App\Filament\Parent\Pages\Dashboard::class,
             ])
@@ -78,11 +77,9 @@ class ParentPanelProvider extends PanelProvider
                 \App\Filament\Parent\Widgets\ParentStatsOverview::class,
                 \App\Filament\Parent\Widgets\FamilyFinanceChart::class,
                 \App\Filament\Parent\Widgets\FamilyExpenseByCategory::class,
-                \App\Filament\Parent\Widgets\FamilyBudgetAlertWidget::class,
                 \App\Filament\Parent\Widgets\PendingApprovalWidget::class,
                 \App\Filament\Parent\Widgets\ParentLatestTransactions::class,
                 \App\Filament\Parent\Widgets\ChildSummaryWidget::class,
-
             ])
             ->plugins([
     \Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin::make()

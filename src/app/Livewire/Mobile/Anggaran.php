@@ -139,7 +139,7 @@ class Anggaran extends Component
                 'spent' => $spent,
                 'remaining' => $remaining,
                 'percentage' => $percentage,
-                'is_over' => $spent > $limit,
+                'is_over' => $spent >= $limit,
             ];
         })->toArray();
     }

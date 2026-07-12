@@ -31,99 +31,85 @@
         @else
         <div style="display:flex;gap:12px;align-items:center;width:100%;"
              x-data="{
-                slices: [],
                 tip: { show: false, x: 0, y: 0, label: '', amt: '', color: '' },
+                activeIdx: -1,
 
-                drawAll(activeIdx) {
-                    const el  = document.getElementById('donut-{{ md5($currentMonth) }}');
-                    if (!el) return;
-                    const ctx = el.getContext('2d');
-                    const dpr = window.devicePixelRatio || 1;
-                    const S   = 150;
-                    ctx.clearRect(0, 0, S * dpr, S * dpr);
-                    const cx = S/2, cy = S/2, baseR = 54, baseLW = 24;
-                    const gap = this.slices.length > 1 ? 0.04 : 0;
-                    this.slices.forEach((s, i) => {
-                        const active = i === activeIdx;
-                        const r  = (active ? baseR + 4 : baseR) * dpr;
-                        const lw = (active ? baseLW + 4 : baseLW) * dpr;
-                        ctx.beginPath();
-                        ctx.arc(cx*dpr, cy*dpr, r, s.s + gap/2, s.e - gap/2);
-                        ctx.strokeStyle = s.color;
-                        ctx.lineWidth   = lw;
-                        ctx.lineCap     = gap === 0 ? 'butt' : 'round';
-                        ctx.stroke();
-                    });
-                },
-
-                hitTest(mx, my, rect) {
-                    const cx = 75, cy = 75, r = 54, lw = 24;
+                hitIndex(el, mx, my) {
+                    const rect = el.getBoundingClientRect();
+                    const cx = 60, cy = 60;
                     const x = mx - rect.left - cx;
-                    const y = my - rect.top  - cy;
+                    const y = my - rect.top - cy;
                     const d = Math.sqrt(x*x + y*y);
-                    if (d < r - lw/2 || d > r + lw/2) return -1;
-                    let a = Math.atan2(y, x);
-                    if (a < -Math.PI/2) a += 2*Math.PI;
-                    for (let i = 0; i < this.slices.length; i++) {
-                        let s = this.slices[i].s, e = this.slices[i].e;
-                        if (s < -Math.PI/2) { s += 2*Math.PI; e += 2*Math.PI; }
-                        if (a >= s && a <= e) return i;
+                    if (d < 38 || d > 58) return -1;
+                    let a = Math.atan2(y, x) * (180 / Math.PI);
+                    if (a < 0) a += 360;
+                    a = (a + 90) % 360;
+                    const total = {{ $totalExpense }};
+                    let cumPct = 0;
+                    const slices = {{ Js::from($categoryData) }};
+                    for (let i = 0; i < slices.length; i++) {
+                        const pct = (slices[i].amount / total) * 100;
+                        cumPct += pct;
+                        if (a <= cumPct * 3.6) return i;
                     }
-                    return -1;
+                    return slices.length - 1;
                 },
 
-                init() {
-                    this.$nextTick(() => {
-                        const data  = {{ Js::from($categoryData) }};
-                        const total = {{ $totalExpense }};
-                        const el    = document.getElementById('donut-{{ md5($currentMonth) }}');
-                        if (!el) return;
-                        const dpr = window.devicePixelRatio || 1;
-                        el.width  = 150 * dpr;
-                        el.height = 150 * dpr;
+                showTooltip(el, e) {
+                    const idx = this.hitIndex(el, e.clientX, e.clientY);
+                    if (idx < 0) {
+                        this.activeIdx = -1;
+                        this.tip.show = false;
+                        return;
+                    }
+                    this.activeIdx = idx;
+                    const s = {{ Js::from($categoryData) }}[idx];
+                    this.tip = {
+                        show: true,
+                        x: e.offsetX + 12,
+                        y: e.offsetY - 40,
+                        label: s.name,
+                        amt: 'Rp ' + Number(s.amount).toLocaleString('id-ID'),
+                        color: s.color
+                    };
+                },
 
-                        let start = -Math.PI / 2;
-                        this.slices = data.map(d => {
-                            const slice = (d.amount / total) * 2 * Math.PI;
-                            const obj = { s: start, e: start + slice, color: d.color, name: d.name, amount: d.amount };
-                            start += slice;
-                            return obj;
-                        });
-
-                        this.drawAll(-1);
-
-                        el.addEventListener('mousemove', (e) => {
-                            const rect = el.getBoundingClientRect();
-                            const idx  = this.hitTest(e.clientX, e.clientY, rect);
-                            if (idx >= 0) {
-                                const s = this.slices[idx];
-                                this.tip = {
-                                    show: true,
-                                    x: e.clientX - rect.left + 12,
-                                    y: e.clientY - rect.top  - 40,
-                                    label: s.name,
-                                    amt: 'Rp ' + s.amount.toLocaleString('id'),
-                                    color: s.color
-                                };
-                                this.drawAll(idx);
-                            } else {
-                                this.tip.show = false;
-                                this.drawAll(-1);
-                            }
-                        });
-
-                        el.addEventListener('mouseleave', () => {
-                            this.tip.show = false;
-                            this.drawAll(-1);
-                        });
-                    });
+                hideTooltip() {
+                    this.activeIdx = -1;
+                    this.tip.show = false;
                 }
              }">
 
-            {{-- Donut Canvas --}}
+            {{-- SVG Donut --}}
             <div style="position:relative;width:120px;height:120px;flex-shrink:0;">
-                <canvas id="donut-{{ md5($currentMonth) }}"
-                        style="width:120px;height:120px;display:block;cursor:pointer;"></canvas>
+                <svg width="120" height="120" viewBox="0 0 120 120"
+                     @mousemove="showTooltip($el, $event)"
+                     @mouseleave="hideTooltip()">
+                    @php
+                        $cx = 60; $cy = 60; $r = 48; $w = 20;
+                        $circ = 2 * pi() * $r;
+                        $off = 0;
+                    @endphp
+                    @foreach($categoryData as $i => $cat)
+                        @php
+                            $len = max(1, ($cat['amount'] / $totalExpense) * $circ);
+                            $dashLen = $len;
+                        @endphp
+                        <circle cx="{{ $cx }}" cy="{{ $cy }}" r="{{ $r }}"
+                                fill="none" stroke="{{ $cat['color'] }}" stroke-width="{{ $w }}"
+                                stroke-dasharray="{{ $dashLen }} {{ $circ - $dashLen }}"
+                                stroke-dashoffset="{{ -$off }}"
+                                stroke-opacity="{{ $i === 0 ? '1' : '1' }}"
+                                transform="rotate(-90 {{ $cx }} {{ $cy }})"
+                                style="transition:stroke-opacity 0.15s;cursor:pointer;"
+                                @mouseenter="activeIdx = {{ $i }}"
+                                @mouseleave="activeIdx = -1" />
+                        @php $off += $len; @endphp
+                    @endforeach
+                    <circle cx="{{ $cx }}" cy="{{ $cy }}" r="{{ $r - $w / 2 }}" fill="white" />
+                    <text x="{{ $cx }}" y="{{ $cy - 4 }}" text-anchor="middle" font-size="8" fill="#9ca3af" font-weight="700" letter-spacing="0.5">TOTAL</text>
+                    <text x="{{ $cx }}" y="{{ $cy + 10 }}" text-anchor="middle" font-size="11" fill="#111827" font-weight="800" font-family="ui-monospace,monospace">Rp{{ number_format($totalExpense / 1000, 0, ',', '.') }}K</text>
+                </svg>
 
                 {{-- Tooltip --}}
                 <template x-if="tip.show">
@@ -137,17 +123,9 @@
                         </div>
                     </div>
                 </template>
-
-                {{-- Center label --}}
-                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;">
-                    <p style="font-size:8px;font-weight:700;color:var(--color-text-secondary);margin:0;text-transform:uppercase;letter-spacing:0.5px;">TOTAL</p>
-                    <p style="font-size:11px;font-weight:800;color:var(--color-text-primary);margin:0;line-height:1.3;">
-                        Rp{{ number_format($totalExpense/1000, 0, ',', '.') }}K
-                    </p>
-                </div>
             </div>
 
-            {{-- Legend (nama kategori + garis warna aja) --}}
+            {{-- Legend --}}
             <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
                 @foreach($categoryData as $cat)
                 <div>

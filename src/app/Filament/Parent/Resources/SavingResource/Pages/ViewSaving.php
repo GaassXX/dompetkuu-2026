@@ -38,7 +38,7 @@ class ViewSaving extends ViewRecord
                         ->minValue(1)
                         ->maxValue(999999999999999999)
                         ->extraInputAttributes(['data-field' => 'amount'])
-                        ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
+                        ->mutateStateForValidationUsing(fn ($state) => (int) str_replace(['.', ','], '', $state ?? '0')),
                     DatePicker::make('date')
                         ->label('Tanggal')
                         ->default(now())

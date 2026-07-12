@@ -158,7 +158,7 @@ class ApprovalQueue extends Page
             $model->update(['status' => 'approved', 'approved_by' => auth()->id()]);
 
             if ($prefix === 'E') {
-                \App\Services\BudgetAlertService::checkAndNotify($model->user_id, 90);
+                \App\Services\BudgetAlertService::checkAndNotify($model->user_id, 90, true);
             }
 
             Notification::make()->title(' Transaksi Disetujui!')->success()->send();

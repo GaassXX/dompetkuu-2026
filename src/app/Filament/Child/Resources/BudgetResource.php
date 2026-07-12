@@ -85,7 +85,7 @@ class BudgetResource extends Resource
                     ->prefix('Rp')
                     ->required()
                     ->extraInputAttributes(['data-field' => 'amount'])
-                    ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
+                    ->mutateStateForValidationUsing(fn ($state) => (int) str_replace(['.', ','], '', $state ?? '0')),
 
                 Forms\Components\Select::make('period')
                     ->label('Periode')

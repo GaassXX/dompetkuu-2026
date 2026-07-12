@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Expense;
 use App\Models\Income;
 use App\Notifications\BudgetLimit;
+use App\Notifications\TransactionPending;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -88,7 +89,7 @@ class AddTransaction extends Component
             'source'      => $this->source,
             'description' => $this->description,
             'date'        => \Carbon\Carbon::parse($this->date)->format('Y-m-d H:i:s'),
-            'status'      => 'approved',
+            'status'      => $this->type === 'Pengeluaran' && Auth::user()->parent_id ? 'pending' : 'approved',
         ];
 
         if ($this->editId) {
@@ -101,8 +102,18 @@ class AddTransaction extends Component
             if ($this->type === 'Pemasukan') {
                 Income::create($data);
             } else {
-                Expense::create($data);
+                $expense = Expense::create($data);
                 $this->checkBudgetLimit($this->category_id, $this->amount);
+
+                $user = Auth::user();
+                if ($user->parent_id) {
+                    $user->parent?->notify(new TransactionPending(
+                        childName: $user->name,
+                        type: 'Pengeluaran',
+                        amount: (float) $this->amount,
+                        description: $this->description ?? '',
+                    ));
+                }
             }
             session()->flash('success', 'Transaksi berhasil dicatat.');
         }

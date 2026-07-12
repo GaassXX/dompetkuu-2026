@@ -47,7 +47,7 @@ class IncomeResource extends Resource
                     ->minValue(1)
                     ->maxValue(999999999999999999)
                     ->extraInputAttributes(['data-field' => 'amount'])
-                    ->mutateStateForValidationUsing(fn ($state) => (int) str_replace('.', '', $state ?? '0')),
+                    ->mutateStateForValidationUsing(fn ($state) => (int) str_replace(['.', ','], '', $state ?? '0')),
 
                 Forms\Components\Select::make('source')
                     ->label('Sumber')

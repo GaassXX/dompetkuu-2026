@@ -68,10 +68,10 @@ class ExpenseByCategory extends Widget
             return;
         }
 
-        $top5      = $grouped->take(5);
-        $remainder = $grouped->skip(5)->sum();
+        $top5      = $grouped->take(4);
+        $remainder = $grouped->skip(4)->sum();
 
-        $colors = ['#EF4444', '#F97316', '#EAB308', '#22C55E', '#3B82F6'];
+        $colors = ['#EF4444', '#F97316', '#EAB308', '#22C55E'];
         $i = 0;
 
         $data = $top5->map(function ($amount, $name) use ($colors, &$i) {

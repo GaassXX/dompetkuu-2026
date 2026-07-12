@@ -18,14 +18,16 @@ use Illuminate\Support\Str;
 
 class EditProfile extends BaseEditProfile
 {
+    protected static string $view = 'filament.pages.auth.edit-profile';
+
     public function form(Form $form): Form
     {
         $user        = auth()->user();
         $accountType = match(true) {
             $user->hasRole('parent')  => '👨‍👩‍👧 Orang Tua',
-            $user->is_independent     => '👤 Akun Pribadi',
-            $user->parent_id !== null => '🧒 Anggota Keluarga',
-            default                   => '👤 Child',
+            $user->is_independent     => '👤 Personal',
+            $user->parent_id !== null => '🧒 Anak',
+            default                   => '🧒 Anak',
         };
 
         $totalTx = Income::where('user_id', $user->id)->whereMonth('date', now()->month)->count()

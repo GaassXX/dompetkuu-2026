@@ -16,4 +16,12 @@ class EditExpense extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if (isset($data['amount'])) {
+            $data['amount'] = (int) str_replace(['.', ','], '', $data['amount']);
+        }
+        return $data;
+    }
 }

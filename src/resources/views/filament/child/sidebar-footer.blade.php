@@ -22,9 +22,9 @@
             </p>
             <p style="font-size:11px;margin:0;color:var(--color-text-secondary);">
                 @if(auth()->user()->is_independent)
-                     Akun Pribadi
+                    Personal
                 @elseif(auth()->user()->parent_id)
-                    Anggota Keluarga
+                    Anak
                 @else
                     Anak
                 @endif

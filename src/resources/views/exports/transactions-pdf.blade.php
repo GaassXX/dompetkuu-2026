@@ -1,4 +1,3 @@
-cat > src/resources/views/exports/transactions-pdf.blade.php << 'BLADE'
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -101,4 +100,3 @@ cat > src/resources/views/exports/transactions-pdf.blade.php << 'BLADE'
     </div>
 </body>
 </html>
-BLADE

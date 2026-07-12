@@ -135,7 +135,8 @@ class ListIncomes extends Page
         $query = Income::where('user_id', $userId)
             ->with('category')
             ->whereBetween('date', [$startDate, $endDate])
-            ->orderByDesc('date');
+            ->orderByDesc('date')
+            ->orderByDesc('created_at');
 
         if ($this->filterCategory !== 'all') {
             $query->where('category_id', $this->filterCategory);

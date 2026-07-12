@@ -83,7 +83,7 @@ class BudgetView extends Page
                     'spent'       => (float) $spent,
                     'remaining'   => max(0, (float) $budget->limit_amount - (float) $spent),
                     'percentage'  => $percentage,
-                    'is_exceeded' => (float) $spent > (float) $budget->limit_amount,
+                    'is_exceeded' => (float) $spent >= (float) $budget->limit_amount,
                 ];
             })->toArray();
     }

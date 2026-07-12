@@ -42,11 +42,11 @@
                 <p class="text-sm font-medium text-gray-800 truncate">{{ auth()->user()->name }}</p>
                 <p class="text-xs text-gray-400 truncate">
                     @if(auth()->user()->is_independent)
-                        Akun Pribadi
+                        Personal
                     @elseif(auth()->user()->hasRole('parent'))
                         Orang Tua
                     @elseif(auth()->user()->hasRole('child'))
-                        Anggota Keluarga
+                        Anak
                     @else
                         Admin
                     @endif

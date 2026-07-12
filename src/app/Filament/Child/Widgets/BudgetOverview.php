@@ -60,7 +60,7 @@ class BudgetOverview extends Widget
                     'spent'       => $spent,
                     'remaining'   => max(0, $budget->limit_amount - $spent),
                     'percentage'  => $percentage,
-                    'is_exceeded' => $spent > $budget->limit_amount,
+                    'is_exceeded' => $spent >= $budget->limit_amount,
                 ];
             });
 

@@ -38,11 +38,11 @@ class Register extends BaseRegister
                     ->label('Daftar Sebagai')
                     ->options([
                         'parent'      => '👨‍👩‍👧 Orang Tua',
-                        'independent' => '👤 Diri Sendiri',
+                        'independent' => '👤 Personal',
                     ])
                     ->required()
                     ->native(false)
-                    ->helperText('Orang Tua dapat mengelola keuangan anggota keluarga. Diri Sendiri untuk keuangan pribadi.'),
+                    ->helperText('Orang Tua dapat mengelola keuangan anggota keluarga. Personal untuk keuangan pribadi.'),
             ]);
     }
     public function register(): ?RegistrationResponse

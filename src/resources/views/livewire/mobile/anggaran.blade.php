@@ -64,7 +64,7 @@
                             {{ $alert['category'] }} {{ $alert['is_over'] ? 'Melebihi batas!' : 'Hampir mencapai batas' }}
                         </p>
                         <p class="text-[10px] {{ $alert['is_over'] ? 'text-red-500' : 'text-amber-600' }}">
-                            Rp {{ number_format($alert['spent'], 0, ',', '.') }} / Rp {{ number_format($alert['limit'], 0, ',', '.') }} ({{ number_format($alert['percentage'], 1) }}%)
+                            Rp {{ number_format($alert['spent'], 0, ',', '.') }} / Rp {{ number_format($alert['limit'], 0, ',', '.') }} ({{ $alert['percentage'] == (int)$alert['percentage'] ? number_format($alert['percentage']) : number_format($alert['percentage'], 1) }}%)
                         </p>
                     </div>
                 </div>

@@ -14,4 +14,10 @@ class CreateBudget extends CreateRecord
     {
         return \App\Filament\Child\Pages\BudgetView::getUrl();
     }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['limit_amount'] = (int) str_replace(['.', ','], '', $data['limit_amount'] ?? '0');
+        return $data;
+    }
 }

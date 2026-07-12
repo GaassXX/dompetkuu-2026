@@ -79,7 +79,7 @@
                     <span class="font-medium text-gray-800 capitalize">
                         @if($user->hasRole('parent')) Orang Tua
                         @elseif($user->is_independent) Personal
-                        @elseif($user->hasRole('child')) Anggota Keluarga
+                        @elseif($user->hasRole('child')) Anak
                         @else {{ $user->role ?? '-' }}
                         @endif
                     </span>

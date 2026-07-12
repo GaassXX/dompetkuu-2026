@@ -21,7 +21,7 @@ class StatsOverview extends BaseWidget
 
         return [
             Stat::make('Total User', $totalUsers)
-                ->description('Parent: ' . $totalParents . ' · Child: ' . $totalChildren . ' · Personal: ' . $totalPersonal)
+                ->description('Orang Tua: ' . $totalParents . ' · Anak: ' . $totalChildren . ' · Personal: ' . $totalPersonal)
                 ->descriptionIcon('heroicon-m-users')
                 ->color('info'),
 
