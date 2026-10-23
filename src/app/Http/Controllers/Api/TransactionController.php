@@ -56,6 +56,7 @@ class TransactionController extends Controller
                 'description' => $i->description,
                 'category'    => $i->category?->name ?? '-',
                 'category_id' => $i->category_id,
+                'source'      => $i->source,
                 'date'        => $i->date->format('Y-m-d'),
                 'status'      => $i->status,
                 'created_at'  => $i->created_at,
@@ -70,6 +71,7 @@ class TransactionController extends Controller
                 'description' => $e->description,
                 'category'    => $e->category?->name ?? '-',
                 'category_id' => $e->category_id,
+                'source'      => $i->source,
                 'date'        => $e->date->format('Y-m-d'),
                 'status'      => $e->status,
                 'created_at'  => $e->created_at,
@@ -91,6 +93,7 @@ class TransactionController extends Controller
             'amount'      => 'required|numeric|min:1',
             'description' => 'required|string|max:500',
             'category_id' => 'required|exists:categories,id',
+            'source'      => 'nullable|in:cash,emoney,bank,mbanking',
             'date'        => 'nullable|date',
         ]);
 
@@ -102,6 +105,7 @@ class TransactionController extends Controller
                 'category_id' => $validated['category_id'],
                 'amount'      => $validated['amount'],
                 'description' => $validated['description'],
+                'source'      => $validated['source'] ?? null,
                 'date'        => $validated['date'] ?? now(),
                 'status'      => 'approved',
             ]);
@@ -113,6 +117,7 @@ class TransactionController extends Controller
                 'category_id' => $validated['category_id'],
                 'amount'      => $validated['amount'],
                 'description' => $validated['description'],
+                'source'      => $validated['source'] ?? null,
                 'date'        => $validated['date'] ?? now(),
                 'status'      => $status,
             ]);

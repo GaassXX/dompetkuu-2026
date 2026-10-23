@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Debt;
 use App\Models\Expense;
 use App\Models\Income;
 use Illuminate\Http\JsonResponse;
@@ -33,6 +34,16 @@ class DashboardController extends Controller
             ->where('status', 'pending')
             ->count();
 
+        $totalDebtUnpaid = Debt::where('user_id', $userId)
+            ->where('type', Debt::TYPE_DEBT)
+            ->where('status', Debt::STATUS_UNPAID)
+            ->sum('amount');
+
+        $totalReceivableUnpaid = Debt::where('user_id', $userId)
+            ->where('type', Debt::TYPE_RECEIVABLE)
+            ->where('status', Debt::STATUS_UNPAID)
+            ->sum('amount');
+
         return response()->json([
             'success' => true,
             'data'    => [
@@ -43,6 +54,8 @@ class DashboardController extends Controller
                 'month_expense'     => (float) $monthExpense,
                 'month_net'         => (float) ($monthIncome - $monthExpense),
                 'pending_transactions' => $pendingCount,
+                'total_debt_unpaid'       => (float) $totalDebtUnpaid,
+                'total_receivable_unpaid' => (float) $totalReceivableUnpaid,
             ],
         ]);
     }

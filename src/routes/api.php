@@ -36,8 +36,26 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/categories',            [App\Http\Controllers\Api\CategoryController::class, 'index']);
 
+    Route::get('/debts',                 [App\Http\Controllers\Api\DebtController::class, 'index']);
+    Route::post('/debts',                [App\Http\Controllers\Api\DebtController::class, 'store']);
+    Route::get('/debts/{id}',            [App\Http\Controllers\Api\DebtController::class, 'show']);
+    Route::put('/debts/{id}',            [App\Http\Controllers\Api\DebtController::class, 'update']);
+    Route::delete('/debts/{id}',         [App\Http\Controllers\Api\DebtController::class, 'destroy']);
+    Route::post('/debts/{id}/pay',       [App\Http\Controllers\Api\DebtController::class, 'pay']);
+
     Route::get('/dashboard/stats',       [App\Http\Controllers\Api\DashboardController::class, 'stats']);
     Route::get('/dashboard/chart',       [App\Http\Controllers\Api\DashboardController::class, 'chart']);
+   Route::get('/savings', [App\Http\Controllers\Api\SavingController::class, 'index']);
+Route::post('/savings', [App\Http\Controllers\Api\SavingController::class, 'store']);
+
+Route::get('/savings/{id}', [App\Http\Controllers\Api\SavingController::class, 'show']);
+Route::put('/savings/{id}', [App\Http\Controllers\Api\SavingController::class, 'update']);
+Route::delete('/savings/{id}', [App\Http\Controllers\Api\SavingController::class, 'destroy']);
+
+Route::get('/savings/{id}/deposits', [App\Http\Controllers\Api\SavingController::class, 'deposits']);
+Route::post('/savings/{id}/deposits', [App\Http\Controllers\Api\SavingController::class, 'deposit']);
+
+
 });
 
 function botReply(int $chatId, string $text, string $parseMode = 'Markdown'): void

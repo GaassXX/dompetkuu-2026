@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Income extends Model
 {
     protected $fillable = [
-        'user_id', 'category_id', 'amount', 'source',
+        'user_id', 'category_id', 'debt_id', 'amount', 'source',
         'description', 'date', 'status', 'approved_by'
     ];
 
@@ -33,5 +33,10 @@ class Income extends Model
     public function approvedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function debt(): BelongsTo
+    {
+        return $this->belongsTo(Debt::class);
     }
 }

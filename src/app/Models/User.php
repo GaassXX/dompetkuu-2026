@@ -132,4 +132,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     {
         return $this->hasMany(Saving::class);
     }
+
+    public function debts(): HasMany
+    {
+        return $this->hasMany(Debt::class);
+    }
 }
