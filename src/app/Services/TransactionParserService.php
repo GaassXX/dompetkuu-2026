@@ -13,13 +13,13 @@ class TransactionParserService
      */
     protected array $synonyms = [
         'Transportasi' => ['bensin', 'motor', 'mobil', 'ojek', 'grab', 'gojek', 'parkir', 'tol', 'angkot', 'bus', 'kereta'],
-        'Makan & Minum' => ['makan', 'minum', 'kopi', 'jajan makanan', 'restoran', 'warteg', 'nasi', 'bakso', 'mie'],
-        'Belanja' => ['baju', 'sepatu', 'belanja', 'shopee', 'tokopedia', 'mall'],
-        'Tagihan' => ['listrik', 'pln', 'air', 'pdam', 'internet', 'wifi', 'pulsa', 'token'],
+        'Makan & Minum' => ['makan', 'minum', 'kopi', 'jajan makanan', 'restoran', 'warteg', 'nasi', 'bakso', 'mie', 'sarapan', 'siang', 'malam'],
+        'Belanja' => ['baju', 'sepatu', 'belanja', 'shopee', 'tokopedia', 'mall', 'supermarket', 'pasar'],
+        'Tagihan' => ['listrik', 'pln', 'air', 'pdam', 'internet', 'wifi', 'pulsa', 'token', 'iuran'],
         'Kesehatan' => ['obat', 'dokter', 'apotek', 'rumah sakit', 'vitamin'],
         'Hiburan' => ['nonton', 'bioskop', 'netflix', 'spotify', 'game online', 'konser'],
         'Pendidikan' => ['buku', 'kursus', 'sekolah', 'kuliah', 'spp'],
-        'Gaji' => ['gajian', 'gaji'],
+        'Gaji' => ['gajian', 'gaji', 'salary'],
         'Top Up Game' => ['top up', 'topup', 'diamond', 'voucher game', 'mobile legend', 'valorant', 'free fire'],
     ];
 
@@ -27,12 +27,40 @@ class TransactionParserService
     {
         $text = trim($text);
 
-        if (! preg_match('/(\d+[\.,]?\d*)\s*(rb|ribu|jt|juta|k)?/i', $text, $m)) {
+        // Regex untuk menangkap angka dengan format ribuan Indo (10.000 / 1.000.000) atau desimal (1.5 / 1,5)
+        // Match: (Rp/rp)? diikuti angka dengan titik/koma dan unit (k, rb, jt, dll)
+        $pattern = '/(?:rp\.?\s*)?(\d{1,3}(?:\.\d{3})+(?:,\d+)?|\d+(?:[.,]\d+)?)\s*(rb|ribu|jt|juta|k)?/i';
+
+        if (! preg_match($pattern, $text, $m)) {
             return null;
         }
 
-        $amount = (float) str_replace(',', '.', $m[1]);
+        $rawNumber = $m[1];
         $unit = strtolower($m[2] ?? '');
+
+        // Jika angka mengandung format ribuan seperti 10.000 atau 1.000.000
+        if (str_contains($rawNumber, '.') && !str_contains($rawNumber, ',')) {
+            $parts = explode('.', $rawNumber);
+            // Cek apakah segmen setelah titik selalu 3 digit (format ribuan Indo)
+            $isThousandFormat = true;
+            for ($i = 1; $i < count($parts); $i++) {
+                if (strlen($parts[$i]) !== 3) {
+                    $isThousandFormat = false;
+                    break;
+                }
+            }
+            if ($isThousandFormat && count($parts) > 1) {
+                $amount = (float) str_replace('.', '', $rawNumber);
+            } else {
+                $amount = (float) $rawNumber;
+            }
+        } elseif (str_contains($rawNumber, ',') && str_contains($rawNumber, '.')) {
+            // Contoh 1.500.000,50
+            $amount = (float) str_replace(',', '.', str_replace('.', '', $rawNumber));
+        } else {
+            // Contoh 15,5 atau 15000
+            $amount = (float) str_replace(',', '.', $rawNumber);
+        }
 
         $amount = match (true) {
             in_array($unit, ['rb', 'ribu', 'k']) => $amount * 1000,
@@ -44,7 +72,7 @@ class TransactionParserService
             return null;
         }
 
-        $incomeKeywords = ['gaji', 'bonus', 'freelance', 'transfer masuk', 'pendapatan', 'untung', 'gajian'];
+        $incomeKeywords = ['gaji', 'bonus', 'freelance', 'transfer masuk', 'pendapatan', 'untung', 'gajian', 'piutang'];
         $type = 'expense';
         foreach ($incomeKeywords as $keyword) {
             if (str_contains(strtolower($text), $keyword)) {
@@ -54,12 +82,16 @@ class TransactionParserService
         }
 
         $category = $this->detectCategory($text, $type, $userId);
-        $description = trim(preg_replace('/(\d+[\.,]?\d*)\s*(rb|ribu|jt|juta|k)?/i', '', $text));
+
+        // Hapus bagian angka dari teks agar mendapatkan deskripsi yang bersih
+        $matchedFullString = $m[0];
+        $description = trim(str_replace($matchedFullString, '', $text));
+        $description = preg_replace('/\s+/', ' ', $description);
 
         return [
             'type' => $type,
             'amount' => $amount,
-            'description' => $description ?: 'Transaksi',
+            'description' => $description ?: ($type === 'income' ? 'Pemasukan' : 'Pengeluaran'),
             'category_id' => $category?->id,
         ];
     }

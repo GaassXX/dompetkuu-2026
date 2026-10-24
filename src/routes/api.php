@@ -54,6 +54,7 @@ Route::delete('/savings/{id}', [App\Http\Controllers\Api\SavingController::class
 
 Route::get('/savings/{id}/deposits', [App\Http\Controllers\Api\SavingController::class, 'deposits']);
 Route::post('/savings/{id}/deposits', [App\Http\Controllers\Api\SavingController::class, 'deposit']);
+    Route::post('/chat-bot/parse-and-save', [App\Http\Controllers\Api\ChatBotController::class, 'parseAndSave']);
 
 
 });
